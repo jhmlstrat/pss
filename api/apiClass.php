@@ -1,6 +1,6 @@
 <?php
 
-require_once "../pss/ScheduleItem.php";
+require_once "../pss/Schedule.php";
 require_once "../pss/Situation.php";
 require_once "../pss/Rosters.php";
 require_once "../pss/Result.php";
@@ -10,10 +10,7 @@ class ApiClass {
   private $config; //= {};
 
   function __construct() {
-    error_log("ApiCless::__construct()");
     $json = file_get_contents("../data/config.json");
-    //error_log(strlen($json));
-    //error_log("test" . print_r(json_decode($json,true),true));
     $this->config = json_decode($json, true);
     foreach ($this->config['years'] as $year) {
       $dir = "../data/" . $year['year'];
@@ -24,12 +21,10 @@ class ApiClass {
   }
 
   function printConfig() {
-    error_log("ApiClass::printConfig()");
     return print_r($this->config,true);
   }
 
   function testInjury() {
-    error_log("ApiClass::testInjury()");
     $inj = new \Scoring\Injury;
     $expected = '{"injury":{"gameNumber":"0","duration":"0"}}';
     if ($inj->toString() !== $expected) {
@@ -50,7 +45,6 @@ class ApiClass {
   }
 
   function testMove() {
-    error_log("ApiClass::testMove()");
     $move = new \Scoring\Move;
     $expected = '{"move":{"moveType":"Fm minors","gameNumber":"0"}}';
     if ($move->toString() !== $expected) {
@@ -71,7 +65,6 @@ class ApiClass {
   }
 
   function testPlayer() {
-    error_log("ApiClass::testPlayer()");
     $play = new \ProjectScoresheet\Player;
     $expected = '{"player":{"name":""}}';
     if ($play->toString() !== $expected) {
@@ -109,7 +102,6 @@ class ApiClass {
   }
 
   function testPosition() {
-    error_log("ApiClass::testPosition()");
     $pos = new \ProjectScoresheet\Position;
     $expected = '{"position":{"pos":"DH","when":{"visitor":"0","home":"0"}}}';
     if ($pos->toString() !== $expected) {
@@ -168,7 +160,6 @@ class ApiClass {
   }
 
   function testResult() {
-    error_log("ApiClass::testResult()");
     $rslt=new \ProjectScoresheet\Result;
     $rslt->before='22;34';
     $rslt->during='here';
@@ -206,7 +197,6 @@ class ApiClass {
   }
 
   function testRoster() {
-    error_log("ApiClass::testRoster()");
     $r = new \Jhml\Roster;
     $expected = '{"roster":{"team":"","batters":[],"pitchers":[]}}';
     if ($r->toString() !== $expected) {
@@ -417,7 +407,6 @@ class ApiClass {
   }
 
   function testRosterItem() {
-    error_log("ApiClass::testRosterItem()");
     $ri = new \Scoring\RosterItem;
     $expected = '{"rosterItem":{"player":{"name":""},"team":"","moves":[],"injuries":[],"startGame":"0","endGame":"999"}}';
     if ($ri->toString() !== $expected) {
@@ -559,9 +548,13 @@ class ApiClass {
   }
 
   function testRosters() {
+    $NewRosterFile = "/Rosters.json";
+    if (file_exists('../data/2017/' . $NewRosterFile)) unlink('../data/2017/' . $NewRosterFile);
     $r2017 = new \Jhml\Rosters(2017);
     $t17 = $r2017->getTeams();
-    $r2018 = new \Jhml\Rosters(2018);
+    $r2018n = new \Jhml\Rosters(2018);
+    $r2018 = new \Jhml\Rosters(2018,true);
+    $t18n = $r2018n->getTeams();
     $t18 = $r2018->getTeams();
     $expected=["ATL","BRI","COL","CWS","FRE","KCR","LAD","MIA","MIL","MIN","OAK","PIT","SFQ","STL","TBP","WAS"];
     if ($t17 !== $expected) {
@@ -571,6 +564,12 @@ class ApiClass {
       exit;
     }
     $expected=["ATL","BRI","COL","CWS","FRE","LAD","MIA","MIL","MIN","OAK","PIT","SFQ","STL","TBP","TOR","WAS"];
+    if ($t18n !== $expected) {
+      print "Error 2n<br>";
+      print_r($t18n);print "<br/>";
+      print_r($expected); print "<br>";
+      exit;
+    }
     if ($t18 !== $expected) {
       print "Error 2<br>";
       print_r($t18);print "<br/>";
@@ -631,17 +630,66 @@ class ApiClass {
       } 
       exit;
     }
+    $r2017->writeRosterFile();
+    $r2017n = new \Jhml\Rosters(2017);
+    $rs2017n = $r2017n->toString(true);
+    if ($rs2017n != $rs2017) {
+      print "Error 7<br>";
+      print strlen($rs2017n) . "<br>";
+      print strlen($rs2017) . "<br>";
+      for ($i=0; $i < min(strlen($rs2017n), strlen($rs2017)); $i++) {
+        if ($rs2017n[$i] != $rs2017[$i]) {
+          print $i . "<br/>";
+          print substr($rs2017n,max(0,$i-200),800) . "<br/>";
+          print substr($rs2017,max(0,$i-200),800) . "<br/>";
+          $i = strlen($rs2017n) + 1;
+        }
+      } 
+      exit;
+    }
+    $rs2018n = $r2018n->toString(true);
+    if ($rs2018n == $rs2018) {
+      print "Error 8<br>";
+    }
+    $expected=["atl","bri","col","cws","fre","kcr","lad","mia","mil","min","oak","pit","sfq","stl","tbp","was"];
+    foreach ($expected as $team) {
+      if (file_exists('../data/2017/' . $team . 'moves')) unlink('../data/2017/' . $team . 'moves');
+    }
+    $r2017->writeOldMovesFiles();
+    foreach ($expected as $team) {
+      if (! file_exists('../data/2017/' . $team . 'moves')) {
+        print "Error 9 - " . $team . "<br>";
+        exit;
+      }
+    }
 #print $r->toString();
 #exit;
     print "Test successful<br>";  
   }
 
+  function testSchedule() {
+    $s_2017 = new \Scoring\Schedule;
+    $s_2018 = new \Scoring\Schedule(2018);
+    print "Test successful<br>";  
+  }
+
   function testScheduleItem() {
-    error_log("ApiClass::testScheduleItem()");
     $si = new \Scoring\ScheduleItem;
-    $expected='{"scheduleItem":{"homeTeam":"","awayTeam":"","numberOfGames":"","season":"","results":""}}';
+    $expected='{"scheduleItem":{"homeTeam":"","awayTeam":"","numberOfGames":"","season":"","results":[]}}';
     if ($si->toString() !== $expected) {
       print "Error 1<br>";
+      print $si->toString() . "<br>";
+      print $expected . "<br>";
+      exit;
+    }
+    $si->home_ = "Home";
+    $si->away_ = "Away";
+    $si->games_= 3;
+    $si->season_ = \Scoring\Seasons::Fall;
+    $si->results_[0]=json_encode('{}');
+    $expected='{"scheduleItem":{"homeTeam":"Home","awayTeam":"Away","numberOfGames":"3","season":"1","results":[{"vRun":0,"vHit":0,"vE":0,"hRun":0,"hHit":0,"hE":0}]}}';
+    if ($si->toString() !== $expected) {
+      print "Error 2<br>";
       print $si->toString() . "<br>";
       print $expected . "<br>";
       exit;
@@ -650,7 +698,6 @@ class ApiClass {
   }
 
   function testSide() {
-    error_log("ApiClass::testSide()");
     $side = new \ProjectScoresheet\Side;
     $side = $side->sides();
     if ($side[0] !== \ProjectScoresheet\Side::Visitor || $side[1] !== \ProjectScoresheet\Side::Home) {
@@ -663,7 +710,6 @@ class ApiClass {
   }
 
   function testSituation() {
-    error_log("ApiClass::testSituation()");
     $sit = new \ProjectScoresheet\Situation;
     $expected='{"situation":{"outs":"0","runsV":"0","runsH":"0","hitsV":"0","hitsH":"0","errorsV":"0","errorsH":"0","inning":"1","side":"0","first":"","second":"","third":"","batter":"","pitcher":"","gameOver":"false"}}';
     if ($sit->toString() !== $expected) {
@@ -704,7 +750,6 @@ class ApiClass {
   }
 
   function testWhen() {
-    error_log("ApiClass::testWhen()");
     $when = new \ProjectScoresheet\When;
     //$expected = "visitor: 0<br>home: 0<br>";
     $expected = '{"when":{"visitor":"0","home":"0"}}';

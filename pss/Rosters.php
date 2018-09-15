@@ -11,16 +11,18 @@
     private $baseURL = "http://www.jhmlstrat.org/";
 //    private $initialized = false;
     private $AgesFile = "/AGES.txt";
-    private $RosterFile = "/LEAGUE.JHML";
+    private $NewRosterFile = "/Rosters.json";
+    private $OldRosterFile = "/LEAGUE.JHML";
     private $StratHittersFile = "/Hitters.txt";
     private $StratPitchersFile = "/Pitchers.txt";
-    function __construct($year=2016) {
+    function __construct($year=2016, $old=false) {
       $this->year = $year;
       $this->AgesFile = '../data/' . $year . $this->AgesFile;
-      $this->RosterFile = '../data/' . $year . $this->RosterFile;
+      $this->NewRosterFile = '../data/' . $year . $this->NewRosterFile;
+      $this->OldRosterFile = '../data/' . $year . $this->OldRosterFile;
       $this->StratHittersFile = '../data/' . $year . $this->StratHittersFile;
       $this->StratPitchersFile = '../data/' . $year . $this->StratPitchersFile;
-      $this->loadRosterFile();
+      $this->loadRosterFile($old);
     }
 
     
@@ -114,24 +116,70 @@
 
 //
 
-//WRONG 
     public function writeRosterFile() {
-      $rf = fopen(Roster::RosterFile,'w');
-      usort($this->batters,array("\Scoring\RosterItem","cmp"));
-      usort($this->pitchers,array("\Scoring\RosterItem","cmp"));
-      foreach ($this->batters as $value) {
-        fwrite($rf,$value->toString() . "\n");
-      }
-      fwrite($rf,"\n");
-      foreach ($this->pitchers as $value) {
-        fwrite($rf,$value->toString() . "\n");
-      }
-      fclose($rf);
+      file_put_contents($this->NewRosterFile,$this->toString(true));
     }
-
-    private function loadRosterFile() {
-      if (file_exists($this->RosterFile)) {
-        $rf = fopen($this->RosterFile,'r');
+    public function writeOldMovesFiles() {
+      foreach($this->rosters as $team => $roster) {
+        $mvU = array();
+        $mvD = array();
+        $inj = array();
+        for ($i=0; $i<102; $i++) {$mvU[] = array(); $mvD[] = array(); $inj[] = array();}
+        foreach($roster->getBatters() as $batter) {
+          $name = str_replace('.','',$batter->player->name);
+          foreach ($batter->moves as $move) {
+            if ($move->moveType == \Scoring\MoveType::ToMinors || $move->moveType == \Scoring\MoveType::OnDL ||
+                $move->moveType == \Scoring\MoveType::TradedAway) $mvD[count($mvD[$move->gameNumber-1]) < 10 ? $move->gameNumber-1 : $move->gameNumber][]=$name.'~'.\Scoring\MoveType::toString($move->moveType);
+            if ($move->moveType == \Scoring\MoveType::ToMajors || $move->moveType == \Scoring\MoveType::OffDL ||
+                $move->moveType == \Scoring\MoveType::TradedFor) $mvU[count($mvU[$move->gameNumber-1]) < 10 ? $move->gameNumber-1 : $move->gameNumber][]=$name.'~'.\Scoring\MoveType::toString($move->moveType);
+          }
+          foreach ($batter->injuries as $injury) {
+            if ($injury->duration == 0) $inj[$injury->gameNumber-1][]=$name.'~REM~none';
+            else $inj[$injury->gameNumber-1][]=$name.'~'.$injury->duration.'~none';
+          }
+        }
+        foreach($roster->getPitchers() as $pitcher) {
+          $name = str_replace('.','',$pitcher->player->name);
+          foreach ($pitcher->moves as $move) {
+            if ($move->moveType == \Scoring\MoveType::ToMinors || $move->moveType == \Scoring\MoveType::OnDL ||
+                $move->moveType == \Scoring\MoveType::TradedAway) $mvD[count($mvD[$move->gameNumber-1]) < 10 ? $move->gameNumber-1 : $move->gameNumber][]=$name.'~'.\Scoring\MoveType::toString($move->moveType);
+            if ($move->moveType == \Scoring\MoveType::ToMajors || $move->moveType == \Scoring\MoveType::OffDL ||
+                $move->moveType == \Scoring\MoveType::TradedFor) $mvU[count($mvU[$move->gameNumber-1]) < 10 ? $move->gameNumber-1 : $move->gameNumber][]=$name.'~'.\Scoring\MoveType::toString($move->moveType);
+          }
+          foreach ($pitcher->injuries as $injury) {
+            if ($injury->duration == 0) $inj[$injury->gameNumber-1][]=$name.'~REM~none';
+            else $inj[$injury->gameNumber-1][]=$name.'~'.$injury->duration.'~none';
+          }
+        }
+        $omf = fopen('../data/' . $this->year . '/' . strtolower($team) . 'moves','w');
+        for ($i=0; $i<102; $i++) {
+          asort($mvU[$i]);
+          asort($mvD[$i]);
+          asort($inj[$i]);
+          fwrite($omf,$i+1);
+          for ($j=0; $j<3; $j++) {
+            if (count($inj[$i]) > $j) fwrite($omf,":".$inj[$i][$j]);
+            else  fwrite($omf,":none~REM~none");
+          }
+          for ($j=0; $j<10; $j++) {
+            if (count($mvD[$i]) > $j) fwrite($omf,":".$mvD[$i][$j]);
+            else  fwrite($omf,":none~To minors");
+            if (count($mvU[$i]) > $j) fwrite($omf,"~".$mvU[$i][$j]);
+            else  fwrite($omf,"~none~Fm minors");
+          }
+          fwrite($omf,"\n");
+        }
+        fclose($omf);
+      }
+    }
+    private function loadRosterFile($old) {
+      if (file_exists($this->NewRosterFile) && !$old) {
+        $str = file_get_contents($this->NewRosterFile);
+        $tmp = self::fromString($str);
+        $this->year = $tmp->year;
+        $this->rosters = $tmp->rosters;
+      } else if (file_exists($this->OldRosterFile)) {
+        $rf = fopen($this->OldRosterFile,'r');
         if ($rf) {
           while (($line = rtrim(fgets($rf))) !== false and strlen($line) > 2)  {
             $batter = \Scoring\RosterItem::fromRosterFileString($line);
@@ -455,7 +503,6 @@
     public function getRoster($team) {
       return $this->rosters[strtoupper($team)];
     }
-    //TODO
     public static function fromString($str) {
       $inst = new self();
       $js = json_decode($str);
@@ -467,7 +514,6 @@
       }
       return $inst;
     }
-    //TODO
     public function toString($includeStrat = false) {
       $rtn = '{"rosters":{"year":"' . $this->year . '"';
       $rtn .= ',"rosters":[';

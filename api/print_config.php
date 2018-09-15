@@ -1,7 +1,6 @@
 <?php
 
 require_once('./apiClass.php');
-error_log(var_export($_GET,true));
 if ($_GET['check'] == 'TooManyMLs') {
 
   $api = new ApiClass();

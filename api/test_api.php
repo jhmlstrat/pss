@@ -1,7 +1,6 @@
 <?php
 
 require_once('./apiClass.php');
-error_log(var_export($_GET,true));
 if ($_GET['check'] == 'TooManyMLs') {
 
   $api = new ApiClass();
@@ -24,7 +23,9 @@ if ($_GET['check'] == 'TooManyMLs') {
   echo "RosterItem:   ";
   echo $api->testRosterItem();
   echo "Rosters:       ";
-  echo $api->testRosters();
+//  echo $api->testRosters();
+  echo "Schedule: ";
+  echo $api->testSchedule();
   echo "ScheduleItem: ";
   echo $api->testScheduleItem();
   echo "Side:         ";
