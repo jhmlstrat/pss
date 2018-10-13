@@ -33,5 +33,13 @@
     public function json() {
       return json_decode($this->toString());
     }
+    public static function newSI($home,$away,$games,$season) {
+      $inst = new self();
+      $inst->home_ = $home;
+      $inst->away_ = $away;
+      $inst->games_ = $games;
+      $inst->season_ = $season;
+      return $inst;
+    }
   }
 ?>

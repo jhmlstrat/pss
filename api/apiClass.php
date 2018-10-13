@@ -662,13 +662,29 @@ class ApiClass {
         exit;
       }
     }
-#print $r->toString();
-#exit;
     print "Test successful<br>";  
   }
 
   function testSchedule() {
     $s_2017 = new \Scoring\Schedule;
+    $expected='{"home":{{"scheduleItem":{"homeTeam":"pit","awayTeam":"mia","numberOfGames":"4","season":"0","results":[]}},{"scheduleItem":{"homeTeam":"pit","awayTeam":"mia","numberOfGames":"3","season":"0","results":[]}},{"scheduleItem":{"homeTeam":"pit","awayTeam":"col","numberOfGames":"4","season":"0","results":[]}},{"scheduleItem":{"homeTeam":"pit","awayTeam":"col","numberOfGames":"3","season":"0","results":[]}},{"scheduleItem":{"homeTeam":"pit","awayTeam":"sfq","numberOfGames":"3","season":"0","results":[]}},{"scheduleItem":{"homeTeam":"pit","awayTeam":"was","numberOfGames":"3","season":"0","results":[]}},{"scheduleItem":{"homeTeam":"pit","awayTeam":"cws","numberOfGames":"3","season":"0","results":[]}},{"scheduleItem":{"homeTeam":"pit","awayTeam":"bri","numberOfGames":"3","season":"0","results":[]}},{"scheduleItem":{"homeTeam":"pit","awayTeam":"min","numberOfGames":"3","season":"0","results":[]}},{"scheduleItem":{"homeTeam":"pit","awayTeam":"stl","numberOfGames":"3","season":"0","results":[]}},{"scheduleItem":{"homeTeam":"pit","awayTeam":"mil","numberOfGames":"2","season":"0","results":[]}},{"scheduleItem":{"homeTeam":"pit","awayTeam":"oak","numberOfGames":"2","season":"0","results":[]}},{"scheduleItem":{"homeTeam":"pit","awayTeam":"atl","numberOfGames":"2","season":"0","results":[]}},{"scheduleItem":{"homeTeam":"pit","awayTeam":"lad","numberOfGames":"2","season":"0","results":[]}},{"scheduleItem":{"homeTeam":"pit","awayTeam":"tbp","numberOfGames":"2","season":"0","results":[]}},{"scheduleItem":{"homeTeam":"pit","awayTeam":"sfq","numberOfGames":"3","season":"1","results":[]}},{"scheduleItem":{"homeTeam":"pit","awayTeam":"was","numberOfGames":"3","season":"1","results":[]}},{"scheduleItem":{"homeTeam":"pit","awayTeam":"kcr","numberOfGames":"3","season":"1","results":[]}}},"away":{{"scheduleItem":{"homeTeam":"mia","awayTeam":"pit","numberOfGames":"3","season":"0","results":[]}},{"scheduleItem":{"homeTeam":"col","awayTeam":"pit","numberOfGames":"3","season":"0","results":[]}},{"scheduleItem":{"homeTeam":"sfq","awayTeam":"pit","numberOfGames":"4","season":"0","results":[]}},{"scheduleItem":{"homeTeam":"sfq","awayTeam":"pit","numberOfGames":"3","season":"0","results":[]}},{"scheduleItem":{"homeTeam":"was","awayTeam":"pit","numberOfGames":"4","season":"0","results":[]}},{"scheduleItem":{"homeTeam":"was","awayTeam":"pit","numberOfGames":"3","season":"0","results":[]}},{"scheduleItem":{"homeTeam":"cws","awayTeam":"pit","numberOfGames":"2","season":"0","results":[]}},{"scheduleItem":{"homeTeam":"bri","awayTeam":"pit","numberOfGames":"2","season":"0","results":[]}},{"scheduleItem":{"homeTeam":"min","awayTeam":"pit","numberOfGames":"2","season":"0","results":[]}},{"scheduleItem":{"homeTeam":"stl","awayTeam":"pit","numberOfGames":"2","season":"0","results":[]}},{"scheduleItem":{"homeTeam":"mil","awayTeam":"pit","numberOfGames":"3","season":"0","results":[]}},{"scheduleItem":{"homeTeam":"oak","awayTeam":"pit","numberOfGames":"3","season":"0","results":[]}},{"scheduleItem":{"homeTeam":"atl","awayTeam":"pit","numberOfGames":"3","season":"0","results":[]}},{"scheduleItem":{"homeTeam":"lad","awayTeam":"pit","numberOfGames":"3","season":"0","results":[]}},{"scheduleItem":{"homeTeam":"kcr","awayTeam":"pit","numberOfGames":"2","season":"0","results":[]}},{"scheduleItem":{"homeTeam":"mia","awayTeam":"pit","numberOfGames":"3","season":"1","results":[]}},{"scheduleItem":{"homeTeam":"col","awayTeam":"pit","numberOfGames":"3","season":"1","results":[]}},{"scheduleItem":{"homeTeam":"tbp","awayTeam":"pit","numberOfGames":"3","season":"1","results":[]}}}}';
+    if ($s_2017->getSchedule('pit') !== $expected) {
+      print "Error 1<br>";
+      print $s_2017->getSchedule('pit') . "<br>";
+      print $expected . "<br>";
+      exit;
+    }
+    $expected=["atl","bri","col","cws","kcr","lad","mia","mil","min","oak","pit","sfq","stl","tbp","was"];
+    foreach ($expected as $team) {
+      if (file_exists('../data/2017/' . $team . 'sched.html')) unlink('../data/2017/' . $team . 'sched.html');
+    }
+    $s_2017->generateSchedules();
+    foreach ($expected as $team) {
+      if (! file_exists('../data/2017/' . $team . 'sched.html')) {
+        print "Error 2 - " . $team . "<br>";
+        exit;
+      }
+    }
     $s_2018 = new \Scoring\Schedule(2018);
     print "Test successful<br>";  
   }
@@ -682,10 +698,7 @@ class ApiClass {
       print $expected . "<br>";
       exit;
     }
-    $si->home_ = "Home";
-    $si->away_ = "Away";
-    $si->games_= 3;
-    $si->season_ = \Scoring\Seasons::Fall;
+    $si = \Scoring\ScheduleItem::newSI("Home", "Away", 3, \Scoring\Seasons::Fall);
     $si->results_[0]=json_encode('{}');
     $expected='{"scheduleItem":{"homeTeam":"Home","awayTeam":"Away","numberOfGames":"3","season":"1","results":[{"vRun":0,"vHit":0,"vE":0,"hRun":0,"hHit":0,"hE":0}]}}';
     if ($si->toString() !== $expected) {
