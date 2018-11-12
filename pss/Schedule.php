@@ -179,7 +179,7 @@
     }
 
     public function getSchedule($team) {
-      $rtn = '{"home":{';
+      $rtn = '{"home":[';
       $fall = [];
       for ($i=0; $i <count($this->schedules[$team]['home']); $i++) {
         if ($this->schedules[$team]['home'][$i]->season_ == \Scoring\Seasons::Fall) {
@@ -192,7 +192,7 @@
       for ($i=0; $i <count($fall); $i++) {
          $rtn .= ',' . $fall[$i]->toString();
       }
-      $rtn .= '},"away":{';
+      $rtn .= '],"away":[';
       $fall = [];
       for ($i=0; $i <count($this->schedules[$team]['away']); $i++) {
         if ($this->schedules[$team]['away'][$i]->season_ == \Scoring\Seasons::Fall) {
@@ -205,7 +205,7 @@
       for ($i=0; $i <count($fall); $i++) {
          $rtn .= ',' . $fall[$i]->toString();
       }
-      $rtn .= '}}';
+      $rtn .= ']}';
       return $rtn;
     }
 
