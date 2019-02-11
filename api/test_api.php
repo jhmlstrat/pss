@@ -22,8 +22,8 @@ if ($_GET['check'] == 'TooManyMLs') {
   echo $api->testRoster();
   echo "RosterItem:   ";
   echo $api->testRosterItem();
-  echo "Rosters:       ";
-//  echo $api->testRosters();
+  //echo "Rosters:       ";
+  //echo $api->testRosters();
   echo "Schedule: ";
   echo $api->testSchedule();
   echo "ScheduleItem: ";

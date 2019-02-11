@@ -2,11 +2,11 @@
   namespace Scoring;
 
   require_once "../pss/ScheduleItem.php";
+  require_once "../pss/ResultsFile.php";
 
   class Schedule {
     private $config;
 
-    private $year;
     private $divs = ['AMML','CBML','RCML'];
     private $schedules = [];
 
@@ -36,6 +36,7 @@
     }
 
     function __construct($year = 2017) {
+      $rf = new ResultsFile($year);
       $previous = nil;
       $json = file_get_contents("../data/config.json");
       $confs = json_decode($json, true);

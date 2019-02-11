@@ -699,8 +699,10 @@ class ApiClass {
       exit;
     }
     $si = \Scoring\ScheduleItem::newSI("Home", "Away", 3, \Scoring\Seasons::Fall);
-    $si->results_[0]=json_encode('{}');
-    $expected='{"scheduleItem":{"homeTeam":"Home","awayTeam":"Away","numberOfGames":"3","season":"1","results":[{"vRun":0,"vHit":0,"vE":0,"hRun":0,"hHit":0,"hE":0}]}}';
+    $si->results_[0] = new \Scoring\Game;
+    $si->results_[0]->team_[0] = 'Away';
+    $si->results_[0]->team_[1] = 'Home';
+    $expected='{"scheduleItem":{"homeTeam":"Home","awayTeam":"Away","numberOfGames":"3","season":"1","results":[{"visitor":"Away","vGameNo":0,"vRun":0,"vHit":0,"vE":0,"home":"Home","hGameNo":0,"hRun":0,"hHit":0,"hE":0,"innings":9,"date":"","scoreSheet":false}]}}';
     if ($si->toString() !== $expected) {
       print "Error 2<br>";
       print $si->toString() . "<br>";
