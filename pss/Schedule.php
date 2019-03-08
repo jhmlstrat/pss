@@ -208,10 +208,10 @@
                 $added=true;
               }
             }         
-            if (! $added) {
+            //if (! $added) {
               //var_dump($series);
-              print "Shouldn't get here " . $series[0]->team_[0] . " at " .  $series[0]->team_[1] . "(" . $t . ") for " . count($series) . "\n";
-            }
+              //print "Shouldn't get here " . $series[0]->team_[0] . " at " .  $series[0]->team_[1] . "(" . $t . ") for " . count($series) . "\n";
+            //}
             $series = [];
           }
           array_push($series,$gm);

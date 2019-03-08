@@ -1,8 +1,6 @@
 <?php
 
-require_once('./apiClass.php');
-if ($_GET['check'] == 'TooManyMLs') {
-
+require_once('../api/apiClass.php');
   $api = new ApiClass();
 
   echo "<html>\n<meta charset='UTF-8'>\n";
@@ -36,8 +34,5 @@ if ($_GET['check'] == 'TooManyMLs') {
   echo $api->testWhen();
 
   echo "\n</html>";
-} else {
-  echo "Should not be here - print_config";
-}
 
 ?>
