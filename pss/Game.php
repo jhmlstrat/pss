@@ -46,12 +46,19 @@
       $results .= ',"hE":' . $this->errors_[1];
       $results .= ',"innings":' . $this->innings_;
       $results .= ',"date":"' . $this->date_ . '"';
-      $results .= ',"scoreSheet":' . (file_exists('../data/' . $this->year . '/' . strtoupper($this->team_[0]) . sprintf('%03d', $this->gameNumber_[0]).  strtoupper($this->team_[1]) . sprintf('%03d', $this->gameNumber_[1]) . '.pss') ? "true" : "false");
+      $results .= ',"scoreSheet":' . ($this->hasScoreSheet() ? "true" : "false");
       $results .= '}';
       return $results;
     }
     public function json() {
       return json_decode($this->toString());
+    }
+    public function hasScoreSheet() {
+      return file_exists('../data/' . $this->year . '/' . strtoupper($this->team_[0]) . sprintf('%03d', $this->gameNumber_[0]).  strtoupper($this->team_[1]) . sprintf('%03d', $this->gameNumber_[1]) . '.pss');
+    }
+    public function getScoreSheet() {
+      // TBD
+      return '{}';
     }
   }
 ?>
