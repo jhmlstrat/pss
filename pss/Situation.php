@@ -56,9 +56,14 @@
     public function otherSide() {if ($this->side == Side::Visitor) return Side::Home; return Side::Visitor;}
     public function base($b) {return $this->runner[$b] !== null;}
     public function gameOver() { 
-      //printf("inn=%d,side=%d,betweenInnings=%s,visitor=%d,home=%d\n",$this->inning,$this->side,($this->betweenInnings?"true":"false"),$this->runs[Side::Visitor],$this->runs[Side::Home]);
-      return ((($this->inning > 9 || ($this->inning == 9 && $this->side == Side::Home)) && $this->runs[Side::Home] > $this->runs[Side::Visitor]) ||
-        ($this->inning > 9 && $this->betweenInnings && $this->side==Side::Visitor && $this->runs[Side::Home] < $this->runs[Side::Visitor]));
+      #print 'Inning: ' . $this->inning . "\n";
+      #print 'Side: ' . $this->side . "\n";
+      #print 'Home: ' . $this->runs[Side::Home] . "\n";
+      #print 'Away: ' . $this->runs[Side::Visitor] . "\n";
+      #print 'Between: ' . $this->betweenInnings . "\n";
+      if ($this->inning >= 9 && $this->side == Side::Home && $this->runs[Side::Home] > $this->runs[Side::Visitor]) return true;
+      if ($this->inning > 9 && $this->betweenInnings && $this->side==Side::Visitor && $this->runs[Side::Home] < $this->runs[Side::Visitor]) return true;
+      return false;
     }
     
     public function toString() {

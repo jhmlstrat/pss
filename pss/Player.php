@@ -5,7 +5,7 @@
     public $name;
     public $realTeam;
     public $hand;
-    //public $positions;
+    public $positions;
     public $positionsPlayed;
     public $ab;
     public $bb;
@@ -36,7 +36,7 @@
       $this->name='';
       $this->realTeam='';
       $this->hand = "R";
-      //$this->positions=array();
+      $this->positions=array();
       $this->positionsPlayed=array();
       $this->ab = 0;
       $this->bb = '';
@@ -96,6 +96,11 @@
       //for ($i = 0; $i < count($pos); $i ++) {
       //  array_push($inst->positions,Position::fromString(json_encode($pos[$i])));
       //}
+      if (array_key_exists("positions",$play->player)) {
+        foreach ($play->player->positions as $pos) {
+          array_push($inst->positions,Position::fromString(json_encode($pos)));
+        }
+      }
       if (array_key_exists("strat",$play->player)) {
         $strat = $play->player->strat;
         $inst->realTeam=$strat->realTeam;
@@ -141,29 +146,32 @@
       }
       return $inst;
     }
-    //public function newPosition($position) {
-    //  $this->positions[]=$position;
-    //}
-    //public function clearposition() {
-    //  $this->positions=array();
-    //}
+    public function newPosition($position) {
+      $this->positions[]=$position;
+    }
+    public function clearposition() {
+      $this->positions=array();
+    }
     public function toString($includeStrat = false) {
       //$rtn = '{"player":{"name":"' . $this->name . '",positions":[';
       $rtn = '{"player":{"name":"' . $this->name . '"';
-      //$count = count($this->positions);
-      //$oog = false;
-      //for ($i = 0; $i < $count; $i ++) {
-      //  $posit=$this->positions[$i]->json()->pos;
-      //  if ($posit == 'OOG') {
-      //    $oog = true;
-      //  } else {
-      //   if (!$oog) {
-      //      if ($i != 0) $rtn .= ',';
-      //      $rtn .= $this->positions[$i]->toString();
-      //    }
-      //  }
-      //}
-      //$rtn .= ']';
+      $count = count($this->positions);
+      if ($count > 0) {
+        $rtn .= ',"positions":[';
+      $oog = false;
+      for ($i = 0; $i < $count; $i ++) {
+        $posit=$this->positions[$i]->json()->pos;
+        if ($posit == 'OOG') {
+          $oog = true;
+        } else {
+         if (!$oog) {
+            if ($i != 0) $rtn .= ',';
+            $rtn .= $this->positions[$i]->toString();
+          }
+        }
+      }
+      $rtn .= ']';
+      }
       if ($includeStrat) {
         $rtn .= ',"strat":{';
         $rtn .= '"realTeam":"' . $this->realTeam . '"';

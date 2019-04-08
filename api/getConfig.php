@@ -1,5 +1,5 @@
 <?php
-if ($_SERVER['HTTP_X_AUTHORIZATION'] != 'TooManyMLs') return;
+#if ($_SERVER['HTTP_X_AUTHORIZATION'] != 'TooManyMLs') return;
 // required headers
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: access");

@@ -21,7 +21,8 @@
       $rtn='{"result":{';
       if ($this->before !== '') $rtn .= '"before":"' . $this->before . '",';
       $rtn .= '"during":"' . $this->during . '"';
-      if ($this->after !== '' and $this->after !== 'Bx') $rtn .= ',"after":"' . $this->after . '"';
+      #if ($this->after !== '' and $this->after !== 'Bx') $rtn .= ',"after":"' . $this->after . '"';
+      if ($this->after !== '') $rtn .= ',"after":"' . $this->after . '"';
       $rtn .= '}}';
       return $rtn;
     }
