@@ -213,6 +213,7 @@
         if ($count > 0) {
           $pieces = explode("\t",$line);
           //foreach ($pieces as $value) { print $value . "\n"; }
+          if ($pieces[2] < 100) continue;
           $rindex = '';
           $bindex = -1;
           $name = str_replace("\"","",$pieces[1]);
@@ -319,6 +320,7 @@
         if ($count > 0) {
           $pieces = explode("\t",$line);
           //foreach ($pieces as $value) { print $value . "\n"; }
+          if ($pieces[2] < 30) continue;
           $rindex = "";
           $pindex = -1;
           $name = str_replace("\"","",$pieces[1]);
@@ -399,7 +401,13 @@
     }
     //TBD
     private function normalize($str) {
-      return str_replace("-","",str_replace(".","",str_replace("'","",$str)));
+      $str = str_replace(" ","",$str);
+      $str = str_replace("-","",$str);
+      $str = str_replace(".","",$str);
+      $str = str_replace("'","",$str);
+      $str = str_replace("Castillo,Wellington","Castillo,Welington",$str);
+      $str = str_replace("Myers,Will","Myers,Wil",$str);
+      return str_replace(" ","",str_replace("-","",str_replace(".","",str_replace("'","",$str))));
     }
     private function copyStrat($src,$dest) {
       $dest->name = $src->name;
@@ -466,14 +474,14 @@
               $found = false;
               foreach($this->rosters as $team => $rosterI) {
                 for ($k=0; $k < count($rosterI->batters) && !$found; $k++) {
-                  if ($this->normalize($rosterI->batters[$k]->player->name) == $newbies[$j]->player->name) {
+                  if ($this->normalize($rosterI->batters[$k]->player->name) == $this->normalize($newbies[$j]->player->name)) {
                     $this->copyStrat($rosterI->batters[$k]->player,$newbies[$j]->player);
                     $roster->batters[] = $newbies[$j];
                     $found = true;
                   }
                 }
                 for ($k=0; $k < count($rosterI->pitchers) && !$found; $k++) {
-                  if ($this->normalize($rosterI->pitchers[$k]->player->name) == $newbies[$j]->player->name) {
+                  if ($this->normalize($rosterI->pitchers[$k]->player->name) == $this->normalize($newbies[$j]->player->name)) {
                     $this->copyStrat($rosterI->pitchers[$k]->player,$newbies[$j]->player);
                     $roster->pitchers[] = $newbies[$j];
                     $found = true;
