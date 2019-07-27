@@ -10,6 +10,13 @@
     public $errors_;
     public $innings_;
     public $date_;
+    public $starter_;
+    public $winner_;
+    public $loser_;
+    public $save_;
+    public $day_;
+    public $bps_;
+    public $bphr_;
 		
     function __construct($year = 2017) {
       $this->year = $year;
@@ -30,6 +37,18 @@
       $this->errors_[1] = 0;
       $this->innings_ = 9;
       $this->date_ = '';
+      $this->starter_ = [];
+      $this->starter_[0]='';
+      $this->starter_[1]='';
+      $this->winner_ = '';
+      $this->loser_ = '';
+      $this->save_ = '';
+      $this->bps_ = [];
+      $this->bps_[0]=0;
+      $this->bps_[1]=0;
+      $this->bps_ = [];
+      $this->bphr_[0]=0;
+      $this->bphr_[1]=0;
     }
 
     public function toString() {
@@ -47,6 +66,18 @@
       $results .= ',"innings":' . $this->innings_;
       $results .= ',"date":"' . $this->date_ . '"';
       $results .= ',"scoreSheet":' . ($this->hasScoreSheet() ? "true" : "false");
+      if ($this->hasScoreSheet()) {
+        $results .= ',"vStarter":"' . $this->starter_[0] . '"';
+        $results .= ',"hStarter":"' . $this->starter_[1] . '"';
+        $results .= ',"winner":"' . $this->winner_ . '"';
+        $results .= ',"loser":"' . $this->loser_ . '"';
+        $results .= ',"cwsavehStarter":"' . $this->save_ . '"';
+        $results .= ',"day":' . ($this->hasScoreSheet() ? "true" : "false");
+        $results .= ',"bpsL":' . $this->bps_[0];
+        $results .= ',"bpsR":' . $this->bps_[1];
+        $results .= ',"bphrL":' . $this->bphr_[0];
+        $results .= ',"bphrR":' . $this->bphr_[1];
+      }
       $results .= '}';
       return $results;
     }
