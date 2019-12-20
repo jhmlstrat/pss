@@ -243,6 +243,7 @@
           $this->rosters[$rindex]->batters[$bindex]->player->hit[0] = $pieces[5];
           $this->rosters[$rindex]->batters[$bindex]->player->ob[0] = $pieces[6];
           $this->rosters[$rindex]->batters[$bindex]->player->tb[0] = $pieces[7];
+          $this->rosters[$rindex]->batters[$bindex]->player->hr[0] = $pieces[8];
           $this->rosters[$rindex]->batters[$bindex]->player->bps[0] = '0.0';
           if (strpos($pieces[9],"*") === false) $this->rosters[$rindex]->batters[$bindex]->player->bps[0] = '5.0';
           $this->rosters[$rindex]->batters[$bindex]->player->power[0] = 'W';
@@ -259,6 +260,7 @@
           $this->rosters[$rindex]->batters[$bindex]->player->hit[1] = $pieces[14];
           $this->rosters[$rindex]->batters[$bindex]->player->ob[1] = $pieces[15];
           $this->rosters[$rindex]->batters[$bindex]->player->tb[1] = $pieces[16];
+          $this->rosters[$rindex]->batters[$bindex]->player->hr[1] = $pieces[17];
           $this->rosters[$rindex]->batters[$bindex]->player->bps[1] = '0.0';
           if (strpos($pieces[18],"*") === false) $this->rosters[$rindex]->batters[$bindex]->player->bps[1] = '5.0';
           $this->rosters[$rindex]->batters[$bindex]->player->power[1] = 'W';
@@ -349,6 +351,7 @@
           $this->rosters[$rindex]->pitchers[$pindex]->player->hit[0] = $pieces[5];
           $this->rosters[$rindex]->pitchers[$pindex]->player->ob[0] = $pieces[6];
           $this->rosters[$rindex]->pitchers[$pindex]->player->tb[0] = $pieces[7];
+          $this->rosters[$rindex]->pitchers[$pindex]->player->hr[0] = $pieces[8];
           $this->rosters[$rindex]->pitchers[$pindex]->player->bps[0] = '0.0';
           if (strpos($pieces[9],"*") === false) $this->rosters[$rindex]->pitchers[$pindex]->player->bps[0] = '5.0';
           $this->rosters[$rindex]->pitchers[$pindex]->player->power[0] = 'W';
@@ -363,6 +366,7 @@
           $this->rosters[$rindex]->pitchers[$pindex]->player->hit[1] = $pieces[13];
           $this->rosters[$rindex]->pitchers[$pindex]->player->ob[1] = $pieces[14];
           $this->rosters[$rindex]->pitchers[$pindex]->player->tb[1] = $pieces[15];
+          $this->rosters[$rindex]->pitchers[$pindex]->player->hr[1] = $pieces[16];
           $this->rosters[$rindex]->pitchers[$pindex]->player->bps[1] = '0.0';
           if (strpos($pieces[17],"*") === false) $this->rosters[$rindex]->pitchers[$pindex]->player->bps[1] = '5.0';
           $this->rosters[$rindex]->pitchers[$pindex]->player->power[1] = 'W';

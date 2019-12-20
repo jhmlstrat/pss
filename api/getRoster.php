@@ -1,5 +1,5 @@
 <?php
-if ($_SERVER['HTTP_X_AUTHORIZATION'] != 'TooManyMLs') return;
+//if ($_SERVER['HTTP_X_AUTHORIZATION'] != 'TooManyMLs') return;
 // required headers
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: access");
@@ -19,5 +19,6 @@ $year = isset($_GET['year']) ? $_GET['year'] : $conf->config['current_year'];
 
 $rosters = new \Jhml\Rosters($year);
 
-print(json_encode($rosters->getRoster($team)));
+//print(json_encode($rosters->getRoster($team)));
+print($rosters->getRoster($team)->toString(true));
 ?>

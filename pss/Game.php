@@ -54,16 +54,16 @@
     public function toString() {
       $results = '{';
       $results .= '"visitor":"' . $this->team_[0] . '"';
-      $results .= ',"vGameNo":' . $this->gameNumber_[0];
-      $results .= ',"vRun":' . $this->runs_[0];
-      $results .= ',"vHit":' . $this->hits_[0];
-      $results .= ',"vE":' . $this->errors_[0];
+      $results .= ',"vGameNo":"' . intval($this->gameNumber_[0]) . '"';
+      $results .= ',"vRun":"' . intval($this->runs_[0]) . '"';
+      $results .= ',"vHit":"' . intval($this->hits_[0]) . '"';
+      $results .= ',"vE":"' . intval($this->errors_[0]) . '"';
       $results .= ',"home":"' . $this->team_[1] . '"';
-      $results .= ',"hGameNo":' . $this->gameNumber_[1];
-      $results .= ',"hRun":' . $this->runs_[1];
-      $results .= ',"hHit":' . $this->hits_[1];
-      $results .= ',"hE":' . $this->errors_[1];
-      $results .= ',"innings":' . $this->innings_;
+      $results .= ',"hGameNo":"' . intval($this->gameNumber_[1]) . '"';
+      $results .= ',"hRun":"' . intval($this->runs_[1]) . '"';
+      $results .= ',"hHit":"' . intval($this->hits_[1]) . '"';
+      $results .= ',"hE":"' . intval($this->errors_[1]) . '"';
+      $results .= ',"innings":"' . intval($this->innings_) . '"';
       $results .= ',"date":"' . $this->date_ . '"';
       $results .= ',"scoreSheet":' . ($this->hasScoreSheet() ? "true" : "false");
       if ($this->hasScoreSheet()) {
@@ -73,10 +73,10 @@
         $results .= ',"loser":"' . $this->loser_ . '"';
         $results .= ',"cwsavehStarter":"' . $this->save_ . '"';
         $results .= ',"day":' . ($this->hasScoreSheet() ? "true" : "false");
-        $results .= ',"bpsL":' . $this->bps_[0];
-        $results .= ',"bpsR":' . $this->bps_[1];
-        $results .= ',"bphrL":' . $this->bphr_[0];
-        $results .= ',"bphrR":' . $this->bphr_[1];
+        $results .= ',"bpsL":"' . intval($this->bps_[0]) . '"';
+        $results .= ',"bpsR":"' . intval($this->bps_[1]) . '"';
+        $results .= ',"bphrL":"' . intval($this->bphr_[0]) . '"';
+        $results .= ',"bphrR":"' . intval($this->bphr_[1]) . '"';
       }
       $results .= '}';
       return $results;
