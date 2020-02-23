@@ -21,6 +21,5 @@ if (isset($_GET['year'])) $year = $_GET['year'];
 //$year=2018;
 
 $schedule = new \Scoring\Schedule($year);
-
-print $schedule->getSchedule($team);
+print($schedule->getSchedule($team));
 ?>

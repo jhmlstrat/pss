@@ -107,7 +107,8 @@
        "manager":"Bob Smoot",
        "division":"RCML"
       }
-    ]
+    ],
+    "il_length":"6"
    },
    {"year":"2017",
     "teams":[
@@ -216,7 +217,8 @@
        "manager":"Bob Smoot",
        "division":"RCML"
       }
-    ]
+    ],
+    "il_length":"6"
    },
    {"year":"2018",
     "teams":[
@@ -325,7 +327,8 @@
        "manager":"Bob Smoot",
        "division":"RCML"
       }
-    ]
+    ],
+    "il_length":"6"
    },
    {"year":"2019",
     "teams":[
@@ -434,7 +437,8 @@
        "manager":"Bob Smoot",
        "division":"CBML"
       }
-    ]
+    ],
+    "il_length":"6"
    }
  ],
  "colors":[

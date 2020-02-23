@@ -247,7 +247,7 @@
       for ($i=0; $i <count($fall); $i++) {
          $rtn .= ',' . $fall[$i]->toString();
       }
-      $rtn .= '],results:[';
+      $rtn .= '],"results":[';
       $rtn .= ']}';
       return $rtn;
     }
@@ -300,5 +300,4 @@
       }
     }
   }
-
 ?>
