@@ -1,0 +1,22 @@
+
+.fa-rotate-45 {
+ filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=1);
+ -webkit-transform: rotate(45deg);
+ -moz-transform: rotate(45deg);
+ -ms-transform: rotate(45deg);
+ -o-transform: rotate(45deg);
+ transform: rotate(45deg);
+}
+
+.fixed {
+  font-family: monospace;
+}
+
+.main-menu {
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+.roster-list {
+  padding: .25rem 1.00rem !important;
+}
