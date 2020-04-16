@@ -2,16 +2,15 @@ var RotationComponent = {
   name: 'RosterComponent',
   template: `
     <div class='container'>
-{{ currentComponent() }}
       <b-row>
-        <div class='col-xs-2 text-center'>
+        <b-col cols='2' class='text-center'>
           <a role='button' class='btn btn-lg btn-link' href='#' v-on:click='switchToRoster();'>Back</a>
-        </div>
-        <div class='col-xs-8'>
-        </div>
-        <div class='col-xs-2 text-center'>
+        </b-col>
+        <b-col cols='8'>
+        </b-col>
+        <b-col cols='2' class='text-center'>
           <a role='button' class='btn btn-lg btn-link'href='/jhmlhome.html'>JHML Home</a>
-        </div>
+        </b-col>
       </b-row>
       <h1><center>{{ team.team_name }}</center></h1>
       <b-row v-for='rotations in chunkedRotation' v-bind:key='rotations[0].game'>
@@ -45,16 +44,9 @@ var RotationComponent = {
   `,
   data() {
     return {
-      team: {},
+      team: {"team_name":""},
       teamname: 't',
-      config: {},
-      roster: {},
-      rotation: {},
       starters: [],
-      window: {
-        width: 0,
-        height: 0
-      },
       options: [],
       fields: [
         'name',
@@ -64,62 +56,35 @@ var RotationComponent = {
       ],
     }
   },
-  //created() {
-  //  window.addEventListener('resize', this.handleResize)
-  //  this.handleResize();
-  //},
-  //destroyed() {
-  //  window.removeEventListener('resize', this.handleResize)
-  //},
-  watch: {
-    config() {
-      //console.log(this.config)
-      this.setNames();
-    },
-    teamname() {
-      this.setNames();
-    },
-    roster() {
-      if (this.roster == undefined || this.roster == null) return;
-      console.log('Here');
-      this.options = [{'value': '', text: 'Not Scheduled'}];
-      this.starters = [];
-      if (this.roster.pitchers) {
-        for (b of this.roster.pitchers) {
-          if (b.player.endure.includes('S(')) {
-            this.options.push({'value':b.player.name,'text':b.player.name});
-            this.starters.push({'name':b.player.name,'innings':(Math.trunc(b.player.ip*102/162*1.1*3)/3).toFixed(1),'starts':0});
-          }
-        }
-        this.calculateStarts();
-      }
-    },
-  },
   computed: {
-    chunkedRotation() { if (this.rotation == undefined || this.rotation.rotation == undefined) return []; return _.chunk(this.rotation.rotation.rotation,4) },
+    chunkedRotation() {
+       if (vue == undefined) return;
+       if (vue.rotation == undefined || vue.rotation.rotation == undefined) return [];
+       return _.chunk(vue.rotation.rotation.rotation,4);
+    },
   },
   mounted() {
-    eBus.$on('configUpdated',(c) => { this.config=c; })
-    eBus.$on('teamnameUpdated',(tn) => { this.teamname=tn; })
-    eBus.$on('rosterUpdated',(r) => { this.roster=r;})
-    eBus.$on('rotationUpdated',(r) => { this.rotation=r; this.calculateStarts(); })
+    eBus.$on('teamUpdated',(t) => { this.team = t;});
+    eBus.$on('rosterUpdated',(r) => { this.rosterChanged();})
+    eBus.$on('rotationUpdated',(r) => { this.calculateStarts(); })
     if (this.teamname == 't' && vue != undefined) vue.emitData();
   },
   methods: {
     currentComponent() { return vue.currentComponent; },
-    //handleResize() {
-    //  this.window.width = window.innerWidth;
-    //  this.window.height = window.innerHeight;
-    //},
-    setNames() {
-      if (this.teamname == 't') return;
-      if (! this.config.current_year) return;
-      for (y of this.config.years) {
-        if (y.year == this.config.current_year) {
-          for (t of y.teams) {
-            if (t.team == this.teamname) this.team = t;
+    rosterChanged() {
+      if (vue == undefined) return;
+      if (vue.roster == undefined || vue.roster == null) return;
+      this.options = [{'value': '', text: 'Not Scheduled'}];
+      this.starters = [];
+      if (vue.roster.roster.pitchers) {
+        for (b of vue.roster.roster.pitchers) {
+          //console.log(b.rosterItem.player);
+          if (b.rosterItem.player.strat.endurance.includes('S(')) {
+            this.options.push({'value':b.rosterItem.player.name,'text':b.rosterItem.player.name});
+            this.starters.push({'name':b.rosterItem.player.name,'innings':(Math.trunc(b.rosterItem.player.strat.ip*102/162*1.1*3)/3).toFixed(1),'starts':0});
           }
         }
+        this.calculateStarts();
       }
     },
     switchToMenu() {
@@ -139,7 +104,7 @@ var RotationComponent = {
       evt.preventDefault();
       var self = this;
       let headers = {headers:{'X-Authorization':'TooManyMLs'}};
-      axios.put('/pss/api/putRotation.php',{data: this.rotation},headers)
+      axios.put('/pss/api/putRotation.php',{data: vue.rotation},headers)
       .then(function (response) {
         //console.log(response);
         self.switchToRoster();
@@ -155,7 +120,7 @@ var RotationComponent = {
     },
     calculateStarts() {
       for (s of this.starters) s.starts = 0;
-      for (p of this.rotation.rotation.rotation) {
+      for (p of vue.rotation.rotation.rotation) {
         if (p.pitcher == '') continue;
         for (s of this.starters) {
           if (p.pitcher == s.name) {
