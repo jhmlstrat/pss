@@ -221,6 +221,7 @@
     }
 
     public function getSchedule($team) {
+      $resultsA = [];
       $rtn = '{"home":[';
       $fall = [];
       for ($i=0; $i <count($this->schedules[$team]['home']); $i++) {
@@ -229,6 +230,19 @@
         } else {
           if ($i > 0) $rtn .= ',';
           $rtn .= $this->schedules[$team]['home'][$i]->toString(); 
+        }
+        for ($j=0; $j < count($this->schedules[$team]['home'][$i]->results_); $j++) {
+          $gn = $this->schedules[$team]['home'][$i]->results_[$j]->gameNumber_[1];
+          $found = false;
+          for ($k=0; (! $found) && ($k < count($resultsA)); $k++) {
+            if ($resultsA[$k]->team_[0] == $team) $cg=$resultsA[$k]->gameNumber_[0];
+            else $cg=$resultsA[$k]->gameNumber_[1];
+            if ($cg > $gn) {
+              array_splice($resultsA,$k,0,[$this->schedules[$team]['home'][$i]->results_[$j]]);
+              $found = true;
+            }
+          }
+          if (! $found) array_push($resultsA,$this->schedules[$team]['home'][$i]->results_[$j]);
         }
       }
       for ($i=0; $i <count($fall); $i++) {
@@ -243,12 +257,32 @@
           if ($i > 0) $rtn .= ',';
           $rtn .= $this->schedules[$team]['away'][$i]->toString(); 
         }
+        for ($j=0; $j < count($this->schedules[$team]['away'][$i]->results_); $j++) {
+          $gn = $this->schedules[$team]['away'][$i]->results_[$j]->gameNumber_[0];
+          $found = false;
+          for ($k=0; (! $found) && ($k < count($resultsA)); $k++) {
+            if ($resultsA[$k]->team_[0] == $team) $cg=$resultsA[$k]->gameNumber_[0];
+            else $cg=$resultsA[$k]->gameNumber_[1];
+            if ($cg > $gn) {
+              array_splice($resultsA,$k,0,[$this->schedules[$team]['away'][$i]->results_[$j]]);
+              $found = true;
+            }
+          }
+          if (! $found) array_push($resultsA,$this->schedules[$team]['away'][$i]->results_[$j]);
+        }
       }
       for ($i=0; $i <count($fall); $i++) {
          $rtn .= ',' . $fall[$i]->toString();
       }
-      $rtn .= '],"results":[';
-      $rtn .= ']}';
+      $results = '[';
+      foreach ($resultsA as $result) {
+        if ($results != '[') $results .= ',';
+        $results .= $result->toString();
+      }
+      $results .= ']';
+      $rtn .= '],"results":' . $results;
+
+      $rtn .= '}';
       return $rtn;
     }
 

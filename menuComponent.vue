@@ -12,7 +12,8 @@ var MenuComponent = {
           </b-button>
         </b-col>
       </b-row>
-      <h1><center>{{ team.team_name }} before game {{ game }}</center></h1>
+      <h1><center>{{ year() }} {{ team.team_name }} before game {{ game }}</center></h1>
+      <div class='alert alert-danger text-center' role='alert' v-show='! rosterValid()'>Your roster is invalid - You may not start a series</div>
       <b-row class='main-menu'>
         <b-col cols='12' class='text-center'>
           <b-button v-show='team.team_name != "guest"'
@@ -79,6 +80,8 @@ var MenuComponent = {
   },
   methods: {
     currentComponent() { if (vue == undefined) return ''; return vue.currentComponent; },
+    rosterValid() { if (vue == undefined) return false; return vue.rosterValid(); },
+    year() { if (vue == undefined) return ''; return vue.year; },
     switchToRoster() {
       vue.currentComponent='rosterComponent';
       //vue.emitData();
@@ -101,6 +104,8 @@ var MenuComponent = {
     nextSeries() {
       if (vue === undefined) return false;
       if (JSON.stringify(vue.schedule) == '{}') return false;
+      if (! this.scheduleEnabled()) return false;
+      if (! vue.rosterValid()) return false;
       if (vue.gameInProgress === true) return false;
       if (vue.betweenSeries === false) return false;
       return true;
@@ -108,6 +113,8 @@ var MenuComponent = {
     nextGame() {
       if (vue === undefined) return false;
       if (JSON.stringify(vue.schedule) == '{}') return false;
+      if (! this.scheduleEnabled()) return false;
+      if (! vue.rosterValid()) return false;
       if (vue.gameInProgress === true) return false;
       if (vue.betweenSeries === true) return false;
       return true;
@@ -115,6 +122,8 @@ var MenuComponent = {
     resumeGame() {
       if (vue === undefined) return false;
       if (JSON.stringify(vue.schedule) == '{}') return false;
+      if (! this.scheduleEnabled()) return false;
+      if (! vue.rosterValid()) return false;
       if (vue.gameInProgress === false) return false;
       return true;
     },

@@ -11,9 +11,9 @@
     public function json() {
       return json_decode($this->toString());
     }
-    public function getGames() {
-      // TBD
-      return '[]';
+    public static function getGames($year,$team) {
+      $rtn=[];
+      return $rtn;
     }
   }
 ?>

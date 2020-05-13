@@ -12,7 +12,7 @@ var RotationComponent = {
           <a role='button' class='btn btn-lg btn-link'href='/jhmlhome.html'>JHML Home</a>
         </b-col>
       </b-row>
-      <h1><center>{{ team.team_name }}</center></h1>
+      <h1><center>{{ year() }} {{ team.team_name }}</center></h1>
       <b-row v-for='rotations in chunkedRotation' v-bind:key='rotations[0].game'>
         <b-col class='fixed mt-2' cols='12' sm='6' lg='3' v-for='rot in rotations' v-bind:key='rot.game'>
           <span v-html='pprintGame(rot.game)' />: <b-form-select style='width:80%' v-model='rot.pitcher' v-bind:options='options' v-on:change='calculateStarts()'/>
@@ -58,9 +58,9 @@ var RotationComponent = {
   },
   computed: {
     chunkedRotation() {
-       if (vue == undefined) return;
-       if (vue.rotation == undefined || vue.rotation.rotation == undefined) return [];
-       return _.chunk(vue.rotation.rotation.rotation,4);
+      if (vue == undefined) return;
+      if (vue.rotation == undefined || vue.rotation.rotation == undefined) return [];
+      return _.chunk(vue.rotation.rotation.rotation,4);
     },
   },
   mounted() {
@@ -70,7 +70,8 @@ var RotationComponent = {
     if (this.teamname == 't' && vue != undefined) vue.emitData();
   },
   methods: {
-    currentComponent() { return vue.currentComponent; },
+    currentComponent() { if (vue == undefined) return ''; return vue.currentComponent; },
+    year() { if (vue == undefined) return ''; return vue.year; },
     rosterChanged() {
       if (vue == undefined) return;
       if (vue.roster == undefined || vue.roster == null) return;
@@ -119,6 +120,7 @@ var RotationComponent = {
       vue.loadRotation();
     },
     calculateStarts() {
+      if (vue == undefined) return;
       for (s of this.starters) s.starts = 0;
       for (p of vue.rotation.rotation.rotation) {
         if (p.pitcher == '') continue;

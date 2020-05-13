@@ -43,8 +43,8 @@
     }
 
     function __construct($year=2016, $team='',$doFile=true) {
-      print($year);
-      print($team);
+      //print($year);
+      //print($team);
       $this->year = $year;
       $this->team = $team;
       for ($i=0; $i<102; $i++) $this->pitchers[]='';

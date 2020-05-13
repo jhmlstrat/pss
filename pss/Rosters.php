@@ -15,14 +15,14 @@
     private $OldRosterFile = "/LEAGUE.JHML";
     private $StratHittersFile = "/Hitters.txt";
     private $StratPitchersFile = "/Pitchers.txt";
-    function __construct($year=2016, $old=false) {
+    function __construct($year=2016, $old=false, $files=true) {
       $this->year = $year;
       $this->AgesFile = '../data/' . $year . $this->AgesFile;
       $this->NewRosterFile = '../data/' . $year . $this->NewRosterFile;
       $this->OldRosterFile = '../data/' . $year . $this->OldRosterFile;
       $this->StratHittersFile = '../data/' . $year . $this->StratHittersFile;
       $this->StratPitchersFile = '../data/' . $year . $this->StratPitchersFile;
-      $this->loadRosterFile($old);
+      $this->loadRosterFile($old,$files);
     }
 
     
@@ -117,7 +117,7 @@
 //
 
     public function writeRosterFile() {
-      file_put_contents($this->NewRosterFile,$this->toString(true));
+      file_put_contents($this->NewRosterFile,$this->toString(false));
     }
     public function writeOldMovesFiles() {
       foreach($this->rosters as $team => $roster) {
@@ -172,7 +172,7 @@
         fclose($omf);
       }
     }
-    private function loadRosterFile($old) {
+    private function loadRosterFile($old,$files) {
       if (file_exists($this->NewRosterFile) && !$old) {
         $str = file_get_contents($this->NewRosterFile);
         $tmp = self::fromString($str);
@@ -196,7 +196,7 @@
           fclose($rf);
           ksort($this->rosters);
           $this->loadStratInfo();
-          $this->processMoves();
+          if ($files) $this->processMoves();
         }       
       } else {
         $this->initialize();
@@ -504,6 +504,10 @@
         }
         fclose($fp);
       }
+    }
+    public function addMove($team, $name, $gameNumber, $type) {
+      $roster = $this->getRoster($team);
+      $roster->move($name,\Scoring\MoveType::fromString($type),$gameNumber);
     }
     public function getTeams() {
       $rtn = [];
