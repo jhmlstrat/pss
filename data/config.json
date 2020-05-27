@@ -7,105 +7,496 @@
        "city":"Milwaukee",
        "team_name":"Blue Crabs",
        "manager":"Ken Anderson",
-       "division":"RCML"
+       "division":"RCML",
+       "weather":{
+         "ranges":{
+           "summer":{
+             "day":{"good":"13","average":"20","bad":"N/A"},
+             "night":{"good":"7","average":"20","bad":"N/A"}
+           },
+           "spring_fall":{
+             "day":{"good":"10","average":"20","bad":"N/A"},
+             "night":{"good":"4","average":"20","bad":"N/A"}
+           }
+         },
+         "values":{
+           "good":{
+             "bps":{"left":"9","right":"9"},
+             "bphr":{"left":"17","right":"17"}
+           },
+           "average":{
+             "bps":{"left":"7","right":"7"},
+             "bphr":{"left":"15","right":"15"}
+           },
+           "bad":{
+             "bps":{"left":"N/A","right":"N/A"},
+             "bphr":{"left":"N/A","right":"N/A"}
+           }
+         }
+       }
       },
       {"team":"hou",
        "franchise":"2",
        "city":"Houston",
        "team_name":"Astros",
        "manager":"Tony Fridas",
-       "division":"AMML"
+       "division":"AMML",
+       "weather":{
+         "ranges":{
+           "summer":{
+             "day":{"good":"15","average":"20","bad":"N/A"},
+             "night":{"good":"5","average":"20","bad":"N/A"}
+           },
+           "spring_fall":{
+             "day":{"good":"3","average":"20","bad":"N/A"},
+             "night":{"good":"3","average":"20","bad":"N/A"}
+           }
+         },
+         "values":{
+           "good":{
+             "bps":{"left":"4","right":"7"},
+             "bphr":{"left":"14","right":"14"}
+           },
+           "average":{
+             "bps":{"left":"2","right":"5"},
+             "bphr":{"left":"12","right":"12"}
+           },
+           "bad":{
+             "bps":{"left":"N/A","right":"N/A"},
+             "bphr":{"left":"N/A","right":"N/A"}
+           }
+         }
+       }
       },
       {"team":"atl",
        "franchise":"3",
        "city":"Atlanta",
        "team_name":"Braves",
        "manager":"Gene Baccaglini",
-       "division":"RCML"
+       "division":"RCML",
+       "weather":{
+         "ranges":{
+           "summer":{
+             "day":{"good":"11","average":"16","bad":"20"},
+             "night":{"good":"7","average":"16","bad":"20"}
+           },
+           "spring_fall":{
+             "day":{"good":"10","average":"17","bad":"20"},
+             "night":{"good":"6","average":"17","bad":"20"}
+           }
+         },
+         "values":{
+           "good":{
+             "bps":{"left":"6","right":"6"},
+             "bphr":{"left":"8","right":"8"}
+           },
+           "average":{
+             "bps":{"left":"5","right":"5"},
+             "bphr":{"left":"7","right":"7"}
+           },
+           "bad":{
+             "bps":{"left":"3","right":"3"},
+             "bphr":{"left":"5","right":"5"}
+           }
+         }
+       }
       },
       {"team":"chc",
        "franchise":"4",
        "city":"Chicago",
        "team_name":"Quirks",
        "manager":"Lonnie Magargle",
-       "division":"AMML"
+       "division":"AMML",
+       "weather":{
+         "ranges":{
+           "summer":{
+             "day":{"good":"11","average":"17","bad":"20"},
+             "night":{"good":"7","average":"17","bad":"20"}
+           },
+           "spring_fall":{
+             "day":{"good":"7","average":"14","bad":"20"},
+             "night":{"good":"4","average":"13","bad":"20"}
+           }
+         },
+         "values":{
+           "good":{
+             "bps":{"left":"15","right":"8"},
+             "bphr":{"left":"13","right":"19"}
+           },
+           "average":{
+             "bps":{"left":"13","right":"6"},
+             "bphr":{"left":"7","right":"13"}
+           },
+           "bad":{
+             "bps":{"left":"10","right":"3"},
+             "bphr":{"left":"2","right":"8"}
+           }
+         }
+       }
       },
       {"team":"mia",
        "franchise":"5",
        "city":"Miami",
        "team_name":"Marlins",
        "manager":"Craig Bergeron",
-       "division":"CBML"
+       "division":"CBML",
+       "weather":{
+         "ranges":{
+           "summer":{
+             "day":{"good":"19","average":"20","bad":"N/A"},
+             "night":{"good":"17","average":"20","bad":"N/A"}
+           },
+           "spring_fall":{
+             "day":{"good":"17","average":"20","bad":"N/A"},
+             "night":{"good":"15","average":"20","bad":"N/A"}
+           }
+         },
+         "values":{
+           "good":{
+             "bps":{"left":"11","right":"11"},
+             "bphr":{"left":"3","right":"3"}
+           },
+           "average":{
+             "bps":{"left":"9","right":"9"},
+             "bphr":{"left":"1","right":"1"}
+           },
+           "bad":{
+             "bps":{"left":"N/A","right":"N/A"},
+             "bphr":{"left":"N/A","right":"N/A"}
+           }
+         }
+       }
       },
       {"team":"bos",
        "franchise":"6",
        "city":"Boston",
        "team_name":"Islanders",
        "manager":"Hector Colon",
-       "division":"AMML"
+       "division":"AMML",
+       "weather":{
+         "ranges":{
+           "summer":{
+             "day":{"good":"11","average":"17","bad":"20"},
+             "night":{"good":"7","average":"17","bad":"20"}
+           },
+           "spring_fall":{
+             "day":{"good":"7","average":"14","bad":"20"},
+             "night":{"good":"3","average":"13","bad":"20"}
+           }
+         },
+         "values":{
+           "good":{
+             "bps":{"left":"18","right":"18"},
+             "bphr":{"left":"4","right":"9"}
+           },
+           "average":{
+             "bps":{"left":"16","right":"16"},
+             "bphr":{"left":"1","right":"7"}
+           },
+           "bad":{
+             "bps":{"left":"13","right":"13"},
+             "bphr":{"left":"0","right":"4"}
+           }
+         }
+       }
       },
       {"team":"col",
        "franchise":"7",
        "city":"Colorado",
        "team_name":"Boozers",
        "manager":"Jeffrey Cooper",
-       "division":"CBML"
+       "division":"CBML",
+       "weather":{
+         "ranges":{
+           "summer":{
+             "day":{"good":"13","average":"18","bad":"20"},
+             "night":{"good":"8","average":"18","bad":"20"}
+           },
+           "spring_fall":{
+             "day":{"good":"7","average":"15","bad":"20"},
+             "night":{"good":"4","average":"13","bad":"20"}
+           }
+         },
+         "values":{
+           "good":{
+             "bps":{"left":"20","right":"20"},
+             "bphr":{"left":"15","right":"15"}
+           },
+           "average":{
+             "bps":{"left":"19","right":"19"},
+             "bphr":{"left":"14","right":"14"}
+           },
+           "bad":{
+             "bps":{"left":"17","right":"17"},
+             "bphr":{"left":"12","right":"12"}
+           }
+         }
+       }
       },
       {"team":"oak",
        "franchise":"8",
        "city":"Oakland",
        "team_name":"A-Sox",
        "manager":"Steve Aikens",
-       "division":"RCML"
+       "division":"RCML",
+       "weather":{
+         "ranges":{
+           "summer":{
+             "day":{"good":"10","average":"19","bad":"20"},
+             "night":{"good":"6","average":"19","bad":"20"}
+           },
+           "spring_fall":{
+             "day":{"good":"8","average":"18","bad":"20"},
+             "night":{"good":"5","average":"17","bad":"20"}
+           }
+         },
+         "values":{
+           "good":{
+             "bps":{"left":"5","right":"11"},
+             "bphr":{"left":"4","right":"6"}
+           },
+           "average":{
+             "bps":{"left":"2","right":"10"},
+             "bphr":{"left":"1","right":"5"}
+           },
+           "bad":{
+             "bps":{"left":"1","right":"6"},
+             "bphr":{"left":"0","right":"1"}
+           }
+         }
+       }
       },
       {"team":"min",
        "franchise":"9",
        "city":"Minnesota",
        "team_name":"Twins",
        "manager":"Carroll Reese",
-       "division":"AMML"
+       "division":"AMML",
+       "division":"RCML",
+       "weather":{
+         "ranges":{
+           "summer":{
+             "day":{"good":"12","average":"17","bad":"20"},
+             "night":{"good":"7","average":"17","bad":"20"}
+           },
+           "spring_fall":{
+             "day":{"good":"6","average":"14","bad":"20"},
+             "night":{"good":"3","average":"12","bad":"20"}
+           }
+         },
+         "values":{
+           "good":{
+             "bps":{"left":"13","right":"13"},
+             "bphr":{"left":"8","right":"8"}
+           },
+           "average":{
+             "bps":{"left":"12","right":"12"},
+             "bphr":{"left":"7","right":"7"}
+           },
+           "bad":{
+             "bps":{"left":"11","right":"11"},
+             "bphr":{"left":"6","right":"6"}
+           }
+         }
+       }
       },
       {"team":"pit",
        "franchise":"10",
        "city":"Pittsburgh",
        "team_name":"Pirates",
        "manager":"Doug Smith",
-       "division":"CBML"
+       "division":"CBML",
+       "weather":{
+         "ranges":{
+           "summer":{
+             "day":{"good":"12","average":"17","bad":"20"},
+             "night":{"good":"7","average":"17","bad":"20"}
+           },
+           "spring_fall":{
+             "day":{"good":"8","average":"14","bad":"20"},
+             "night":{"good":"4","average":"13","bad":"20"}
+           }
+         },
+         "values":{
+           "good":{
+             "bps":{"left":"12","right":"12"},
+             "bphr":{"left":"9","right":"3"}
+           },
+           "average":{
+             "bps":{"left":"10","right":"10"},
+             "bphr":{"left":"7","right":"2"}
+           },
+           "bad":{
+             "bps":{"left":"7","right":"7"},
+             "bphr":{"left":"4","right":"0"}
+           }
+         }
+       }
       },
       {"team":"sfq",
        "franchise":"11",
        "city":"San Francisco",
        "team_name":"Quakes",
        "manager":"Daryl Cooper",
-       "division":"CBML"
+       "division":"CBML",
+       "weather":{
+         "ranges":{
+           "summer":{
+             "day":{"good":"10","average":"19","bad":"20"},
+             "night":{"good":"6","average":"10","bad":"20"}
+           },
+           "spring_fall":{
+             "day":{"good":"8","average":"18","bad":"20"},
+             "night":{"good":"5","average":"8","bad":"20"}
+           }
+         },
+         "values":{
+           "good":{
+             "bps":{"left":"12","right":"6"},
+             "bphr":{"left":"3","right":"3"}
+           },
+           "average":{
+             "bps":{"left":"11","right":"5"},
+             "bphr":{"left":"1","right":"1"}
+           },
+           "bad":{
+             "bps":{"left":"10","right":"4"},
+             "bphr":{"left":"0","right":"0"}
+           }
+         }
+       }
       },
       {"team":"was",
        "franchise":"12",
        "city":"Washington",
        "team_name":"Exposes",
        "manager":"Timm McShane",
-       "division":"CBML"
+       "division":"CBML",
+       "weather":{
+         "ranges":{
+           "summer":{
+             "day":{"good":"11","average":"17","bad":"20"},
+             "night":{"good":"7","average":"17","bad":"20"}
+           },
+           "spring_fall":{
+             "day":{"good":"9","average":"16","bad":"20"},
+             "night":{"good":"5","average":"15","bad":"20"}
+           }
+         },
+         "values":{
+           "good":{
+             "bps":{"left":"12","right":"18"},
+             "bphr":{"left":"6","right":"6"}
+           },
+           "average":{
+             "bps":{"left":"11","right":"17"},
+             "bphr":{"left":"5","right":"5"}
+           },
+           "bad":{
+             "bps":{"left":"9","right":"15"},
+             "bphr":{"left":"3","right":"3"}
+           }
+         }
+       }
       },
       {"team":"tbp",
        "franchise":"13",
        "city":"Tampa Bay",
        "team_name":"Phenom",
        "manager":"Mike Wittreich",
-       "division":"RCML"
+       "division":"RCML",
+       "weather":{
+         "ranges":{
+           "summer":{
+             "day":{"good":"20","average":"N/A","bad":"N/A"},
+             "night":{"good":"20","average":"N/A","bad":"N/A"}
+           },
+           "spring_fall":{
+             "day":{"good":"20","average":"N/A","bad":"N/A"},
+             "night":{"good":"20","average":"N/A","bad":"N/A"}
+           }
+         },
+         "values":{
+           "good":{
+             "bps":{"left":"4","right":"4"},
+             "bphr":{"left":"11","right":"5"}
+           },
+           "average":{
+             "bps":{"left":"N/A","right":"N/A"},
+             "bphr":{"left":"N/A","right":"N/A"}
+           },
+           "bad":{
+             "bps":{"left":"N/A","right":"N/A"},
+             "bphr":{"left":"N/A","right":"N/A"}
+           }
+         }
+       }
       },
       {"team":"stl",
        "franchise":"14",
        "city":"St Louis",
        "team_name":"Prowlers",
        "manager":"Chris Kidwell",
-       "division":"AMML"
+       "division":"AMML",
+       "weather":{
+         "ranges":{
+           "summer":{
+             "day":{"good":"11","average":"17","bad":"20"},
+             "night":{"good":"7","average":"17","bad":"20"}
+           },
+           "spring_fall":{
+             "day":{"good":"8","average":"15","bad":"20"},
+             "night":{"good":"5","average":"15","bad":"20"}
+           }
+         },
+         "values":{
+           "good":{
+             "bps":{"left":"10","right":"10"},
+             "bphr":{"left":"7","right":"7"}
+           },
+           "average":{
+             "bps":{"left":"9","right":"9"},
+             "bphr":{"left":"6","right":"6"}
+           },
+           "bad":{
+             "bps":{"left":"7","right":"7"},
+             "bphr":{"left":"4","right":"4"}
+           }
+         }
+       }
       },
       {"team":"lad",
        "franchise":"15",
        "city":"Los Angeles",
        "team_name":"Dodgers",
        "manager":"Bob Smoot",
-       "division":"RCML"
+       "division":"RCML",
+       "weather":{
+         "ranges":{
+           "summer":{
+             "day":{"good":"16","average":"19","bad":"20"},
+             "night":{"good":"9","average":"19","bad":"20"}
+           },
+           "spring_fall":{
+             "day":{"good":"12","average":"19","bad":"20"},
+             "night":{"good":"7","average":"19","bad":"20"}
+           }
+         },
+         "values":{
+           "good":{
+             "bps":{"left":"7","right":"7"},
+             "bphr":{"left":"7","right":"7"}
+           },
+           "average":{
+             "bps":{"left":"5","right":"5"},
+             "bphr":{"left":"5","right":"5"}
+           },
+           "bad":{
+             "bps":{"left":"4","right":"4"},
+             "bphr":{"left":"4","right":"4"}
+           }
+         }
+       }
       }
     ],
     "il_length":"6",
@@ -119,105 +510,495 @@
        "city":"Milwaukee",
        "team_name":"Blue Crabs",
        "manager":"Ken Anderson",
-       "division":"RCML"
+       "division":"RCML",
+       "weather":{
+         "ranges":{
+           "summer":{
+             "day":{"good":"13","average":"20","bad":"N/A"},
+             "night":{"good":"7","average":"20","bad":"N/A"}
+           },
+           "spring_fall":{
+             "day":{"good":"10","average":"20","bad":"N/A"},
+             "night":{"good":"4","average":"20","bad":"N/A"}
+           }
+         },
+         "values":{
+           "good":{
+             "bps":{"left":"10","right":"3"},
+             "bphr":{"left":"20","right":"14"}
+           },
+           "average":{
+             "bps":{"left":"8","right":"1"},
+             "bphr":{"left":"18","right":"12"}
+           },
+           "bad":{
+             "bps":{"left":"N/A","right":"N/A"},
+             "bphr":{"left":"N/A","right":"N/A"}
+           }
+         }
+       }
       },
       {"team":"kcr",
        "franchise":"2",
        "city":"Kansas City",
        "team_name":"Royals",
        "manager":"League",
-       "division":"AMML"
+       "division":"AMML",
+       "weather":{
+         "ranges":{
+           "summer":{
+             "day":{"good":"13","average":"18","bad":"20"},
+             "night":{"good":"8","average":"18","bad":"20"}
+           },
+           "spring_fall":{
+             "day":{"good":"8","average":"15","bad":"20"},
+             "night":{"good":"4","average":"14","bad":"20"}
+           }
+         },
+         "values":{
+           "good":{
+             "bps":{"left":"16","right":"16"},
+             "bphr":{"left":"6","right":"6"}
+           },
+           "average":{
+             "bps":{"left":"12","right":"12"},
+             "bphr":{"left":"2","right":"2"}
+           },
+           "bad":{
+             "bps":{"left":"10","right":"10"},
+             "bphr":{"left":"0","right":"0"}
+           }
+         }
+       }
       },
       {"team":"atl",
        "franchise":"3",
        "city":"Atlanta",
        "team_name":"Braves",
        "manager":"Gene Baccaglini",
-       "division":"RCML"
+       "division":"RCML",
+       "weather":{
+         "ranges":{
+           "summer":{
+             "day":{"good":"11","average":"16","bad":"20"},
+             "night":{"good":"7","average":"16","bad":"20"}
+           },
+           "spring_fall":{
+             "day":{"good":"10","average":"17","bad":"20"},
+             "night":{"good":"6","average":"17","bad":"20"}
+           }
+         },
+         "values":{
+           "good":{
+             "bps":{"left":"7","right":"7"},
+             "bphr":{"left":"6","right":"6"}
+           },
+           "average":{
+             "bps":{"left":"6","right":"6"},
+             "bphr":{"left":"5","right":"5"}
+           },
+           "bad":{
+             "bps":{"left":"4","right":"4"},
+             "bphr":{"left":"3","right":"3"}
+           }
+         }
+       }
       },
       {"team":"cws",
        "franchise":"4",
        "city":"Chicago",
        "team_name":"Quirks",
        "manager":"Lonnie Magargle",
-       "division":"AMML"
+       "division":"AMML",
+       "weather":{
+         "ranges":{
+           "summer":{
+             "day":{"good":"11","average":"17","bad":"20"},
+             "night":{"good":"7","average":"17","bad":"20"}
+           },
+           "spring_fall":{
+             "day":{"good":"7","average":"14","bad":"20"},
+             "night":{"good":"4","average":"13","bad":"20"}
+           }
+         },
+         "values":{
+           "good":{
+             "bps":{"left":"3","right":"8"},
+             "bphr":{"left":"13","right":"13"}
+           },
+           "average":{
+             "bps":{"left":"1","right":"6"},
+             "bphr":{"left":"11","right":"11"}
+           },
+           "bad":{
+             "bps":{"left":"0","right":"3"},
+             "bphr":{"left":"8","right":"8"}
+           }
+         }
+       }
       },
       {"team":"mia",
        "franchise":"5",
        "city":"Miami",
        "team_name":"Marlins",
        "manager":"Craig Bergeron",
-       "division":"CBML"
+       "division":"CBML",
+       "weather":{
+         "ranges":{
+           "summer":{
+             "day":{"good":"19","average":"20","bad":"N/A"},
+             "night":{"good":"17","average":"20","bad":"N/A"}
+           },
+           "spring_fall":{
+             "day":{"good":"17","average":"20","bad":"N/A"},
+             "night":{"good":"15","average":"20","bad":"N/A"}
+           }
+         },
+         "values":{
+           "good":{
+             "bps":{"left":"11","right":"11"},
+             "bphr":{"left":"3","right":"3"}
+           },
+           "average":{
+             "bps":{"left":"9","right":"9"},
+             "bphr":{"left":"1","right":"1"}
+           },
+           "bad":{
+             "bps":{"left":"N/A","right":"N/A"},
+             "bphr":{"left":"N/A","right":"N/A"}
+           }
+         }
+       }
       },
       {"team":"bri",
        "franchise":"6",
        "city":"Bronx",
        "team_name":"Islanders",
        "manager":"Hector Colon",
-       "division":"AMML"
+       "division":"AMML",
+       "weather":{
+         "ranges":{
+           "summer":{
+             "day":{"good":"12","average":"17","bad":"20"},
+             "night":{"good":"7","average":"17","bad":"20"}
+           },
+           "spring_fall":{
+             "day":{"good":"8","average":"15","bad":"20"},
+             "night":{"good":"4","average":"14","bad":"20"}
+           }
+         },
+         "values":{
+           "good":{
+             "bps":{"left":"4","right":"4"},
+             "bphr":{"left":"20","right":"17"}
+           },
+           "average":{
+             "bps":{"left":"3","right":"3"},
+             "bphr":{"left":"19","right":"16"}
+           },
+           "bad":{
+             "bps":{"left":"1","right":"1"},
+             "bphr":{"left":"17","right":"14"}
+           }
+         }
+       }
       },
       {"team":"col",
        "franchise":"7",
        "city":"Colorado",
        "team_name":"Bombers",
        "manager":"Jeffrey Cooper",
-       "division":"CBML"
+       "division":"CBML",
+       "weather":{
+         "ranges":{
+           "summer":{
+             "day":{"good":"13","average":"18","bad":"20"},
+             "night":{"good":"8","average":"18","bad":"20"}
+           },
+           "spring_fall":{
+             "day":{"good":"7","average":"15","bad":"20"},
+             "night":{"good":"4","average":"13","bad":"20"}
+           }
+         },
+         "values":{
+           "good":{
+             "bps":{"left":"20","right":"20"},
+             "bphr":{"left":"16","right":"16"}
+           },
+           "average":{
+             "bps":{"left":"19","right":"19"},
+             "bphr":{"left":"15","right":"15"}
+           },
+           "bad":{
+             "bps":{"left":"17","right":"17"},
+             "bphr":{"left":"13","right":"13"}
+           }
+         }
+       }
       },
       {"team":"oak",
        "franchise":"8",
        "city":"Oakland",
        "team_name":"A-Sox",
        "manager":"Steve Aikens",
-       "division":"RCML"
+       "division":"RCML",
+       "weather":{
+         "ranges":{
+           "summer":{
+             "day":{"good":"10","average":"19","bad":"20"},
+             "night":{"good":"6","average":"19","bad":"20"}
+           },
+           "spring_fall":{
+             "day":{"good":"8","average":"18","bad":"20"},
+             "night":{"good":"5","average":"17","bad":"20"}
+           }
+         },
+         "values":{
+           "good":{
+             "bps":{"left":"9","right":"9"},
+             "bphr":{"left":"5","right":"5"}
+           },
+           "average":{
+             "bps":{"left":"8","right":"8"},
+             "bphr":{"left":"4","right":"4"}
+           },
+           "bad":{
+             "bps":{"left":"4","right":"4"},
+             "bphr":{"left":"0","right":"0"}
+           }
+         }
+       }
       },
       {"team":"min",
        "franchise":"9",
        "city":"Minnesota",
        "team_name":"Twins",
        "manager":"Carroll Reese",
-       "division":"AMML"
+       "division":"AMML",
+       "weather":{
+         "ranges":{
+           "summer":{
+             "day":{"good":"12","average":"17","bad":"20"},
+             "night":{"good":"7","average":"17","bad":"20"}
+           },
+           "spring_fall":{
+             "day":{"good":"6","average":"14","bad":"20"},
+             "night":{"good":"3","average":"12","bad":"20"}
+           }
+         },
+         "values":{
+           "good":{
+             "bps":{"left":"13","right":"13"},
+             "bphr":{"left":"10","right":"10"}
+           },
+           "average":{
+             "bps":{"left":"12","right":"12"},
+             "bphr":{"left":"9","right":"9"}
+           },
+           "bad":{
+             "bps":{"left":"11","right":"11"},
+             "bphr":{"left":"8","right":"8"}
+           }
+         }
+       }
       },
       {"team":"pit",
        "franchise":"10",
        "city":"Pittsburgh",
        "team_name":"Pirates",
        "manager":"Doug Smith",
-       "division":"CBML"
+       "division":"CBML",
+       "weather":{
+         "ranges":{
+           "summer":{
+             "day":{"good":"12","average":"17","bad":"20"},
+             "night":{"good":"7","average":"17","bad":"20"}
+           },
+           "spring_fall":{
+             "day":{"good":"8","average":"14","bad":"20"},
+             "night":{"good":"4","average":"13","bad":"20"}
+           }
+         },
+         "values":{
+           "good":{
+             "bps":{"left":"13","right":"13"},
+             "bphr":{"left":"11","right":"5"}
+           },
+           "average":{
+             "bps":{"left":"11","right":"11"},
+             "bphr":{"left":"9","right":"3"}
+           },
+           "bad":{
+             "bps":{"left":"8","right":"8"},
+             "bphr":{"left":"6","right":"0"}
+           }
+         }
+       }
       },
       {"team":"sfq",
        "franchise":"11",
        "city":"San Francisco",
        "team_name":"Quakes",
        "manager":"Daryl Cooper",
-       "division":"CBML"
+       "division":"CBML",
+       "weather":{
+         "ranges":{
+           "summer":{
+             "day":{"good":"10","average":"19","bad":"20"},
+             "night":{"good":"6","average":"10","bad":"20"}
+           },
+           "spring_fall":{
+             "day":{"good":"8","average":"18","bad":"20"},
+             "night":{"good":"5","average":"8","bad":"20"}
+           }
+         },
+         "values":{
+           "good":{
+             "bps":{"left":"12","right":"12"},
+             "bphr":{"left":"3","right":"3"}
+           },
+           "average":{
+             "bps":{"left":"11","right":"11"},
+             "bphr":{"left":"1","right":"1"}
+           },
+           "bad":{
+             "bps":{"left":"10","right":"10"},
+             "bphr":{"left":"0","right":"0"}
+           }
+         }
+       }
       },
       {"team":"was",
        "franchise":"12",
        "city":"Washington",
        "team_name":"Exposes",
        "manager":"Timm McShane",
-       "division":"CBML"
+       "division":"CBML",
+       "weather":{
+         "ranges":{
+           "summer":{
+             "day":{"good":"11","average":"17","bad":"20"},
+             "night":{"good":"7","average":"17","bad":"20"}
+           },
+           "spring_fall":{
+             "day":{"good":"9","average":"16","bad":"20"},
+             "night":{"good":"5","average":"15","bad":"20"}
+           }
+         },
+         "values":{
+           "good":{
+             "bps":{"left":"11","right":"11"},
+             "bphr":{"left":"5","right":"10"}
+           },
+           "average":{
+             "bps":{"left":"10","right":"10"},
+             "bphr":{"left":"4","right":"9"}
+           },
+           "bad":{
+             "bps":{"left":"8","right":"8"},
+             "bphr":{"left":"2","right":"7"}
+           }
+         }
+       }
       },
       {"team":"tbp",
        "franchise":"13",
        "city":"Tampa Bay",
        "team_name":"Phenom",
        "manager":"Mike Wittreich",
-       "division":"RCML"
+       "division":"RCML",
+       "weather":{
+         "ranges":{
+           "summer":{
+             "day":{"good":"20","average":"N/A","bad":"N/A"},
+             "night":{"good":"20","average":"N/A","bad":"N/A"}
+           },
+           "spring_fall":{
+             "day":{"good":"20","average":"N/A","bad":"N/A"},
+             "night":{"good":"20","average":"N/A","bad":"N/A"}
+           }
+         },
+         "values":{
+           "good":{
+             "bps":{"left":"3","right":"3"},
+             "bphr":{"left":"8","right":"5"}
+           },
+           "average":{
+             "bps":{"left":"N/A","right":"N/A"},
+             "bphr":{"left":"N/A","right":"N/A"}
+           },
+           "bad":{
+             "bps":{"left":"N/A","right":"N/A"},
+             "bphr":{"left":"N/A","right":"N/A"}
+           }
+         }
+       }
       },
       {"team":"stl",
        "franchise":"14",
        "city":"St Louis",
        "team_name":"Prowlers",
        "manager":"Chris Kidwell",
-       "division":"AMML"
+       "division":"AMML",
+       "weather":{
+         "ranges":{
+           "summer":{
+             "day":{"good":"11","average":"17","bad":"20"},
+             "night":{"good":"7","average":"17","bad":"20"}
+           },
+           "spring_fall":{
+             "day":{"good":"8","average":"15","bad":"20"},
+             "night":{"good":"5","average":"15","bad":"20"}
+           }
+         },
+         "values":{
+           "good":{
+             "bps":{"left":"11","right":"11"},
+             "bphr":{"left":"7","right":"7"}
+           },
+           "average":{
+             "bps":{"left":"10","right":"10"},
+             "bphr":{"left":"6","right":"6"}
+           },
+           "bad":{
+             "bps":{"left":"8","right":"8"},
+             "bphr":{"left":"4","right":"4"}
+           }
+         }
+       }
       },
       {"team":"lad",
        "franchise":"15",
        "city":"Los Angeles",
        "team_name":"Dodgers",
        "manager":"Bob Smoot",
-       "division":"RCML"
+       "division":"RCML",
+       "weather":{
+         "ranges":{
+           "summer":{
+             "day":{"good":"16","average":"19","bad":"20"},
+             "night":{"good":"9","average":"19","bad":"20"}
+           },
+           "spring_fall":{
+             "day":{"good":"12","average":"19","bad":"20"},
+             "night":{"good":"7","average":"19","bad":"20"}
+           }
+         },
+         "values":{
+           "good":{
+             "bps":{"left":"2","right":"2"},
+             "bphr":{"left":"16","right":"10"}
+           },
+           "average":{
+             "bps":{"left":"1","right":"1"},
+             "bphr":{"left":"14","right":"8"}
+           },
+           "bad":{
+             "bps":{"left":"0","right":"0"},
+             "bphr":{"left":"13","right":"7"}
+           }
+         }
+       }
       }
     ],
     "il_length":"6",
@@ -231,105 +1012,510 @@
        "city":"Milwaukee",
        "team_name":"Blue Crabs",
        "manager":"Ken Anderson",
-       "division":"RCML"
+       "division":"RCML",
+       "weather":{
+         "robbing":{"left":true,"right":true},
+         "ranges":{
+           "summer":{
+             "day":{"good":"13","average":"20","bad":"N/A"},
+             "night":{"good":"7","average":"20","bad":"N/A"}
+           },
+           "spring_fall":{
+             "day":{"good":"10","average":"20","bad":"N/A"},
+             "night":{"good":"4","average":"20","bad":"N/A"}
+           }
+         },
+         "values":{
+           "good":{
+             "bps":{"left":"10","right":"4"},
+             "bphr":{"left":"18","right":"12"}
+           },
+           "average":{
+             "bps":{"left":"8","right":"2"},
+             "bphr":{"left":"16","right":"10"}
+           },
+           "bad":{
+             "bps":{"left":"N/A","right":"N/A"},
+             "bphr":{"left":"N/A","right":"N/A"}
+           }
+         }
+       }
       },
       {"team":"tor",
        "franchise":"2",
        "city":"Toronto",
        "team_name":"Blue Jays",
        "manager":"Don Hanson",
-       "division":"AMML"
+       "division":"AMML",
+       "weather":{
+         "robbing":{"left":true,"right":true},
+         "ranges":{
+           "summer":{
+             "day":{"good":"10","average":"20","bad":"N/A"},
+             "night":{"good":"6","average":"20","bad":"N/A"}
+           },
+           "spring_fall":{
+             "day":{"good":"9","average":"20","bad":"N/A"},
+             "night":{"good":"0","average":"20","bad":"N/A"}
+           }
+         },
+         "values":{
+           "good":{
+             "bps":{"left":"10","right":"10"},
+             "bphr":{"left":"9","right":"9"}
+           },
+           "average":{
+             "bps":{"left":"8","right":"8"},
+             "bphr":{"left":"7","right":"7"}
+           },
+           "bad":{
+             "bps":{"left":"N/A","right":"N/A"},
+             "bphr":{"left":"N/A","right":"N/A"}
+           }
+         }
+       }
       },
       {"team":"atl",
        "franchise":"3",
        "city":"Atlanta",
        "team_name":"Braves",
        "manager":"Gene Baccaglini",
-       "division":"RCML"
+       "division":"RCML",
+       "weather":{
+         "robbing":{"left":true,"right":true},
+         "ranges":{
+           "summer":{
+             "day":{"good":"11","average":"16","bad":"20"},
+             "night":{"good":"7","average":"16","bad":"20"}
+           },
+           "spring_fall":{
+             "day":{"good":"10","average":"17","bad":"20"},
+             "night":{"good":"6","average":"17","bad":"20"}
+           }
+         },
+         "values":{
+           "good":{
+             "bps":{"left":"15","right":"9"},
+             "bphr":{"left":"15","right":"15"}
+           },
+           "average":{
+             "bps":{"left":"14","right":"8"},
+             "bphr":{"left":"14","right":"14"}
+           },
+           "bad":{
+             "bps":{"left":"12","right":"6"},
+             "bphr":{"left":"12","right":"12"}
+           }
+         }
+       }
       },
       {"team":"cws",
        "franchise":"4",
        "city":"Chicago",
        "team_name":"Halladays",
        "manager":"Lonnie Magargle",
-       "division":"AMML"
+       "division":"AMML",
+       "weather":{
+         "robbing":{"left":true,"right":true},
+         "ranges":{
+           "summer":{
+             "day":{"good":"11","average":"17","bad":"20"},
+             "night":{"good":"7","average":"17","bad":"20"}
+           },
+           "spring_fall":{
+             "day":{"good":"7","average":"14","bad":"20"},
+             "night":{"good":"4","average":"13","bad":"20"}
+           }
+         },
+         "values":{
+           "good":{
+             "bps":{"left":"3","right":"3"},
+             "bphr":{"left":"15","right":"15"}
+           },
+           "average":{
+             "bps":{"left":"1","right":"1"},
+             "bphr":{"left":"11","right":"11"}
+           },
+           "bad":{
+             "bps":{"left":"0","right":"0"},
+             "bphr":{"left":"10","right":"10"}
+           }
+         }
+       }
       },
       {"team":"mia",
        "franchise":"5",
        "city":"Miami",
        "team_name":"Marlins",
        "manager":"Craig Bergeron",
-       "division":"CBML"
+       "division":"CBML",
+       "weather":{
+         "robbing":{"left":false,"right":false},
+         "ranges":{
+           "summer":{
+             "day":{"good":"19","average":"20","bad":"N/A"},
+             "night":{"good":"17","average":"20","bad":"N/A"}
+           },
+           "spring_fall":{
+             "day":{"good":"17","average":"20","bad":"N/A"},
+             "night":{"good":"15","average":"20","bad":"N/A"}
+           }
+         },
+         "values":{
+           "good":{
+             "bps":{"left":"1","right":"1"},
+             "bphr":{"left":"5","right":"5"}
+           },
+           "average":{
+             "bps":{"left":"0","right":"0"},
+             "bphr":{"left":"3","right":"3"}
+           },
+           "bad":{
+             "bps":{"left":"N/A","right":"N/A"},
+             "bphr":{"left":"N/A","right":"N/A"}
+           }
+         }
+       }
       },
       {"team":"bri",
        "franchise":"6",
        "city":"Bronx",
        "team_name":"Islanders",
        "manager":"Hector Colon",
-       "division":"AMML"
+       "division":"AMML",
+       "weather":{
+         "robbing":{"left":true,"right":true},
+         "ranges":{
+           "summer":{
+             "day":{"good":"12","average":"17","bad":"20"},
+             "night":{"good":"7","average":"17","bad":"20"}
+           },
+           "spring_fall":{
+             "day":{"good":"8","average":"15","bad":"20"},
+             "night":{"good":"4","average":"14","bad":"20"}
+           }
+         },
+         "values":{
+           "good":{
+             "bps":{"left":"2","right":"2"},
+             "bphr":{"left":"20","right":"15"}
+           },
+           "average":{
+             "bps":{"left":"1","right":"1"},
+             "bphr":{"left":"19","right":"14"}
+           },
+           "bad":{
+             "bps":{"left":"0","right":"0"},
+             "bphr":{"left":"17","right":"12"}
+           }
+         }
+       }
       },
       {"team":"col",
        "franchise":"7",
        "city":"Colorado",
        "team_name":"Bombers",
        "manager":"Jeffrey Cooper",
-       "division":"CBML"
+       "division":"CBML",
+       "weather":{
+         "robbing":{"left":false,"right":true},
+         "ranges":{
+           "summer":{
+             "day":{"good":"13","average":"18","bad":"20"},
+             "night":{"good":"8","average":"18","bad":"20"}
+           },
+           "spring_fall":{
+             "day":{"good":"7","average":"15","bad":"20"},
+             "night":{"good":"4","average":"13","bad":"20"}
+           }
+         },
+         "values":{
+           "good":{
+             "bps":{"left":"20","right":"20"},
+             "bphr":{"left":"14","right":"14"}
+           },
+           "average":{
+             "bps":{"left":"19","right":"19"},
+             "bphr":{"left":"13","right":"13"}
+           },
+           "bad":{
+             "bps":{"left":"17","right":"17"},
+             "bphr":{"left":"11","right":"11"}
+           }
+         }
+       }
       },
       {"team":"oak",
        "franchise":"8",
        "city":"Oakland",
        "team_name":"A-Sox",
        "manager":"Steve Aikens",
-       "division":"RCML"
+       "division":"RCML",
+       "weather":{
+         "robbing":{"left":false,"right":false},
+         "ranges":{
+           "summer":{
+             "day":{"good":"10","average":"19","bad":"20"},
+             "night":{"good":"6","average":"19","bad":"20"}
+           },
+           "spring_fall":{
+             "day":{"good":"8","average":"18","bad":"20"},
+             "night":{"good":"5","average":"17","bad":"20"}
+           }
+         },
+         "values":{
+           "good":{
+             "bps":{"left":"7","right":"7"},
+             "bphr":{"left":"6","right":"6"}
+           },
+           "average":{
+             "bps":{"left":"6","right":"6"},
+             "bphr":{"left":"5","right":"5"}
+           },
+           "bad":{
+             "bps":{"left":"2","right":"2"},
+             "bphr":{"left":"1","right":"1"}
+           }
+         }
+       }
       },
       {"team":"min",
        "franchise":"9",
        "city":"Minnesota",
        "team_name":"Twins",
        "manager":"Carroll Reese",
-       "division":"AMML"
+       "division":"AMML",
+       "weather":{
+         "robbing":{"left":false,"right":true},
+         "ranges":{
+           "summer":{
+             "day":{"good":"12","average":"17","bad":"20"},
+             "night":{"good":"7","average":"17","bad":"20"}
+           },
+           "spring_fall":{
+             "day":{"good":"6","average":"14","bad":"20"},
+             "night":{"good":"3","average":"12","bad":"20"}
+           }
+         },
+         "values":{
+           "good":{
+             "bps":{"left":"13","right":"13"},
+             "bphr":{"left":"7","right":"13"}
+           },
+           "average":{
+             "bps":{"left":"12","right":"12"},
+             "bphr":{"left":"6","right":"12"}
+           },
+           "bad":{
+             "bps":{"left":"11","right":"11"},
+             "bphr":{"left":"5","right":"11"}
+           }
+         }
+       }
       },
       {"team":"pit",
        "franchise":"10",
        "city":"Pittsburgh",
        "team_name":"Pirates",
        "manager":"Doug Smith",
-       "division":"CBML"
+       "division":"CBML",
+       "weather":{
+         "robbing":{"left":false,"right":true},
+         "ranges":{
+           "summer":{
+             "day":{"good":"12","average":"17","bad":"20"},
+             "night":{"good":"7","average":"17","bad":"20"}
+           },
+           "spring_fall":{
+             "day":{"good":"8","average":"14","bad":"20"},
+             "night":{"good":"4","average":"13","bad":"20"}
+           }
+         },
+         "values":{
+           "good":{
+             "bps":{"left":"8","right":"14"},
+             "bphr":{"left":"12","right":"6"}
+           },
+           "average":{
+             "bps":{"left":"6","right":"12"},
+             "bphr":{"left":"10","right":"4"}
+           },
+           "bad":{
+             "bps":{"left":"3","right":"9"},
+             "bphr":{"left":"7","right":"1"}
+           }
+         }
+       }
       },
       {"team":"sfq",
        "franchise":"11",
        "city":"San Francisco",
        "team_name":"Quakes",
        "manager":"Daryl Cooper",
-       "division":"CBML"
+       "division":"CBML",
+       "weather":{
+         "robbing":{"left":false,"right":false},
+         "ranges":{
+           "summer":{
+             "day":{"good":"10","average":"19","bad":"20"},
+             "night":{"good":"6","average":"10","bad":"20"}
+           },
+           "spring_fall":{
+             "day":{"good":"8","average":"18","bad":"20"},
+             "night":{"good":"5","average":"8","bad":"20"}
+           }
+         },
+         "values":{
+           "good":{
+             "bps":{"left":"10","right":"13"},
+             "bphr":{"left":"3","right":"3"}
+           },
+           "average":{
+             "bps":{"left":"9","right":"12"},
+             "bphr":{"left":"1","right":"1"}
+           },
+           "bad":{
+             "bps":{"left":"8","right":"11"},
+             "bphr":{"left":"0","right":"0"}
+           }
+         }
+       }
       },
       {"team":"was",
        "franchise":"12",
        "city":"Washington",
        "team_name":"Exposes",
        "manager":"Timm McShane",
-       "division":"CBML"
+       "division":"CBML",
+       "weather":{
+         "robbing":{"left":false,"right":true},
+         "ranges":{
+           "summer":{
+             "day":{"good":"11","average":"17","bad":"20"},
+             "night":{"good":"7","average":"17","bad":"20"}
+           },
+           "spring_fall":{
+             "day":{"good":"9","average":"16","bad":"20"},
+             "night":{"good":"5","average":"15","bad":"20"}
+           }
+         },
+         "values":{
+           "good":{
+             "bps":{"left":"5","right":"14"},
+             "bphr":{"left":"6","right":"12"}
+           },
+           "average":{
+             "bps":{"left":"4","right":"13"},
+             "bphr":{"left":"5","right":"11"}
+           },
+           "bad":{
+             "bps":{"left":"2","right":"11"},
+             "bphr":{"left":"3","right":"9"}
+           }
+         }
+       }
       },
       {"team":"tbp",
        "franchise":"13",
        "city":"Tampa Bay",
        "team_name":"Phenom",
        "manager":"Mike Wittreich",
-       "division":"RCML"
+       "division":"RCML",
+       "weather":{
+         "robbing":{"left":false,"right":false},
+         "ranges":{
+           "summer":{
+             "day":{"good":"20","average":"N/A","bad":"N/A"},
+             "night":{"good":"20","average":"N/A","bad":"N/A"}
+           },
+           "spring_fall":{
+             "day":{"good":"20","average":"N/A","bad":"N/A"},
+             "night":{"good":"20","average":"N/A","bad":"N/A"}
+           }
+         },
+         "values":{
+           "good":{
+             "bps":{"left":"2","right":"2"},
+             "bphr":{"left":"6","right":"6"}
+           },
+           "average":{
+             "bps":{"left":"N/A","right":"N/A"},
+             "bphr":{"left":"N/A","right":"N/A"}
+           },
+           "bad":{
+             "bps":{"left":"N/A","right":"N/A"},
+             "bphr":{"left":"N/A","right":"N/A"}
+           }
+         }
+       }
       },
       {"team":"stl",
        "franchise":"14",
        "city":"St Louis",
        "team_name":"Browns",
        "manager":"Daryl Cooper",
-       "division":"AMML"
+       "division":"AMML",
+       "weather":{
+         "robbing":{"left":true,"right":true},
+         "ranges":{
+           "summer":{
+             "day":{"good":"11","average":"17","bad":"20"},
+             "night":{"good":"7","average":"17","bad":"20"}
+           },
+           "spring_fall":{
+             "day":{"good":"8","average":"15","bad":"20"},
+             "night":{"good":"5","average":"15","bad":"20"}
+           }
+         },
+         "values":{
+           "good":{
+             "bps":{"left":"11","right":"11"},
+             "bphr":{"left":"8","right":"5"}
+           },
+           "average":{
+             "bps":{"left":"10","right":"10"},
+             "bphr":{"left":"7","right":"4"}
+           },
+           "bad":{
+             "bps":{"left":"8","right":"8"},
+             "bphr":{"left":"5","right":"2"}
+           }
+         }
+       }
       },
       {"team":"lad",
        "franchise":"15",
        "city":"Los Angeles",
        "team_name":"Dodgers",
        "manager":"Bob Smoot",
-       "division":"RCML"
+       "division":"RCML",
+       "weather":{
+         "robbing":{"left":true,"right":true},
+         "ranges":{
+           "summer":{
+             "day":{"good":"16","average":"19","bad":"20"},
+             "night":{"good":"9","average":"19","bad":"20"}
+           },
+           "spring_fall":{
+             "day":{"good":"12","average":"19","bad":"20"},
+             "night":{"good":"7","average":"19","bad":"20"}
+           }
+         },
+         "values":{
+           "good":{
+             "bps":{"left":"4","right":"4"},
+             "bphr":{"left":"14","right":"8"}
+           },
+           "average":{
+             "bps":{"left":"2","right":"2"},
+             "bphr":{"left":"12","right":"6"}
+           },
+           "bad":{
+             "bps":{"left":"1","right":"1"},
+             "bphr":{"left":"11","right":"5"}
+           }
+         }
+       }
       }
     ],
     "il_length":"6",
@@ -343,105 +1529,1027 @@
        "city":"Houston",
        "team_name":"Blue Crabs",
        "manager":"Ken Anderson",
-       "division":"AMML"
+       "division":"AMML",
+       "weather":{
+         "robbing":{"left":true,"right":false},
+         "ranges":{
+           "summer":{
+             "day":{"good":"15","average":"20","bad":"N/A"},
+             "night":{"good":"5","average":"20","bad":"N/A"}
+           },
+           "spring_fall":{
+             "day":{"good":"3","average":"20","bad":"N/A"},
+             "night":{"good":"3","average":"20","bad":"N/A"}
+           }
+         },
+         "values":{
+           "good":{
+             "bps":{"left":"2","right":"2"},
+             "bphr":{"left":"9","right":"12"}
+           },
+           "average":{
+             "bps":{"left":"1","right":"1"},
+             "bphr":{"left":"7","right":"10"}
+           },
+           "bad":{
+             "bps":{"left":"N/A","right":"N/A"},
+             "bphr":{"left":"N/A","right":"N/A"}
+           }
+         }
+       }
       },
       {"team":"tor",
        "franchise":"2",
        "city":"Toronto",
        "team_name":"Blue Jays",
        "manager":"Don Hanson",
-       "division":"RCML"
+       "division":"RCML",
+       "weather":{
+         "robbing":{"left":true,"right":true},
+         "ranges":{
+           "summer":{
+             "day":{"good":"10","average":"20","bad":"N/A"},
+             "night":{"good":"6","average":"20","bad":"N/A"}
+           },
+           "spring_fall":{
+             "day":{"good":"9","average":"20","bad":"N/A"},
+             "night":{"good":"0","average":"20","bad":"N/A"}
+           }
+         },
+         "values":{
+           "good":{
+             "bps":{"left":"11","right":"11"},
+             "bphr":{"left":"9","right":"9"}
+           },
+           "average":{
+             "bps":{"left":"9","right":"9"},
+             "bphr":{"left":"7","right":"7"}
+           },
+           "bad":{
+             "bps":{"left":"N/A","right":"N/A"},
+             "bphr":{"left":"N/A","right":"N/A"}
+           }
+         }
+       }
       },
       {"team":"atl",
        "franchise":"3",
        "city":"Atlanta",
        "team_name":"Braves",
        "manager":"Gene Baccaglini",
-       "division":"AMML"
+       "division":"AMML",
+       "weather":{
+         "robbing":{"left":true,"right":true},
+         "ranges":{
+           "summer":{
+             "day":{"good":"11","average":"16","bad":"20"},
+             "night":{"good":"7","average":"16","bad":"20"}
+           },
+           "spring_fall":{
+             "day":{"good":"10","average":"17","bad":"20"},
+             "night":{"good":"6","average":"17","bad":"20"}
+           }
+         },
+         "values":{
+           "good":{
+             "bps":{"left":"13","right":"13"},
+             "bphr":{"left":"8","right":"8"}
+           },
+           "average":{
+             "bps":{"left":"10","right":"10"},
+             "bphr":{"left":"5","right":"5"}
+           },
+           "bad":{
+             "bps":{"left":"9","right":"9"},
+             "bphr":{"left":"4","right":"4"}
+           }
+         }
+       }
       },
       {"team":"cws",
        "franchise":"4",
        "city":"Chicago",
        "team_name":"Halladays",
        "manager":"Lonnie Magargle",
-       "division":"AMML"
+       "division":"AMML",
+       "weather":{
+         "robbing":{"left":true,"right":true},
+         "ranges":{
+           "summer":{
+             "day":{"good":"11","average":"17","bad":"20"},
+             "night":{"good":"7","average":"17","bad":"20"}
+           },
+           "spring_fall":{
+             "day":{"good":"7","average":"14","bad":"20"},
+             "night":{"good":"4","average":"13","bad":"20"}
+           }
+         },
+         "values":{
+           "good":{
+             "bps":{"left":"3","right":"9"},
+             "bphr":{"left":"12","right":"12"}
+           },
+           "average":{
+             "bps":{"left":"1","right":"7"},
+             "bphr":{"left":"10","right":"10"}
+           },
+           "bad":{
+             "bps":{"left":"0","right":"4"},
+             "bphr":{"left":"7","right":"7"}
+           }
+         }
+       }
       },
       {"team":"mia",
        "franchise":"5",
        "city":"Miami",
        "team_name":"Marlins",
        "manager":"Craig Bergeron",
-       "division":"CBML"
+       "division":"CBML",
+       "weather":{
+         "robbing":{"left":false,"right":false},
+         "ranges":{
+           "summer":{
+             "day":{"good":"19","average":"20","bad":"N/A"},
+             "night":{"good":"17","average":"20","bad":"N/A"}
+           },
+           "spring_fall":{
+             "day":{"good":"17","average":"20","bad":"N/A"},
+             "night":{"good":"15","average":"20","bad":"N/A"}
+           }
+         },
+         "values":{
+           "good":{
+             "bps":{"left":"1","right":"1"},
+             "bphr":{"left":"6","right":"3"}
+           },
+           "average":{
+             "bps":{"left":"0","right":"0"},
+             "bphr":{"left":"4","right":"1"}
+           },
+           "bad":{
+             "bps":{"left":"N/A","right":"N/A"},
+             "bphr":{"left":"N/A","right":"N/A"}
+           }
+         }
+       }
       },
       {"team":"bri",
        "franchise":"6",
        "city":"Bronx",
        "team_name":"Islanders",
        "manager":"Hector Colon",
-       "division":"CBML"
+       "division":"CBML",
+       "weather":{
+         "robbing":{"left":true,"right":true},
+         "ranges":{
+           "summer":{
+             "day":{"good":"12","average":"17","bad":"20"},
+             "night":{"good":"7","average":"17","bad":"20"}
+           },
+           "spring_fall":{
+             "day":{"good":"8","average":"15","bad":"20"},
+             "night":{"good":"4","average":"14","bad":"20"}
+           }
+         },
+         "values":{
+           "good":{
+             "bps":{"left":"4","right":"10"},
+             "bphr":{"left":"18","right":"15"}
+           },
+           "average":{
+             "bps":{"left":"3","right":"9"},
+             "bphr":{"left":"17","right":"14"}
+           },
+           "bad":{
+             "bps":{"left":"1","right":"7"},
+             "bphr":{"left":"15","right":"12"}
+           }
+         }
+       }
       },
       {"team":"sdm",
        "franchise":"7",
        "city":"San Diego",
        "team_name":"Midshipmen",
        "manager":"Jeffrey Cooper",
-       "division":"CBML"
+       "division":"CBML",
+       "weather":{
+         "robbing":{"left":true,"right":true},
+         "ranges":{
+           "summer":{
+             "day":{"good":"13","average":"19","bad":"20"},
+             "night":{"good":"8","average":"19","bad":"20"}
+           },
+           "spring_fall":{
+             "day":{"good":"10","average":"19","bad":"20"},
+             "night":{"good":"6","average":"19","bad":"20"}
+           }
+         },
+         "values":{
+           "good":{
+             "bps":{"left":"10","right":"7"},
+             "bphr":{"left":"6","right":"9"}
+           },
+           "average":{
+             "bps":{"left":"8","right":"5"},
+             "bphr":{"left":"4","right":"7"}
+           },
+           "bad":{
+             "bps":{"left":"7","right":"4"},
+             "bphr":{"left":"3","right":"6"}
+           }
+         }
+       }
       },
       {"team":"oak",
        "franchise":"8",
        "city":"Oakland",
        "team_name":"A-Sox",
        "manager":"Steve Aikens",
-       "division":"RCML"
+       "division":"RCML",
+       "weather":{
+         "robbing":{"left":false,"right":false},
+         "ranges":{
+           "summer":{
+             "day":{"good":"10","average":"19","bad":"20"},
+             "night":{"good":"6","average":"19","bad":"20"}
+           },
+           "spring_fall":{
+             "day":{"good":"8","average":"18","bad":"20"},
+             "night":{"good":"5","average":"17","bad":"20"}
+           }
+         },
+         "values":{
+           "good":{
+             "bps":{"left":"5","right":"8"},
+             "bphr":{"left":"5","right":"5"}
+           },
+           "average":{
+             "bps":{"left":"4","right":"7"},
+             "bphr":{"left":"4","right":"4"}
+           },
+           "bad":{
+             "bps":{"left":"0","right":"3"},
+             "bphr":{"left":"0","right":"0"}
+           }
+         }
+       }
       },
       {"team":"min",
        "franchise":"9",
        "city":"Minnesota",
        "team_name":"Twins",
        "manager":"Jonathan Cooper",
-       "division":"RCML"
+       "division":"RCML",
+       "weather":{
+         "robbing":{"left":false,"right":true},
+         "ranges":{
+           "summer":{
+             "day":{"good":"12","average":"17","bad":"20"},
+             "night":{"good":"7","average":"17","bad":"20"}
+           },
+           "spring_fall":{
+             "day":{"good":"6","average":"14","bad":"20"},
+             "night":{"good":"3","average":"12","bad":"20"}
+           }
+         },
+         "values":{
+           "good":{
+             "bps":{"left":"6","right":"6"},
+             "bphr":{"left":"16","right":"10"}
+           },
+           "average":{
+             "bps":{"left":"5","right":"5"},
+             "bphr":{"left":"15","right":"9"}
+           },
+           "bad":{
+             "bps":{"left":"4","right":"4"},
+             "bphr":{"left":"14","right":"8"}
+           }
+         }
+       }
       },
       {"team":"pit",
        "franchise":"10",
        "city":"Pittsburgh",
        "team_name":"Pirates",
        "manager":"Doug Smith",
-       "division":"RCML"
+       "division":"RCML",
+       "weather":{
+         "robbing":{"left":false,"right":true},
+         "ranges":{
+           "summer":{
+             "day":{"good":"12","average":"17","bad":"20"},
+             "night":{"good":"7","average":"17","bad":"20"}
+           },
+           "spring_fall":{
+             "day":{"good":"8","average":"14","bad":"20"},
+             "night":{"good":"4","average":"13","bad":"20"}
+           }
+         },
+         "values":{
+           "good":{
+             "bps":{"left":"14","right":"14"},
+             "bphr":{"left":"11","right":"5"}
+           },
+           "average":{
+             "bps":{"left":"12","right":"12"},
+             "bphr":{"left":"9","right":"3"}
+           },
+           "bad":{
+             "bps":{"left":"9","right":"9"},
+             "bphr":{"left":"6","right":"0"}
+           }
+         }
+       }
       },
       {"team":"cin",
        "franchise":"11",
        "city":"Cincinnati",
        "team_name":"Machine",
        "manager":"Daryl Cooper",
-       "division":"RCML"
+       "division":"RCML",
+       "weather":{
+         "robbing":{"left":true,"right":false},
+         "ranges":{
+           "summer":{
+             "day":{"good":"12","average":"17","bad":"20"},
+             "night":{"good":"7","average":"17","bad":"20"}
+           },
+           "spring_fall":{
+             "day":{"good":"8","average":"15","bad":"20"},
+             "night":{"good":"4","average":"14","bad":"20"}
+           }
+         },
+         "values":{
+           "good":{
+             "bps":{"left":"4","right":"4"},
+             "bphr":{"left":"16","right":"16"}
+           },
+           "average":{
+             "bps":{"left":"3","right":"3"},
+             "bphr":{"left":"15","right":"15"}
+           },
+           "bad":{
+             "bps":{"left":"1","right":"1"},
+             "bphr":{"left":"13","right":"13"}
+           }
+         }
+       }
       },
       {"team":"was",
        "franchise":"12",
        "city":"Washington",
        "team_name":"Exposes",
        "manager":"Timm McShane",
-       "division":"CBML"
+       "division":"CBML",
+       "weather":{
+         "robbing":{"left":false,"right":true},
+         "ranges":{
+           "summer":{
+             "day":{"good":"11","average":"17","bad":"20"},
+             "night":{"good":"7","average":"17","bad":"20"}
+           },
+           "spring_fall":{
+             "day":{"good":"9","average":"16","bad":"20"},
+             "night":{"good":"5","average":"15","bad":"20"}
+           }
+         },
+         "values":{
+           "good":{
+             "bps":{"left":"13","right":"13"},
+             "bphr":{"left":"8","right":"14"}
+           },
+           "average":{
+             "bps":{"left":"12","right":"12"},
+             "bphr":{"left":"7","right":"13"}
+           },
+           "bad":{
+             "bps":{"left":"10","right":"10"},
+             "bphr":{"left":"5","right":"11"}
+           }
+         }
+       }
       },
       {"team":"tbp",
        "franchise":"13",
        "city":"Tampa Bay",
        "team_name":"Phenom",
        "manager":"Mike Wittreich",
-       "division":"AMML"
+       "division":"AMML",
+       "weather":{
+         "robbing":{"left":false,"right":false},
+         "ranges":{
+           "summer":{
+             "day":{"good":"20","average":"N/A","bad":"N/A"},
+             "night":{"good":"20","average":"N/A","bad":"N/A"}
+           },
+           "spring_fall":{
+             "day":{"good":"20","average":"N/A","bad":"N/A"},
+             "night":{"good":"20","average":"N/A","bad":"N/A"}
+           }
+         },
+         "values":{
+           "good":{
+             "bps":{"left":"3","right":"3"},
+             "bphr":{"left":"6","right":"6"}
+           },
+           "average":{
+             "bps":{"left":"N/A","right":"N/A"},
+             "bphr":{"left":"N/A","right":"N/A"}
+           },
+           "bad":{
+             "bps":{"left":"N/A","right":"N/A"},
+             "bphr":{"left":"N/A","right":"N/A"}
+           }
+         }
+       }
       },
       {"team":"stl",
        "franchise":"14",
        "city":"St Louis",
        "team_name":"Browns",
        "manager":"Carroll Reese",
-       "division":"AMML"
+       "division":"AMML",
+       "weather":{
+         "robbing":{"left":true,"right":true},
+         "ranges":{
+           "summer":{
+             "day":{"good":"11","average":"17","bad":"20"},
+             "night":{"good":"7","average":"17","bad":"20"}
+           },
+           "spring_fall":{
+             "day":{"good":"8","average":"15","bad":"20"},
+             "night":{"good":"5","average":"15","bad":"20"}
+           }
+         },
+         "values":{
+           "good":{
+             "bps":{"left":"9","right":"9"},
+             "bphr":{"left":"9","right":"6"}
+           },
+           "average":{
+             "bps":{"left":"8","right":"8"},
+             "bphr":{"left":"8","right":"5"}
+           },
+           "bad":{
+             "bps":{"left":"6","right":"6"},
+             "bphr":{"left":"6","right":"3"}
+           }
+         }
+       }
       },
       {"team":"lad",
        "franchise":"15",
        "city":"Los Angeles",
        "team_name":"Dodgers",
        "manager":"Bob Smoot",
-       "division":"CBML"
+       "division":"CBML",
+       "weather":{
+         "robbing":{"left":true,"right":true},
+         "ranges":{
+           "summer":{
+             "day":{"good":"16","average":"19","bad":"20"},
+             "night":{"good":"9","average":"19","bad":"20"}
+           },
+           "spring_fall":{
+             "day":{"good":"12","average":"19","bad":"20"},
+             "night":{"good":"7","average":"19","bad":"20"}
+           }
+         },
+         "values":{
+           "good":{
+             "bps":{"left":"5","right":"5"},
+             "bphr":{"left":"16","right":"10"}
+           },
+           "average":{
+             "bps":{"left":"3","right":"3"},
+             "bphr":{"left":"14","right":"8"}
+           },
+           "bad":{
+             "bps":{"left":"2","right":"2"},
+             "bphr":{"left":"13","right":"7"}
+           }
+         }
+       }
+      }
+    ],
+    "il_length":"6",
+    "mlb_games":"162",
+    "roster_size":"25"
+   },
+   {"year":"2020",
+    "teams":[
+      {"team":"hou",
+       "franchise":"1",
+       "city":"Houston",
+       "team_name":"Blue Crabs",
+       "manager":"Ken Anderson",
+       "division":"AMML",
+       "weather":{
+         "robbing":{"left":true,"right":false},
+         "ranges":{
+           "summer":{
+             "day":{"good":"15","average":"20","bad":"N/A"},
+             "night":{"good":"5","average":"20","bad":"N/A"}
+           },
+           "spring_fall":{
+             "day":{"good":"3","average":"20","bad":"N/A"},
+             "night":{"good":"3","average":"20","bad":"N/A"}
+           }
+         },
+         "values":{
+           "good":{
+             "bps":{"left":"4","right":"4"},
+             "bphr":{"left":"13","right":"13"}
+           },
+           "average":{
+             "bps":{"left":"2","right":"2"},
+             "bphr":{"left":"11","right":"11"}
+           },
+           "bad":{
+             "bps":{"left":"N/A","right":"N/A"},
+             "bphr":{"left":"N/A","right":"N/A"}
+           }
+         }
+       }
+      },
+      {"team":"tor",
+       "franchise":"2",
+       "city":"Toronto",
+       "team_name":"Blue Jays",
+       "manager":"Don Hanson",
+       "division":"RCML",
+       "weather":{
+         "robbing":{"left":true,"right":true},
+         "ranges":{
+           "summer":{
+             "day":{"good":"10","average":"20","bad":"N/A"},
+             "night":{"good":"6","average":"20","bad":"N/A"}
+           },
+           "spring_fall":{
+             "day":{"good":"9","average":"20","bad":"N/A"},
+             "night":{"good":"0","average":"20","bad":"N/A"}
+           }
+         },
+         "values":{
+           "good":{
+             "bps":{"left":"6","right":"6"},
+             "bphr":{"left":"13","right":"13"}
+           },
+           "average":{
+             "bps":{"left":"4","right":"4"},
+             "bphr":{"left":"11","right":"11"}
+           },
+           "bad":{
+             "bps":{"left":"N/A","right":"N/A"},
+             "bphr":{"left":"N/A","right":"N/A"}
+           }
+         }
+       }
+      },
+      {"team":"atl",
+       "franchise":"3",
+       "city":"Atlanta",
+       "team_name":"Thrashers",
+       "manager":"Jeffrey Cooper",
+       "division":"AMML",
+       "weather":{
+         "robbing":{"left":true,"right":true},
+         "ranges":{
+           "summer":{
+             "day":{"good":"11","average":"16","bad":"20"},
+             "night":{"good":"7","average":"16","bad":"20"}
+           },
+           "spring_fall":{
+             "day":{"good":"7","average":"17","bad":"20"},
+             "night":{"good":"6","average":"17","bad":"20"}
+           }
+         },
+         "values":{
+           "good":{
+             "bps":{"left":"11","right":"11"},
+             "bphr":{"left":"9","right":"9"}
+           },
+           "average":{
+             "bps":{"left":"10","right":"10"},
+             "bphr":{"left":"8","right":"8"}
+           },
+           "bad":{
+             "bps":{"left":"8","right":"8"},
+             "bphr":{"left":"6","right":"6"}
+           }
+         }
+       }
+      },
+      {"team":"cws",
+       "franchise":"4",
+       "city":"Chicago",
+       "team_name":"Halladays",
+       "manager":"Lonnie Magargle",
+       "division":"AMML",
+       "weather":{
+         "robbing":{"left":true,"right":true},
+         "ranges":{
+           "summer":{
+             "day":{"good":"11","average":"17","bad":"20"},
+             "night":{"good":"7","average":"17","bad":"20"}
+           },
+           "spring_fall":{
+             "day":{"good":"7","average":"14","bad":"20"},
+             "night":{"good":"4","average":"13","bad":"20"}
+           }
+         },
+         "values":{
+           "good":{
+             "bps":{"left":"5","right":"5"},
+             "bphr":{"left":"16","right":"13"}
+           },
+           "average":{
+             "bps":{"left":"1","right":"1"},
+             "bphr":{"left":"14","right":"11"}
+           },
+           "bad":{
+             "bps":{"left":"0","right":"0"},
+             "bphr":{"left":"11","right":"8"}
+           }
+         }
+       }
+      },
+      {"team":"mia",
+       "franchise":"5",
+       "city":"Miami",
+       "team_name":"Marlins",
+       "manager":"Craig Bergeron",
+       "division":"CBML",
+       "weather":{
+         "robbing":{"left":false,"right":false},
+         "ranges":{
+           "summer":{
+             "day":{"good":"19","average":"20","bad":"N/A"},
+             "night":{"good":"17","average":"20","bad":"N/A"}
+           },
+           "spring_fall":{
+             "day":{"good":"17","average":"20","bad":"N/A"},
+             "night":{"good":"15","average":"20","bad":"N/A"}
+           }
+         },
+         "values":{
+           "good":{
+             "bps":{"left":"3","right":"8"},
+             "bphr":{"left":"4","right":"4"}
+           },
+           "average":{
+             "bps":{"left":"2","right":"6"},
+             "bphr":{"left":"2","right":"2"}
+           },
+           "bad":{
+             "bps":{"left":"N/A","right":"N/A"},
+             "bphr":{"left":"N/A","right":"N/A"}
+           }
+         }
+       }
+      },
+      {"team":"bal",
+       "franchise":"6",
+       "city":"Baltimore",
+       "team_name":"Islanders",
+       "manager":"Hector Colon",
+       "division":"CBML",
+       "weather":{
+         "robbing":{"left":true,"right":true},
+         "ranges":{
+           "summer":{
+             "day":{"good":"10","average":"17","bad":"20"},
+             "night":{"good":"7","average":"17","bad":"20"}
+           },
+           "spring_fall":{
+             "day":{"good":"8","average":"15","bad":"20"},
+             "night":{"good":"4","average":"15","bad":"20"}
+           }
+         },
+         "values":{
+           "good":{
+             "bps":{"left":"11","right":"8"},
+             "bphr":{"left":"12","right":"15"}
+           },
+           "average":{
+             "bps":{"left":"10","right":"7"},
+             "bphr":{"left":"11","right":"14"}
+           },
+           "bad":{
+             "bps":{"left":"8","right":"5"},
+             "bphr":{"left":"9","right":"12"}
+           }
+         }
+       }
+      },
+      {"team":"sdm",
+       "franchise":"7",
+       "city":"San Diego",
+       "team_name":"Midshipmen",
+       "manager":"Jeffrey Cooper",
+       "division":"CBML",
+       "weather":{
+         "robbing":{"left":true,"right":true},
+         "ranges":{
+           "summer":{
+             "day":{"good":"13","average":"19","bad":"20"},
+             "night":{"good":"8","average":"19","bad":"20"}
+           },
+           "spring_fall":{
+             "day":{"good":"10","average":"19","bad":"20"},
+             "night":{"good":"6","average":"19","bad":"20"}
+           }
+         },
+         "values":{
+           "good":{
+             "bps":{"left":"7","right":"4"},
+             "bphr":{"left":"5","right":"8"}
+           },
+           "average":{
+             "bps":{"left":"5","right":"2"},
+             "bphr":{"left":"3","right":"6"}
+           },
+           "bad":{
+             "bps":{"left":"4","right":"1"},
+             "bphr":{"left":"2","right":"5"}
+           }
+         }
+       }
+      },
+      {"team":"oak",
+       "franchise":"8",
+       "city":"Oakland",
+       "team_name":"A-Sox",
+       "manager":"Steve Aikens",
+       "division":"RCML",
+       "weather":{
+         "robbing":{"left":true,"right":true},
+         "ranges":{
+           "summer":{
+             "day":{"good":"10","average":"19","bad":"20"},
+             "night":{"good":"6","average":"19","bad":"20"}
+           },
+           "spring_fall":{
+             "day":{"good":"8","average":"18","bad":"20"},
+             "night":{"good":"5","average":"17","bad":"20"}
+           }
+         },
+         "values":{
+           "good":{
+             "bps":{"left":"4","right":"9"},
+             "bphr":{"left":"6","right":"6"}
+           },
+           "average":{
+             "bps":{"left":"3","right":"8"},
+             "bphr":{"left":"5","right":"5"}
+           },
+           "bad":{
+             "bps":{"left":"0","right":"4"},
+             "bphr":{"left":"1","right":"1"}
+           }
+         }
+       }
+      },
+      {"team":"min",
+       "franchise":"9",
+       "city":"Minnesota",
+       "team_name":"Wrecking Crew",
+       "manager":"Lonnie Magargle",
+       "division":"RCML",
+       "weather":{
+         "robbing":{"left":false,"right":true},
+         "ranges":{
+           "summer":{
+             "day":{"good":"12","average":"17","bad":"20"},
+             "night":{"good":"7","average":"17","bad":"20"}
+           },
+           "spring_fall":{
+             "day":{"good":"6","average":"14","bad":"20"},
+             "night":{"good":"3","average":"12","bad":"20"}
+           }
+         },
+         "values":{
+           "good":{
+             "bps":{"left":"13","right":"13"},
+             "bphr":{"left":"9","right":"9"}
+           },
+           "average":{
+             "bps":{"left":"12","right":"12"},
+             "bphr":{"left":"8","right":"8"}
+           },
+           "bad":{
+             "bps":{"left":"11","right":"11"},
+             "bphr":{"left":"7","right":"7"}
+           }
+         }
+       }
+      },
+      {"team":"pit",
+       "franchise":"10",
+       "city":"Pittsburgh",
+       "team_name":"Pirates",
+       "manager":"Doug Smith",
+       "division":"RCML",
+       "weather":{
+         "robbing":{"left":false,"right":true},
+         "ranges":{
+           "summer":{
+             "day":{"good":"12","average":"17","bad":"20"},
+             "night":{"good":"7","average":"17","bad":"20"}
+           },
+           "spring_fall":{
+             "day":{"good":"8","average":"14","bad":"20"},
+             "night":{"good":"5","average":"13","bad":"20"}
+           }
+         },
+         "values":{
+           "good":{
+             "bps":{"left":"11","right":"11"},
+             "bphr":{"left":"10","right":"7"}
+           },
+           "average":{
+             "bps":{"left":"9","right":"9"},
+             "bphr":{"left":"8","right":"5"}
+           },
+           "bad":{
+             "bps":{"left":"6","right":"6"},
+             "bphr":{"left":"5","right":"2"}
+           }
+         }
+       }
+      },
+      {"team":"cin",
+       "franchise":"11",
+       "city":"Cincinnati",
+       "team_name":"Machine",
+       "manager":"Daryl Cooper",
+       "division":"RCML",
+       "weather":{
+         "robbing":{"left":true,"right":false},
+         "ranges":{
+           "summer":{
+             "day":{"good":"12","average":"17","bad":"20"},
+             "night":{"good":"7","average":"17","bad":"20"}
+           },
+           "spring_fall":{
+             "day":{"good":"8","average":"15","bad":"20"},
+             "night":{"good":"4","average":"14","bad":"20"}
+           }
+         },
+         "values":{
+           "good":{
+             "bps":{"left":"5","right":"5"},
+             "bphr":{"left":"15","right":"15"}
+           },
+           "average":{
+             "bps":{"left":"4","right":"4"},
+             "bphr":{"left":"14","right":"14"}
+           },
+           "bad":{
+             "bps":{"left":"2","right":"2"},
+             "bphr":{"left":"12","right":"12"}
+           }
+         }
+       }
+      },
+      {"team":"det",
+       "franchise":"12",
+       "city":"Detroit",
+       "team_name":"El tigre",
+       "manager":"Timm McShane",
+       "division":"CBML",
+       "weather":{
+         "robbing":{"left":false,"right":true},
+         "ranges":{
+           "summer":{
+             "day":{"good":"12","average":"17","bad":"20"},
+             "night":{"good":"7","average":"17","bad":"20"}
+           },
+           "spring_fall":{
+             "day":{"good":"7","average":"13","bad":"20"},
+             "night":{"good":"3","average":"12","bad":"20"}
+           }
+         },
+         "values":{
+           "good":{
+             "bps":{"left":"8","right":"17"},
+             "bphr":{"left":"8","right":"11"}
+           },
+           "average":{
+             "bps":{"left":"7","right":"16"},
+             "bphr":{"left":"6","right":"9"}
+           },
+           "bad":{
+             "bps":{"left":"6","right":"15"},
+             "bphr":{"left":"3","right":"6"}
+           }
+         }
+       }
+      },
+      {"team":"tbp",
+       "franchise":"13",
+       "city":"Tampa Bay",
+       "team_name":"Phenom",
+       "manager":"Mike Wittreich",
+       "division":"AMML",
+       "weather":{
+         "robbing":{"left":false,"right":false},
+         "ranges":{
+           "summer":{
+             "day":{"good":"20","average":"N/A","bad":"N/A"},
+             "night":{"good":"20","average":"N/A","bad":"N/A"}
+           },
+           "spring_fall":{
+             "day":{"good":"20","average":"N/A","bad":"N/A"},
+             "night":{"good":"20","average":"N/A","bad":"N/A"}
+           }
+         },
+         "values":{
+           "good":{
+             "bps":{"left":"2","right":"5"},
+             "bphr":{"left":"6","right":"6"}
+           },
+           "average":{
+             "bps":{"left":"N/A","right":"N/A"},
+             "bphr":{"left":"N/A","right":"N/A"}
+           },
+           "bad":{
+             "bps":{"left":"N/A","right":"N/A"},
+             "bphr":{"left":"N/A","right":"N/A"}
+           }
+         }
+       }
+      },
+      {"team":"stl",
+       "franchise":"14",
+       "city":"St Louis",
+       "team_name":"Browns",
+       "manager":"Daryl Cooper",
+       "division":"AMML",
+       "weather":{
+         "robbing":{"left":true,"right":true},
+         "ranges":{
+           "summer":{
+             "day":{"good":"11","average":"17","bad":"20"},
+             "night":{"good":"7","average":"17","bad":"20"}
+           },
+           "spring_fall":{
+             "day":{"good":"8","average":"15","bad":"20"},
+             "night":{"good":"5","average":"15","bad":"20"}
+           }
+         },
+         "values":{
+           "good":{
+             "bps":{"left":"8","right":"8"},
+             "bphr":{"left":"9","right":"6"}
+           },
+           "average":{
+             "bps":{"left":"7","right":"7"},
+             "bphr":{"left":"8","right":"5"}
+           },
+           "bad":{
+             "bps":{"left":"5","right":"5"},
+             "bphr":{"left":"6","right":"3"}
+           }
+         }
+       }
+      },
+      {"team":"lad",
+       "franchise":"15",
+       "city":"Los Angeles",
+       "team_name":"Dodgers",
+       "manager":"Bob Smoot",
+       "division":"CBML",
+       "weather":{
+         "robbing":{"left":true,"right":true},
+         "ranges":{
+           "summer":{
+             "day":{"good":"16","average":"19","bad":"20"},
+             "night":{"good":"9","average":"19","bad":"20"}
+           },
+           "spring_fall":{
+             "day":{"good":"12","average":"19","bad":"20"},
+             "night":{"good":"7","average":"19","bad":"20"}
+           }
+         },
+         "values":{
+           "good":{
+             "bps":{"left":"5","right":"5"},
+             "bphr":{"left":"15","right":"12"}
+           },
+           "average":{
+             "bps":{"left":"3","right":"3"},
+             "bphr":{"left":"13","right":"10"}
+           },
+           "bad":{
+             "bps":{"left":"2","right":"2"},
+             "bphr":{"left":"12","right":"9"}
+           }
+         }
+       }
       }
     ],
     "il_length":"6",
