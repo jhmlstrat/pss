@@ -207,16 +207,19 @@
         print "Missing Hitters file\n";
         exit;
       }
+      $addI = 0;
+      $add = 0;
+      if ($this->year >= 2020) { $add ++; $addI = $addI + 2; }
       $hf = fopen($this->StratHittersFile,'r');
       $count = 0;
       while (($line = fgets($hf)) !== false)  {
         if ($count > 0) {
           $pieces = explode("\t",$line);
           //foreach ($pieces as $value) { print $value . "\n"; }
-          if ($pieces[2] < 100) continue;
+          if ($pieces[$addI+2] < 100) continue;
           $rindex = '';
           $bindex = -1;
-          $name = str_replace("\"","",$pieces[1]);
+          $name = str_replace("\"","",$pieces[$add+1]);
           $name = str_replace("+","",$name);
           $name = str_replace("*","",$name);
           $name = str_replace(",",", ",$name);
@@ -231,50 +234,49 @@
               }
             }
           }
-          if ($rindex == -1 || $bindex == -1) {
+          if ($rindex == '' || $bindex == -1) {
             print "Batter not found " . $name . "\n";
             exit;
           }
           $this->rosters[$rindex]->batters[$bindex]->player->realTeam = $pieces[0];
-          $this->rosters[$rindex]->batters[$bindex]->player->realTeam = $pieces[0];
-          if (strpos($pieces[1],"+") !== false) $this->rosters[$rindex]->batters[$bindex]->player->hand="S";
-          if (strpos($pieces[1],"*") !== false) $this->rosters[$rindex]->batters[$bindex]->player->hand="L";
-          $this->rosters[$rindex]->batters[$bindex]->player->ab = $pieces[2];
-          $this->rosters[$rindex]->batters[$bindex]->player->hit[0] = $pieces[5];
-          $this->rosters[$rindex]->batters[$bindex]->player->ob[0] = $pieces[6];
-          $this->rosters[$rindex]->batters[$bindex]->player->tb[0] = $pieces[7];
-          $this->rosters[$rindex]->batters[$bindex]->player->hr[0] = $pieces[8];
+          if (strpos($pieces[$add+1],"+") !== false) $this->rosters[$rindex]->batters[$bindex]->player->hand="S";
+          if (strpos($pieces[$add+1],"*") !== false) $this->rosters[$rindex]->batters[$bindex]->player->hand="L";
+          $this->rosters[$rindex]->batters[$bindex]->player->ab = $pieces[$addI+2];
+          $this->rosters[$rindex]->batters[$bindex]->player->hit[0] = $pieces[$addI+5];
+          $this->rosters[$rindex]->batters[$bindex]->player->ob[0] = $pieces[$addI+6];
+          $this->rosters[$rindex]->batters[$bindex]->player->tb[0] = $pieces[$addI+7];
+          $this->rosters[$rindex]->batters[$bindex]->player->hr[0] = $pieces[$addI+8];
           $this->rosters[$rindex]->batters[$bindex]->player->bps[0] = '0.0';
-          if (strpos($pieces[9],"*") === false) $this->rosters[$rindex]->batters[$bindex]->player->bps[0] = '5.0';
+          if (strpos($pieces[$addI+9],"*") === false) $this->rosters[$rindex]->batters[$bindex]->player->bps[0] = '5.0';
           $this->rosters[$rindex]->batters[$bindex]->player->power[0] = 'W';
           $this->rosters[$rindex]->batters[$bindex]->player->bphr[0] = '0.0';
-          if (strpos($pieces[9],"W") === false and strpos($pieces[9],"w") === false) {
+          if (strpos($pieces[$addI+9],"W") === false and strpos($pieces[$addI+9],"w") === false) {
             $this->rosters[$rindex]->batters[$bindex]->player->power[0] = 'N';
-            $bphr=str_replace("w","",$pieces[9]);
+            $bphr=str_replace("w","",$pieces[$addI+9]);
             $bphr=str_replace("W","",$bphr);
             $bphr=str_replace("*","",$bphr);
             $this->rosters[$rindex]->batters[$bindex]->player->bphr[0] = $bphr;
           }
-          $this->rosters[$rindex]->batters[$bindex]->player->cl[0] = $pieces[10];
-          $this->rosters[$rindex]->batters[$bindex]->player->dp[0] = $pieces[11];
-          $this->rosters[$rindex]->batters[$bindex]->player->hit[1] = $pieces[14];
-          $this->rosters[$rindex]->batters[$bindex]->player->ob[1] = $pieces[15];
-          $this->rosters[$rindex]->batters[$bindex]->player->tb[1] = $pieces[16];
-          $this->rosters[$rindex]->batters[$bindex]->player->hr[1] = $pieces[17];
+          $this->rosters[$rindex]->batters[$bindex]->player->cl[0] = $pieces[$addI+10];
+          $this->rosters[$rindex]->batters[$bindex]->player->dp[0] = $pieces[$addI+11];
+          $this->rosters[$rindex]->batters[$bindex]->player->hit[1] = $pieces[$addI+14];
+          $this->rosters[$rindex]->batters[$bindex]->player->ob[1] = $pieces[$addI+15];
+          $this->rosters[$rindex]->batters[$bindex]->player->tb[1] = $pieces[$addI+16];
+          $this->rosters[$rindex]->batters[$bindex]->player->hr[1] = $pieces[$addI+17];
           $this->rosters[$rindex]->batters[$bindex]->player->bps[1] = '0.0';
-          if (strpos($pieces[18],"*") === false) $this->rosters[$rindex]->batters[$bindex]->player->bps[1] = '5.0';
+          if (strpos($pieces[$addI+18],"*") === false) $this->rosters[$rindex]->batters[$bindex]->player->bps[1] = '5.0';
           $this->rosters[$rindex]->batters[$bindex]->player->power[1] = 'W';
           $this->rosters[$rindex]->batters[$bindex]->player->bphr[1] = '0.0';
-          if (strpos($pieces[18],"W") === false and strpos($pieces[18],"w") === false) {
+          if (strpos($pieces[$addI+18],"W") === false and strpos($pieces[$addI+18],"w") === false) {
             $this->rosters[$rindex]->batters[$bindex]->player->power[1] = 'N';
-            $bphr=str_replace("w","",$pieces[18]);
+            $bphr=str_replace("w","",$pieces[$addI+18]);
             $bphr=str_replace("W","",$bphr);
             $bphr=str_replace("*","",$bphr);
             $this->rosters[$rindex]->batters[$bindex]->player->bphr[1] = $bphr;
           }
-          $this->rosters[$rindex]->batters[$bindex]->player->cl[1] = $pieces[19];
-          $this->rosters[$rindex]->batters[$bindex]->player->dp[1] = $pieces[20];
-          $steal = str_replace("\"","",$pieces[21]);
+          $this->rosters[$rindex]->batters[$bindex]->player->cl[1] = $pieces[$addI+19];
+          $this->rosters[$rindex]->batters[$bindex]->player->dp[1] = $pieces[$addI+20];
+          $steal = str_replace("\"","",$pieces[$addI+21]);
           $steal = str_replace('(','',$steal);
           $steal = str_replace(')','',$steal);
           $pos=strpos($steal," ");
@@ -286,15 +288,15 @@
           $this->rosters[$rindex]->batters[$bindex]->player->pickoff = substr($first,$p1+1);
           $this->rosters[$rindex]->batters[$bindex]->player->steal[0] = substr($second,0,$p2);
           $this->rosters[$rindex]->batters[$bindex]->player->steal[1] = substr($second,$p2+1);
-          $this->rosters[$rindex]->batters[$bindex]->player->run = $pieces[23];
-          $this->rosters[$rindex]->batters[$bindex]->player->bunt = $pieces[24];
-          $this->rosters[$rindex]->batters[$bindex]->player->hitAndRun = $pieces[25];
+          $this->rosters[$rindex]->batters[$bindex]->player->run = $pieces[$addI+23];
+          $this->rosters[$rindex]->batters[$bindex]->player->bunt = $pieces[$addI+24];
+          $this->rosters[$rindex]->batters[$bindex]->player->hitAndRun = $pieces[$addI+25];
           for ($i = 26; $i < 34; $i++) {
-            if ($pieces[$i] !==  '') {
+            if ($pieces[$addI+$i] !==  '') {
               $pos = new \ProjectScoresheet\Position;
               $pos->p(\ProjectScoresheet\Position::position(\ProjectScoresheet\Position::positionString($i-24)));
-              $pos->rating = substr($pieces[$i],0,1);
-              $pos->e = substr($pieces[$i],1);
+              $pos->rating = substr($pieces[$addI+$i],0,1);
+              $pos->e = substr($pieces[$addI+$i],1);
               array_push( $this->rosters[$rindex]->batters[$bindex]->player->positionsPlayed,$pos);
             }
           }
@@ -322,10 +324,10 @@
         if ($count > 0) {
           $pieces = explode("\t",$line);
           //foreach ($pieces as $value) { print $value . "\n"; }
-          if ($pieces[2] < 30) continue;
+          if ($pieces[$add+2] < 30) continue;
           $rindex = "";
           $pindex = -1;
-          $name = str_replace("\"","",$pieces[1]);
+          $name = str_replace("\"","",$pieces[$add+1]);
           $name = str_replace("+","",$name);
           $name = str_replace("*","",$name);
           $name = str_replace(",",", ",$name);
@@ -345,50 +347,50 @@
             exit;
           }
           $this->rosters[$rindex]->pitchers[$pindex]->player->realTeam = $pieces[0];
-          if (strpos($pieces[1],"+") !== false) $this->rosters[$rindex]->pitchers[$pindex]->player->hand="S";
-          if (strpos($pieces[1],"*") !== false) $this->rosters[$rindex]->pitchers[$pindex]->player->hand="L";
-          $this->rosters[$rindex]->pitchers[$pindex]->player->ip = $pieces[2];
-          $this->rosters[$rindex]->pitchers[$pindex]->player->hit[0] = $pieces[5];
-          $this->rosters[$rindex]->pitchers[$pindex]->player->ob[0] = $pieces[6];
-          $this->rosters[$rindex]->pitchers[$pindex]->player->tb[0] = $pieces[7];
-          $this->rosters[$rindex]->pitchers[$pindex]->player->hr[0] = $pieces[8];
+          if (strpos($pieces[$add+1],"+") !== false) $this->rosters[$rindex]->pitchers[$pindex]->player->hand="S";
+          if (strpos($pieces[$add+1],"*") !== false) $this->rosters[$rindex]->pitchers[$pindex]->player->hand="L";
+          $this->rosters[$rindex]->pitchers[$pindex]->player->ip = $pieces[$add+2];
+          $this->rosters[$rindex]->pitchers[$pindex]->player->hit[0] = $pieces[$add+5];
+          $this->rosters[$rindex]->pitchers[$pindex]->player->ob[0] = $pieces[$add+6];
+          $this->rosters[$rindex]->pitchers[$pindex]->player->tb[0] = $pieces[$add+7];
+          $this->rosters[$rindex]->pitchers[$pindex]->player->hr[0] = $pieces[$add+8];
           $this->rosters[$rindex]->pitchers[$pindex]->player->bps[0] = '0.0';
-          if (strpos($pieces[9],"*") === false) $this->rosters[$rindex]->pitchers[$pindex]->player->bps[0] = '5.0';
+          if (strpos($pieces[$add+9],"*") === false) $this->rosters[$rindex]->pitchers[$pindex]->player->bps[0] = '5.0';
           $this->rosters[$rindex]->pitchers[$pindex]->player->power[0] = 'W';
           $this->rosters[$rindex]->pitchers[$pindex]->player->bphr[0] = '0.0';
-          if (strpos($pieces[9],"W") === false and strpos($pieces[9],"w") === false) {
+          if (strpos($pieces[$add+9],"W") === false and strpos($pieces[$add+9],"w") === false) {
             $this->rosters[$rindex]->pitchers[$pindex]->player->power[0] = 'N';
-            $bphr=str_replace("w","",$pieces[9]);
+            $bphr=str_replace("w","",$pieces[$add+9]);
             $bphr=str_replace("W","",$bphr);
             $bphr=str_replace("*","",$bphr);
             $this->rosters[$rindex]->pitchers[$pindex]->player->bphr[0] = $bphr;
           }
-          $this->rosters[$rindex]->pitchers[$pindex]->player->hit[1] = $pieces[13];
-          $this->rosters[$rindex]->pitchers[$pindex]->player->ob[1] = $pieces[14];
-          $this->rosters[$rindex]->pitchers[$pindex]->player->tb[1] = $pieces[15];
-          $this->rosters[$rindex]->pitchers[$pindex]->player->hr[1] = $pieces[16];
+          $this->rosters[$rindex]->pitchers[$pindex]->player->hit[1] = $pieces[$add+13];
+          $this->rosters[$rindex]->pitchers[$pindex]->player->ob[1] = $pieces[$add+14];
+          $this->rosters[$rindex]->pitchers[$pindex]->player->tb[1] = $pieces[$add+15];
+          $this->rosters[$rindex]->pitchers[$pindex]->player->hr[1] = $pieces[$add+16];
           $this->rosters[$rindex]->pitchers[$pindex]->player->bps[1] = '0.0';
-          if (strpos($pieces[17],"*") === false) $this->rosters[$rindex]->pitchers[$pindex]->player->bps[1] = '5.0';
+          if (strpos($pieces[$add+17],"*") === false) $this->rosters[$rindex]->pitchers[$pindex]->player->bps[1] = '5.0';
           $this->rosters[$rindex]->pitchers[$pindex]->player->power[1] = 'W';
           $this->rosters[$rindex]->pitchers[$pindex]->player->bphr[1] = '0.0';
-          if (strpos($pieces[17],"W") === false and strpos($pieces[17],"w") === false) {
+          if (strpos($pieces[$add+17],"W") === false and strpos($pieces[$add+17],"w") === false) {
             $this->rosters[$rindex]->pitchers[$pindex]->player->power[1] = 'N';
-            $bphr=str_replace("w","",$pieces[17]);
+            $bphr=str_replace("w","",$pieces[$add+17]);
             $bphr=str_replace("W","",$bphr);
             $bphr=str_replace("*","",$bphr);
             $this->rosters[$rindex]->pitchers[$pindex]->player->bphr[1] = $bphr;
           }
-          $this->rosters[$rindex]->pitchers[$pindex]->player->hold = $pieces[19];
-          $this->rosters[$rindex]->pitchers[$pindex]->player->endure = $pieces[20];
+          $this->rosters[$rindex]->pitchers[$pindex]->player->hold = $pieces[$add+19];
+          $this->rosters[$rindex]->pitchers[$pindex]->player->endure = $pieces[$add+20];
           $pos = new \ProjectScoresheet\Position;
           $pos->p(\ProjectScoresheet\Position::position('P'));
-          $pos->rating = substr($pieces[21],0,1);
-          $pos->e = substr($pieces[21],2);
+          $pos->rating = substr($pieces[$add+21],0,1);
+          $pos->e = substr($pieces[$add+21],2);
           array_push( $this->rosters[$rindex]->pitchers[$pindex]->player->positionsPlayed,$pos);
-          $this->rosters[$rindex]->pitchers[$pindex]->player->balk = $pieces[22];
-          $this->rosters[$rindex]->pitchers[$pindex]->player->wp = $pieces[23];
-          $this->rosters[$rindex]->pitchers[$pindex]->player->batting = $pieces[24];
-          $this->rosters[$rindex]->pitchers[$pindex]->player->run = $pieces[26];
+          $this->rosters[$rindex]->pitchers[$pindex]->player->balk = $pieces[$add+22];
+          $this->rosters[$rindex]->pitchers[$pindex]->player->wp = $pieces[$add+23];
+          $this->rosters[$rindex]->pitchers[$pindex]->player->batting = $pieces[$add+24];
+          $this->rosters[$rindex]->pitchers[$pindex]->player->run = $pieces[$add+26];
         }
         $count ++;
       }

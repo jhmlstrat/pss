@@ -44,6 +44,7 @@
         $inner = explode("~",$pieces[$i]);
         if ($inner[2] == "PITCHERS" || $inner[2] == "BATTERS") continue;
         if ($inner[3] == MoveType::toString(MoveType::TradedFor)) {
+          if ($inner[2] == "none") continue;
           $inst = new self();
           $inst->player = new \ProjectScoreSheet\Player;
           $inst->player->name = $inner[2];

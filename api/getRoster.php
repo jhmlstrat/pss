@@ -17,7 +17,7 @@ $conf = new Config();
 $config = json_encode($conf->config);
 $year = isset($_GET['year']) ? $_GET['year'] : $conf->config['current_year'];
 
-$rosters = new \Jhml\Rosters($year);
+$rosters = new \Jhml\Rosters($year, false, false);
 
 //print(json_encode($rosters->getRoster($team)));
 print($rosters->getRoster($team)->toString(true));
