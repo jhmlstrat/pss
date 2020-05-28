@@ -70,7 +70,9 @@
   
             $gs = explode(',',$s);
   //print $gn . '<br />';
-            foreach ($gs as $g) {
+            //foreach ($gs as $g) {
+            for ($k=0; $k < count($gs); $k++) {
+              $g = $gs[$k];
               $gm = new Game($year);
   //    private $year;
   //    public $team_;
@@ -122,6 +124,7 @@
                 $gm->runs_[0]=$rs[0];
                 $gm->runs_[1]=$rs[1];
               }
+              if ($k == (count($gs) -1)) {$gm->day_ = true; }
               array_push($this->games[$t1],$gm);
               array_push($this->games[$t2],$gm);
             } 

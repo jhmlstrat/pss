@@ -45,6 +45,7 @@
       $this->winner_ = '';
       $this->loser_ = '';
       $this->save_ = '';
+      $this->day_ = false;
       $this->bps_ = [];
       $this->bps_[0]=0;
       $this->bps_[1]=0;
@@ -64,9 +65,9 @@
         $results .= ',"hits":"' . intval($this->hits_[0]) . '"';
         $results .= ',"errors":"' . intval($this->errors_[0]) . '"';
         $results .= ',"starter":"' . $this->starter_[0] . '"';
-      $results .= '},"home":"{';
+      $results .= '},"home":{';
         $results .= '"team":"' . $this->team_[1] . '"';
-        $results .= ',"gameNumber":"' . intval($this->gameNumber_[1]) . '"';
+        $results .= ',"gameNumber":"' . ($this->gameNumber_[1] == -1 ? 'DO' : intval($this->gameNumber_[1])) . '"';
         $results .= ',"runs":"' . intval($this->runs_[1]) . '"';
         $results .= ',"hits":"' . intval($this->hits_[1]) . '"';
         $results .= ',"errors":"' . intval($this->errors_[1]) . '"';
@@ -78,9 +79,9 @@
       $results .= ',"winner":"' . $this->winner_ . '"';
       $results .= ',"loser":"' . $this->loser_ . '"';
       $results .= ',"save":"' . $this->save_ . '"';
-      $results .= ',"day":' . ($this->hasScoreSheet() ? "true" : "false");
+      $results .= ',"day":' . ($this->day_ ? "true" : "false");
       $results .= ',"bps":{"left":"' . intval($this->bps_[0]) . '","right":"' . intval($this->bps_[1]) . '"}';
-      $results .= ',"bphr":"left":"' . intval($this->bphr_[0]) . '","right":"' . intval($this->bphr_[1]) . '"}';
+      $results .= ',"bphr":{"left":"' . intval($this->bphr_[0]) . '","right":"' . intval($this->bphr_[1]) . '"}';
       $results .= ',"final":' . ($this->final_ ? "true" : "false"); 
       $results .= '}';
       return $results;

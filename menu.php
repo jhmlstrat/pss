@@ -127,7 +127,7 @@
               //self.emitData();
             } else {
             }
-            console.log(self.year);
+            //console.log(self.year);
             self.yearChange();
             //self.loadRoster();
             //self.loadSchedule();
@@ -241,7 +241,7 @@
           eBus.$emit('scheduleUpdated',this.schedule);
         },
         setGame() {
-console.log(this.schedule);
+          //console.log(this.schedule);
           this.game = 1;
           this.betweenSeries = true;
           this.gameInProgress = false;

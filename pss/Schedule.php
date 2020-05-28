@@ -6,6 +6,7 @@
 
   class Schedule {
     private $config;
+    private $year;
 
     private $schedules = [];
 
@@ -35,6 +36,7 @@
     }
 
     function __construct($year = 2017) {
+      $this->year = $year;
       $rf = new ResultsFile($year);
 //var_dump($rf);
       $previous = nil;
@@ -273,6 +275,17 @@
       }
       for ($i=0; $i <count($fall); $i++) {
          $rtn .= ',' . $fall[$i]->toString();
+      }
+      $days = 0;
+      for ($i=0; $i < count($resultsA); $i++) {
+        if ($resultsA[$i]->day_) $days++;
+        if ($days == 3) {
+          $dayO = new Game($this->year);
+          $dayO->gameNumber_[1] = -1;
+//print($dayO->toString() . "\n");
+          array_splice($resultsA,$i+1,0,array($dayO));
+          $days = 0;
+        }
       }
       $results = '[';
       foreach ($resultsA as $result) {
