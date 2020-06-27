@@ -18,16 +18,20 @@
       $ro = json_decode('{' . preg_replace('/.*,"rotation"/','"rotation"',$str) . '}');
       foreach ($lu as $rows) {
         $i = 0;
-        foreach ($rows as $row) {
-          foreach ($row as $p) {
-            array_push($inst->battingOrder[$i],Player::fromString(json_encode($p)));
+        if ($rows != null){
+          foreach ($rows as $row) {
+            foreach ($row as $p) {
+              array_push($inst->battingOrder[$i],Player::fromString(json_encode($p)));
+            }
+            $i ++;
           }
-          $i ++;
         }
       }
       foreach ($ro as $row) {
-        foreach ($row as $p) {
-          array_push($inst->pitchingOrder,Player::fromString(json_encode($p)));
+        if ($row != null) {
+          foreach ($row as $p) {
+            array_push($inst->pitchingOrder,Player::fromString(json_encode($p)));
+          }
         }
       }
       return $inst;

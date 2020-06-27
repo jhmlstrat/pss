@@ -92,6 +92,7 @@
       $inst = new self();
       $play = json_decode($str);
       $inst->name = $play->player->name;
+      $inst->age=intval($play->player->age);
       //$pos = $play->player->positions;
       //for ($i = 0; $i < count($pos); $i ++) {
       //  array_push($inst->positions,Position::fromString(json_encode($pos[$i])));
@@ -142,7 +143,6 @@
         $inst->balk=intval($strat->balk);
         $inst->wp=intval($strat->wp);
         $inst->batting=$strat->batting;
-        $inst->age=intval($strat->age);
       }
       return $inst;
     }
@@ -155,6 +155,7 @@
     public function toString($includeStrat = false) {
       //$rtn = '{"player":{"name":"' . $this->name . '",positions":[';
       $rtn = '{"player":{"name":"' . $this->name . '"';
+      $rtn .= ',"age":"' . $this->age  . '"';
       $count = count($this->positions);
       if ($count > 0) {
         $rtn .= ',"positions":[';
@@ -216,7 +217,6 @@
         $rtn .= ',"balk":"' . $this->balk . '"';
         $rtn .= ',"wp":"' . $this->wp . '"';
         $rtn .= ',"batting":"' . $this->batting . '"';
-        $rtn .= ',"age":"' . $this->age  . '"';
         $rtn .= '}';
       }
       $rtn .= '}}';

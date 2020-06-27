@@ -47,8 +47,10 @@
         if ($conf['year'] == $year) $this->config = $conf;
       }
       $w = [];
+      $pssG = [];
       foreach ($this->config['teams'] as $key => $team) {
         $w[$team['franchise']] = 0;
+        $pssG[$team['franchise']] = [];
       }
       $yearLess = $year - 1;
       $results = file_get_contents("../../" . $yearLess . "/misc/rec_team.html");
@@ -186,39 +188,112 @@
         $this->addSI($t,$div[$divs[($div_off + $mult + $c)%$c]][$team_off]['franchise'],0,3);
         $series = [];
         $count = 0;
-        if ($rf->games[$t])
-        foreach ($rf->games[$t] as $gm) {
+        if ($rf->games[$t]) {
+          foreach ($rf->games[$t] as $gm) {
 //var_dump($this->schedules[$t]);          
 //var_dump($gm);
-          $count ++;
-          if ($count == count($rf->games[$t])) array_push($series,$gm);
-          if ($count == count($rf->games[$t]) || count($series) == 4 || (count($series) > 0 && ($series[0]->team_[0] != $gm->team_[0] || $series[0]->team_[1] != $gm->team_[1]))) {
-            if ($series[0]->team_[0] == $t) {
-              $side = "away";
-              $oside = "home_";
-              $off = 1;
-            } else {
-              $side="home";
-              $oside = "away_";
-              $off = 0;
-            }
-            $added=false;
-            foreach ($this->schedules[$t][$side] as $sg) {
-              if ($series[0]->team_[$off] == $sg->$oside && count($series) == $sg->games_ && count($sg->results_) == 0 && ! $added) {
-                foreach ($series as $gmm) 
-                  array_push($sg->results_,$gmm);
-                $added=true;
+            $count ++;
+            if ($count == count($rf->games[$t])) array_push($series,$gm);
+            if ($count == count($rf->games[$t]) || count($series) == 4 || (count($series) > 0 && ($series[0]->team_[0] != $gm->team_[0] || $series[0]->team_[1] != $gm->team_[1]))) {
+              if ($series[0]->team_[0] == $t) {
+                $side = "away";
+                $oside = "home_";
+                $off = 1;
+              } else {
+                $side="home";
+                $oside = "away_";
+                $off = 0;
               }
-            }         
-            //if (! $added) {
-              //var_dump($series);
-              //print "Shouldn't get here " . $series[0]->team_[0] . " at " .  $series[0]->team_[1] . "(" . $t . ") for " . count($series) . "\n";
-            //}
-            $series = [];
+              $added=false;
+              foreach ($this->schedules[$t][$side] as $sg) {
+                if ($series[0]->team_[$off] == $sg->$oside && count($series) == $sg->games_ && count($sg->results_) == 0 && ! $added) {
+                  foreach ($series as $gmm) 
+                    array_push($sg->results_,$gmm);
+                  $added=true;
+                }
+              }         
+              //if (! $added) {
+                //var_dump($series);
+                //print "Shouldn't get here " . $series[0]->team_[0] . " at " .  $series[0]->team_[1] . "(" . $t . ") for " . count($series) . "\n";
+              //}
+              $series = [];
+            }
+            array_push($series,$gm);
           }
-          array_push($series,$gm);
         }
       }  
+      $psss = glob('../data/'. $year . '/*.pss');
+      foreach ($psss as $pss) {
+        $fn = str_replace('.pss','',preg_replace('/.*\//',"",$pss));
+        $a = substr($fn,0,3);
+        $ag = intval(substr($fn,3,3));
+        $h = substr($fn,6,3);
+        $hg = intval(substr($fn,9,3));
+        $g = Game::getGameFromScoreSheet($year,$a,$ag,$h,$hg);
+        $pssG[strtolower($a)][$ag-1] = $g;
+        $pssG[strtolower($h)][$hg-1] = $g;
+      }
+      foreach ($this->schedules as $t => $sched) {
+        if (count($pssG[$t]) == 0) continue;
+error_log($t.PHP_EOL,3,'error_log');
+error_log(count($pssG[$t]).PHP_EOL,3,'error_log');
+//error_log(print_r($sched,true).PHP_EOL,3,'error_log');
+        $series = [];
+        $h='';
+        $a='';
+        $i=0;
+        foreach ($pssG[$t] as $g) {
+          $i++;
+          //error_log($g->toString().PHP_EOL,3,'error_log');
+                    //error_log($g->team_[0].PHP_EOL,3,'error_log');
+          if (strtolower($g->team_[0]) == $t) {
+            $side = 'away'; 
+            $oside = 'home';
+          } else  {
+            $side = 'home';
+            $oside = 'away'; 
+          }
+          if (($a != strtolower($g->team_[0]) || $h != $g->team_[1] || count($series) == 4) && (count($series) != 0)) {
+            $inserted = false;
+            foreach ($sched[$oside] as $s) {
+              if ($s->home_ == $h && $s->away_ == $a && $s->games_ == count($series) && (($s->season_ == 0 && $series[0]->gameNumber_[0] < 85) || ($s->season_ == 1 && $series[0]->gameNumber_[0] > 84))) {
+                $inserted = true;
+                $series[count($series-1)]->seriesComplete_ = true;
+                $s->results_ = array_slice($series,0);
+                $series = [];
+              }
+            }
+            if (! $inserted) {
+              error_log('Failed to insert series'.PHP_EOL,3,'error_log');
+              error_log(print_r($series,true).PHP_EOL,3,'error_log');
+            }
+          }
+          $oside = $side;
+          $a = strtolower($g->team_[0]);
+          $h = strtolower($g->team_[1]);
+          array_push($series,$g);
+          if ($i == count($pssG[$t])) {
+            $inserted = false;
+            foreach ($sched[$oside] as $s) {
+              if ($s->home_ == $h && $s->away_ == $a && (($s->season_ == 0 && $series[0]->gameNumber_[0] < 85) || ($s->season_ == 1 && $series[0]->gameNumber_[0] > 84)) && ! $inserted) {
+                $inserted = true;
+                $series[count($series-1)]->seriesComplete_ = true;
+                $s->results_ = array_slice($series,0);
+                $series = [];
+              }
+            }
+            if (! $inserted) {
+              error_log('Failed to insert last series'.PHP_EOL,3,'error_log');
+              error_log($a.PHP_EOL,3,'error_log');
+              error_log($h.PHP_EOL,3,'error_log');
+              error_log($series[0]->gameNumber_.PHP_EOL,3,'error_log');
+              error_log(print_r($series,true).PHP_EOL,3,'error_log');
+            }
+          }
+          //error_log(print_r($sched[$side],true).PHP_EOL,3,'error_log');
+          
+        }
+      }
       //print($this->getSchedule('pit')); print "<br/>";
     }
 
