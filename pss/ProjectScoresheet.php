@@ -27,10 +27,12 @@
     public $teamName_;
     public $gameNumber_;
     public $lineup_;
+    public $roster_;
     public $results_;
     public $date_ = "";
     public $startTime_ = "";
     public $duration_ = "";
+    public $weather_ = "";
     public $situation_;
     private $result_;
     private $plus_ = false;
@@ -39,11 +41,13 @@
       $this->teamName_ = array();
       $this->gameNumber_ = array();
       $this->lineup_ = array();
+      $this->roster_ = array();
       $this->results_ = array();
       foreach (Side::sides() as $key => $side) {
         $this->teamName_[$side] = "";
         $this->gameNumber_[$side] = 0;
         $this->lineup_[$side] = new Lineup;
+        $this->roster_[$side] = array();
         $this->results_[$side] = array();
       }
       $this->situation_ = new Situation;
@@ -63,17 +67,32 @@
       #Lineup
       $inst->lineup_[0] = Lineup::fromString('"lineup":' . json_encode($v->lineup) . ',"rotation":' . json_encode($v->rotation));
       $inst->lineup_[1] = Lineup::fromString('"lineup":' . json_encode($h->lineup) . ',"rotation":' . json_encode($h->rotation));
-      foreach($v->results as $rslt) {
-        $r = Result::fromString(json_encode($rslt));
-        array_push($inst->results_[0],$r);
+      if ($v->roster != null) {
+        foreach($v->roster as $r) {
+          array_push($inst->roster_[0],$r);
+        }
       }
-      foreach($h->results as $rslt) {
-        $r = Result::fromString(json_encode($rslt));
-        array_push($inst->results_[1],$r);
+      if ($h->roster != null) {
+        foreach($h->roster as $r) {
+          array_push($inst->roster_[1],$r);
+        }
       }
-      if ($json->date) $this->date_ = $json->date;
-      if ($json->startTime) $this->startTime_ = $json->startTime;
-      if ($json->duration) $this->duration_ = $json->duration;
+      if ($v->results != null) {
+        foreach($v->results as $rslt) {
+          $r = Result::fromString(json_encode($rslt));
+          array_push($inst->results_[0],$r);
+        }
+      }
+      if ($h->results != null) {
+        foreach($h->results as $rslt) {
+          $r = Result::fromString(json_encode($rslt));
+          array_push($inst->results_[1],$r);
+        }
+      }
+      if ($json->date) $inst->date_ = $json->date;
+      if ($json->startTime) $inst->startTime_ = $json->startTime;
+      if ($json->duration) $inst->duration_ = $json->duration;
+      if ($json->weather) $inst->weather_ = $json->weather;
       //$inst->debugOn();
       $inst->updateSituation();
       return $inst;
@@ -85,17 +104,23 @@
         $rtn .= '"name":"' .  $this->teamName_[$side] . '"';
         $rtn .= ',"gameNumber":"' . $this->gameNumber_[$side] . '"';
         $rtn .= ',' . $this->lineup_[$side]->toString();
-        $rtn .= ',"results":[';
+        $rtn .= ',"roster":[';
+        for ($i = 0; $i < count($this->roster_[$side]); $i++) {
+          if ($i > 0) $rtn .= ",";
+          $rtn .= '"' . $this->roster_[$side][$i] . '"';
+        }
+        $rtn .= '],"results":[';
         for ($i = 0; $i < count($this->results_[$side]); $i++) {
           if ($i > 0) $rtn .= ",";
-          $rtn .= $this->results_[$side][$i]->toString();
+          $rtn .= '"' . $this->results_[$side][$i]->toString() . '"';
         }
         $rtn .= ']';
         $rtn .= '}';
       }
-      if (! $this->date_ === "") $rtn .= ',"date":"' . $this->date_ . '"';
-      if (! $this->startTime_ === "") $rtn .= ',"startTime":"' . $this->startTime_ . '"';
-      if (! $this->duration_ === "") $rtn .= ',"duration":"' . $this->duration_ . '"';
+      if ($this->date_ != "") $rtn .= ',"date":"' . $this->date_ . '"';
+      if ($this->startTime_ != "") $rtn .= ',"startTime":"' . $this->startTime_ . '"';
+      if ($this->duration_ != "") $rtn .= ',"duration":"' . $this->duration_ . '"';
+      if ($this->weather_ != "") $rtn .= ',"weather":"' . $this->weather_ . '"';
       $rtn .= '}';
       return $rtn;
     }

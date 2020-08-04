@@ -12,10 +12,11 @@ var RotationComponent = {
           <a role='button' class='btn btn-lg btn-link'href='/jhmlhome.html'>JHML Home</a>
         </b-col>
       </b-row>
-      <h1><center>{{ year() }} {{ team.team_name }}</center></h1>
+      <p class="h1 text-center">{{ year() }} {{ team.team_name }}</p>
+      <p class="h5 text-center">{{ totalStarts }} of {{ games() }} Scheduled</p>
       <b-row v-for='rotations in chunkedRotation' v-bind:key='rotations[0].game'>
         <b-col class='fixed mt-2' cols='12' sm='6' lg='3' v-for='rot in rotations' v-bind:key='rot.game'>
-          <span v-html='pprintGame(rot.game)' />: <b-form-select style='width:80%' v-model='rot.pitcher' v-bind:options='options' v-on:change='calculateStarts()'/>
+          <span v-html='pprintGame(rot.game)' />: <b-form-select style='width:80%' v-model='rot.pitcher' v-bind:state="selectionClass(rot)" v-bind:options='options' v-on:change='calculateStarts()'/>
         </b-col>
       </b-row>
       <b-row class='float-right'>
@@ -28,6 +29,7 @@ var RotationComponent = {
       <b-row>
         <b-col cols='12' lg='8'>
           <b-table striped hover small outlined bordered v-bind:items="starters" v-bind:fields="fields">
+            <template v-slot:table-caption> {{ totalStarts }} of {{ games() }} Scheduled </template>
             <template slot="innings" slot-scope="data">
               {{ data.item.innings == undefined ? 0 : data.item.innings }}
             </template>
@@ -54,6 +56,7 @@ var RotationComponent = {
         {key: 'starts', tdClass: "text-right", thClass: "text-center"},
         {key: 'innings_per_start', tdClass: "text-right", thClass: "text-center"},
       ],
+      totalStarts: 0,
     }
   },
   computed: {
@@ -72,6 +75,7 @@ var RotationComponent = {
   methods: {
     currentComponent() { if (vue == undefined) return ''; return vue.currentComponent; },
     year() { if (vue == undefined) return ''; return vue.year; },
+    games() { if (vue == undefined) return 0; return vue.games; },
     rosterChanged() {
       if (vue == undefined) return;
       if (vue.roster == undefined || vue.roster == null) return;
@@ -82,7 +86,7 @@ var RotationComponent = {
           //console.log(b.rosterItem.player);
           if (b.rosterItem.player.strat.endurance.includes('S(')) {
             this.options.push({'value':b.rosterItem.player.name,'text':b.rosterItem.player.name});
-            this.starters.push({'name':b.rosterItem.player.name,'innings':(Math.trunc(b.rosterItem.player.strat.ip*102/162*1.1*3)/3).toFixed(1),'starts':0});
+            this.starters.push({'name':b.rosterItem.player.name,'innings':(Math.trunc(b.rosterItem.player.strat.ip*vue.games/vue.mlb_games*1.1*3)/3).toFixed(1),'starts':0,'starred':b.rosterItem.player.strat.endurance.includes('*')});
           }
         }
         this.calculateStarts();
@@ -122,14 +126,21 @@ var RotationComponent = {
     calculateStarts() {
       if (vue == undefined) return;
       for (s of this.starters) s.starts = 0;
+      this.totalStarts = 0;
       for (p of vue.rotation.rotation.rotation) {
         if (p.pitcher == '') continue;
         for (s of this.starters) {
           if (p.pitcher == s.name) {
             s.starts ++;
+            this.totalStarts ++;
           }
         }
       }
+    },
+    selectionClass(p) {
+      //console.log(p.game + ' - ' + p.pitcher);
+      if (p.pitcher == '') return false;
+      return null;
     }
   },
 };

@@ -189,5 +189,17 @@
       $g->loadScoreSheet();
       return $g;
     }
+    public static function findGameforTeam($year,$team,$game) {
+      $pss = glob('../data/'. $year . '/*' . strtoupper($team) . sprintf('%03d', $game[0]). '*.pss');
+      if (count($pss) != 1) return null;
+      $g = new Game($year);
+      $fn = str_replace('.pss','',preg_replace('/.*\//',"",$pss[0]));
+      $g->team_[0] = substr($fn,0,3);
+      $g->gameNumber_[0] = intval(substr($fn,3,3));
+      $g->team_[1] = substr($fn,6,3);
+      $g->gameNumber_[1] = intval(substr($fn,9,3));
+      $inst = \ProjectScoresheet\ProjectScoresheet::fromString(file_get_contents($g->scoreSheetName()));
+      return $inst;
+    }
   }
 ?>

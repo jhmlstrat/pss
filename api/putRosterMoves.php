@@ -13,6 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'PUT')
   //error_log(file_get_contents("php://input"),3,'error_log');
   //parse_str(file_get_contents("php://input"), $_PUT);
   $foo = json_decode(file_get_contents("php://input"));
+
   $data = isset($foo->data) ? $foo->data : die();
   //error_log(json_encode($data).PHP_EOL,3,'error_log');
 
@@ -29,11 +30,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'PUT')
   $rosters = new \Jhml\Rosters($year, false, false);
 
   foreach ($moves as $move) {
-    error_log($move->name.":".$move->moveType.PHP_EOL,3,'error_log');
+    //error_log($move->name.":".$move->moveType.PHP_EOL,3,'error_log');
     $rosters->addMove($team,$move->name,$game,$move->moveType);
   }
 
   $rosters->writeRosterFile();
-//\Jhml\Rotation::writeRotationFile(json_encode($data));
+  http_response_code(201);
 }
 ?>

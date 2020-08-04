@@ -26,6 +26,9 @@
   <script src="https://unpkg.com/vue-draggable/polyfills/index.js"></script>
 -->
   <script src="https://unpkg.com/lodash/lodash.min.js"></script>
+  <script src="gameComponent.vue" type="text/javascript"></script>
+  <script src="lineupComponent.vue" type="text/javascript"></script>
+  <script src="lineupsComponent.vue" type="text/javascript"></script>
   <script src="menuComponent.vue" type="text/javascript"></script>
   <script src="rosterComponent.vue" type="text/javascript"></script>
   <script src="rotationComponent.vue" type="text/javascript"></script>
@@ -49,10 +52,13 @@
         config: {},
         cyConfig: {},
         roster: {},
+        oRoster: {},
         rotation: {},
+        oRotation: {},
         schedule: {},
         team: {},
         game: 0,
+        games: 0,
         day: 0,
         betweenSeries: true,
         gameInProgress: false,
@@ -63,12 +69,27 @@
         majors: [],
         minors: [],
         il: [],
+        loadingConfig: false,
+        loadingGameInfo: false,
+        loadingRoster: false,
+        loadingRotation: false,
+        loadingSchedule: false,
+        gameInfo: {
+          'visitor':{
+            'name':'',
+            'gameNumber':''},
+          'home':{
+            'name':'',
+            'gameNumber':''},
+        },
       },
       components: {
+        gameComponent: GameComponent,
+        lineupsComponent: LineupsComponent,
         menuComponent: MenuComponent,
         rosterComponent: RosterComponent,
-        scheduleComponent: ScheduleComponent,
         rotationComponent: RotationComponent,
+        scheduleComponent: ScheduleComponent,
       },
       mounted: function() {
         if ("<?php echo $_GET['teamname']?>" !=  undefined) {
@@ -87,6 +108,14 @@
         },
       },
       methods: {
+        loading() {
+          if (this.loadingConfig) return true;
+          if (this.loadingGameInfo) return true;
+          if (this.loadingRoster) return true;
+          if (this.loadingRotation) return true;
+          if (this.loadingSchedule) return true;
+          return false;
+        },
         setTeamName(tn) {
           //console.log(tn);
           this.teamname = tn;
@@ -111,13 +140,14 @@
               }
             }
           }
-          this.loadRoster(); 
+          this.loadRoster(this.team.team); 
           this.loadSchedule(); 
-          this.loadRotation();
+          this.loadRotation(this.team.team);
         },
         loadConfig() {
           var self = this;
           let headers = {headers:{'X-Authorization':'TooManyMLs'}};
+          this.loadingConfig = true;
           axios.get('/pss/api/getConfig.php',headers)
           .then(function (response) {
             self.config = response.data;
@@ -143,56 +173,77 @@
                 }
               }
             }
+            self.loadingConfig = false;
           })
           .catch(function (error) {
             console.error(error);
           });
         },
-        loadRoster() {
+        loadGameInfo() {
           var self = this;
           let headers = {headers:{'X-Authorization':'TooManyMLs'}};
-          axios.get('/pss/api/getRoster.php?team='+this.teamname+'&year='+this.year,headers)
+          this.loadingGameInfo = true;
+          axios.get('/pss/api/getGameInfo.php?team='+this.teamname+'&year='+this.year+'&game='+this.game,headers)
           .then(function (response) {
-            self.roster = response.data;
-            //console.log(JSON.stringify(self.roster));
-            self.setGame();
-            self.majors = [];
-            self.minors = [];
-            self.il = [];
-            if (self.roster.roster.batters) {
-              for (b of self.roster.roster.batters) {
-                //console.log(b)
-                let lm=self.lastMove(b.rosterItem);
-                let mt=lm.lastMove;
-                let mg=lm.gameNumber;
-                //console.log(lm);
-                // Ignore 'Traded'
-                if (mt == 'Fm minors' || mt == 'Off DL') {
-                  self.majors.push(b.rosterItem);
-                } else if (mt == 'To minors' || mt == 'Traded for') {
-                  self.minors.push(b.rosterItem);
-                } else if (mt == 'On DL') {
-                  self.il.push(b.rosterItem);
+            self.gameInfo = response.data;
+            self.loadingGameInfo = false;
+            self.emitData();
+          })
+          .catch(function (error) {
+            console.error(error);
+          });
+        },
+        loadRoster(team) {
+          var self = this;
+          let headers = {headers:{'X-Authorization':'TooManyMLs'}};
+          this.loadingRoster = true;
+          axios.get('/pss/api/getRoster.php?team='+team+'&year='+this.year,headers)
+          .then(function (response) {
+            if (team == self.teamname) {
+              self.roster = response.data;
+              //console.log(JSON.stringify(self.roster));
+              self.setGame();
+              self.majors = [];
+              self.minors = [];
+              self.il = [];
+              if (self.roster.roster.batters) {
+                for (b of self.roster.roster.batters) {
+                  //console.log(b)
+                  let lm=self.lastMove(b.rosterItem);
+                  let mt=lm.lastMove;
+                  let mg=lm.gameNumber;
+                  //console.log(lm);
+                  // Ignore 'Traded'
+                  if (mt == 'Fm minors' || mt == 'Off DL') {
+                    self.majors.push(b.rosterItem);
+                  } else if (mt == 'To minors' || mt == 'Traded for') {
+                    self.minors.push(b.rosterItem);
+                  } else if (mt == 'On DL') {
+                    self.il.push(b.rosterItem);
+                  }
                 }
               }
-            }
-            if (self.roster.roster.pitchers) {
-              for (b of self.roster.roster.pitchers) {
-                //console.log(b)
-                let lm=self.lastMove(b.rosterItem);
-                let mt=lm.lastMove;
-                let mg=lm.gameNumber;
-                //console.log(lm);
-                // Ignore 'Traded'
-                if (mt == 'Fm minors' || mt == 'Off DL') {
-                  self.majors.push(b.rosterItem);
-                } else if (mt == 'To minors' || mt == 'Traded for') {
-                  self.minors.push(b.rosterItem);
-                } else if (mt == 'On DL') {
-                  self.il.push(b.rosterItem);
+              if (self.roster.roster.pitchers) {
+                for (b of self.roster.roster.pitchers) {
+                  //console.log(b)
+                  let lm=self.lastMove(b.rosterItem);
+                  let mt=lm.lastMove;
+                  let mg=lm.gameNumber;
+                  //console.log(lm);
+                  // Ignore 'Traded'
+                  if (mt == 'Fm minors' || mt == 'Off DL') {
+                    self.majors.push(b.rosterItem);
+                  } else if (mt == 'To minors' || mt == 'Traded for') {
+                    self.minors.push(b.rosterItem);
+                  } else if (mt == 'On DL') {
+                    self.il.push(b.rosterItem);
+                  }
                 }
               }
+            } else {
+              self.oRoster = response.data;
             }
+            self.loadingRoster = false;
             self.emitData();
           })
           .catch(function (error) {
@@ -206,13 +257,19 @@
           if (this.majors.length <= this.roster_size) return true;
           return false;
         },
-        loadRotation() {
+        loadRotation(team) {
           var self = this;
+          this.loadingRotation = true;
           let headers = {headers:{'X-Authorization':'TooManyMLs'}};
-          axios.get('/pss/api/getRotation.php?team='+this.teamname+'&year='+this.year,headers)
+          axios.get('/pss/api/getRotation.php?team='+team+'&year='+this.year,headers)
           .then(function (response) {
-            self.rotation = response.data;
+            if (team == self.teamname) {
+              self.rotation = response.data;
+            } else {
+              self.oRotation = response.data;
+            }
             //console.log(self.rotation);
+            self.loadingRotation = false;
             self.emitData();
           })
           .catch(function (error) {
@@ -221,12 +278,14 @@
         },
         loadSchedule() {
           var self = this;
+          this.loadingSchedule = true;
           let headers = {headers:{'X-Authorization':'TooManyMLs'}};
           axios.get('/pss/api/getSchedule.php?team='+this.teamname+'&year='+this.year,headers)
           .then(function (response) {
             self.schedule = response.data;
             //console.log(JSON.stringify(self.schedule));
             self.setGame();
+            self.loadingSchedule = false;
             self.emitData();
           })
           .catch(function (error) {
@@ -243,6 +302,13 @@
         setGame() {
           //console.log(this.schedule);
           this.game = 1;
+          this.games = 0;
+          for (s of this.schedule.away) {
+            this.games = this.games + parseInt(s.scheduleItem.numberOfGames);
+          }
+          for (s of this.schedule.home) {
+            this.games = this.games + parseInt(s.scheduleItem.numberOfGames);
+          }
           this.betweenSeries = true;
           this.gameInProgress = false;
           this.injury = false;
@@ -270,6 +336,7 @@
             }
             if (this.schedule.results[this.day-1].final == false) {
               this.gameInProgress = true;
+              this.betweenSeries = false;
             } else {
               this.game = this.game + 1;
               this.betweenSeries = this.schedule.results[this.day-1].seriesComplete;
@@ -306,12 +373,21 @@
                 if (dg == 0) continue;
                 if ((this.day - dg) > this.il_length) this.injury = true;
               } else {
-                li=lastInjury(this.roster.roster.batters[i].rosterItem);
+                li=this.lastInjury(this.roster.roster.batters[i].rosterItem);
                 lastI=li.lastInjury;
                 dur=li.duration;
                 if (lastI == 0) continue;
                 if ((this.day - lastI) <= dur) this.injury = true;
               }
+            }
+          } else {
+            s = this.schedule.results[this.day-2];
+            if (s.away.team.toLowerCase() == this.teamname) {
+              this.loadRoster(s.home.team.toLowerCase());
+              this.loadRotation(s.home.team.toLowerCase());
+            } else {
+              this.loadRoster(s.away.team.toLowerCase());
+              this.loadRotation(s.away.team.toLowerCase());
             }
           }
           //console.log(this.game);

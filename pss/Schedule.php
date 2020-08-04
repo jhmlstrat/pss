@@ -235,8 +235,8 @@
       }
       foreach ($this->schedules as $t => $sched) {
         if (count($pssG[$t]) == 0) continue;
-error_log($t.PHP_EOL,3,'error_log');
-error_log(count($pssG[$t]).PHP_EOL,3,'error_log');
+//error_log($t.PHP_EOL,3,'error_log');
+//error_log(count($pssG[$t]).PHP_EOL,3,'error_log');
 //error_log(print_r($sched,true).PHP_EOL,3,'error_log');
         $series = [];
         $h='';
@@ -258,7 +258,7 @@ error_log(count($pssG[$t]).PHP_EOL,3,'error_log');
             foreach ($sched[$oside] as $s) {
               if ($s->home_ == $h && $s->away_ == $a && $s->games_ == count($series) && (($s->season_ == 0 && $series[0]->gameNumber_[0] < 85) || ($s->season_ == 1 && $series[0]->gameNumber_[0] > 84))) {
                 $inserted = true;
-                $series[count($series-1)]->seriesComplete_ = true;
+                $series[count($series)-1]->seriesComplete_ = true;
                 $s->results_ = array_slice($series,0);
                 $series = [];
               }
@@ -272,12 +272,13 @@ error_log(count($pssG[$t]).PHP_EOL,3,'error_log');
           $a = strtolower($g->team_[0]);
           $h = strtolower($g->team_[1]);
           array_push($series,$g);
+          //error_log(print_r($series,true).PHP_EOL,3,'error_log');
           if ($i == count($pssG[$t])) {
             $inserted = false;
             foreach ($sched[$oside] as $s) {
               if ($s->home_ == $h && $s->away_ == $a && (($s->season_ == 0 && $series[0]->gameNumber_[0] < 85) || ($s->season_ == 1 && $series[0]->gameNumber_[0] > 84)) && ! $inserted) {
                 $inserted = true;
-                $series[count($series-1)]->seriesComplete_ = true;
+                $series[count($series)-1]->seriesComplete_ = true;
                 $s->results_ = array_slice($series,0);
                 $series = [];
               }

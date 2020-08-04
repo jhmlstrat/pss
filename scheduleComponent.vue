@@ -45,9 +45,9 @@ var ScheduleComponent = {
             <span v-html="teamName(schedule.away[n-1].scheduleItem.homeTeam)"></span>
             ({{ schedule.away[n-1].scheduleItem.numberOfGames }})
             <span v-html="results(schedule.away[n-1].scheduleItem,'a')"></span>
-            <b-button variant='primary' size='sm' href='#' v-on:click="doStartSeries(schedule.home[n-1].scheduleItem)" v-show="startSeries(schedule.away[n-1].scheduleItem,'a')">Start Series</b-button>
-            <b-button variant='primary' size='sm' href='#' v-on:click="doNextGame(schedule.home[n-1].scheduleItem)" v-show="nextGame(schedule.away[n-1].scheduleItem,'a')">Next Game</b-button>
-            <b-button variant='primary' size='sm' href='#' v-on:click="doResumeGame(schedule.home[n-1].scheduleItem)" v-show="resumeGame(schedule.away[n-1].scheduleItem,'a')">Resume Game</b-button>
+            <b-button variant='primary' size='sm' href='#' v-on:click="doStartSeries(schedule.away[n-1].scheduleItem)" v-show="startSeries(schedule.away[n-1].scheduleItem,'a')">Start Series</b-button>
+            <b-button variant='primary' size='sm' href='#' v-on:click="doNextGame(schedule.away[n-1].scheduleItem)" v-show="nextGame(schedule.away[n-1].scheduleItem,'a')">Next Game</b-button>
+            <b-button variant='primary' size='sm' href='#' v-on:click="doResumeGame(schedule.away[n-1].scheduleItem)" v-show="resumeGame(schedule.away[n-1].scheduleItem,'a')">Resume Game</b-button>
           </span>
         </b-col>
       </b-row>
@@ -135,6 +135,7 @@ var ScheduleComponent = {
       fall: 0,
       config: [],
       fetching: false,
+      home: true,
       opponent: {
         'city':'',
         'team':'',
@@ -174,6 +175,10 @@ var ScheduleComponent = {
       vue.currentComponent='menuComponent';
       vue.emitData();
     },
+    switchToLineups() {
+      vue.currentComponent='lineupsComponent';
+      vue.emitData();
+    },
     teamName(team) {
       rtn = team;
       for (t of this.config.teams) {
@@ -197,15 +202,33 @@ var ScheduleComponent = {
     },
     startGame() {
       this.$refs['startGameModal'].hide();
-      console.log(this.team.team);
-      console.log(this.gameNumber);
-      console.log(this.opponent.team);
-      console.log(this.opponent.gameNumber);
-      console.log(this.gameDate);
+      var self = this;
+      let headers = {headers:{'X-Authorization':'TooManyMLs'}};
+      axios.put('/pss/api/putStartGame.php',{data: { 'year':vue.year,
+                                                     'away':(this.home?this.opponent.team:this.team.team),
+                                                     'agame':(this.home?this.opponent.gameNumber:this.gameNumber),
+                                                     'home':(this.home?this.team.team:this.opponent.team),
+                                                     'hgame':(this.home?this.gameNumber:this.opponent.gameNumber),
+                                                     'date':this.gameDate,
+                                                     'weather':this.weather.toLowerCase()}}
+                ,headers)
+        .then(function (response) {
+console.log(response);
+          vue.loadGameInfo();
+          self.switchToLineups();
+        })
+        .catch(function (error) {
+          console.error(error);
+      });
     },
     doStartSeries(si) {
-      if (si.homeTeam == this.team.team) this.opponent.team = si.awayTeam;
-      else this.opponent.team = si.homeTeam;
+      if (si.homeTeam == this.team.team) {
+        this.opponent.team = si.awayTeam;
+        this.home = true;
+      } else { 
+        this.opponent.team = si.homeTeam;
+        this.home = false;
+      }
       for (t of this.config.teams) {
         if (t.team == this.opponent.team) this.opponent.city=t.city;
       }
@@ -214,10 +237,10 @@ var ScheduleComponent = {
       axios.get('/pss/api/getGameNumber.php?team='+this.opponent.team+'&year='+vue.year,headers)
         .then(function (response) {
           let d = response.data;
-          console.log(d);
-          console.log(d.gameNumber);
+          //console.log(d);
+          //console.log(d.gameNumber);
           self.opponent.gameNumber = d.gameNumber;
-          console.log(self.opponent);
+          //console.log(self.opponent);
           self.$refs['startGameModal'].show();
         })
         .catch(function (error) {
@@ -241,13 +264,15 @@ var ScheduleComponent = {
       if (! this.rosterValid()) return false;
       if (vue == undefined) return false;
       if (vue.betweenSeries) return false;
-      if (vue.gameInProgress) return false;
+      if (! vue.gameInProgress) return false;
       rl = si.results.length;
       if (rl == 0) return false;
       if (si.results[rl-1].final == true) return false;
       return true;
     },
     doResumeGame(si) {
+      vue.loadGameInfo();
+      this.switchToLineups();
     },
 
   },

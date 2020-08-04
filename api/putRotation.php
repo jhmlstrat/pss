@@ -24,4 +24,5 @@ $data = isset($_PUT['data']) ? $_PUT['data'] : die();
 include_once '../pss/Rotation.php';
 
 \Jhml\Rotation::writeRotationFile(json_encode($data));
+http_response_code(201);
 ?>
