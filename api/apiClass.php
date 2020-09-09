@@ -726,7 +726,7 @@ class ApiClass {
 
   function testSituation() {
     $sit = new \ProjectScoresheet\Situation;
-    $expected='{"situation":{"outs":"0","runsV":"0","runsH":"0","hitsV":"0","hitsH":"0","errorsV":"0","errorsH":"0","inning":"1","side":"0","first":"","second":"","third":"","batter":"","pitcher":"","gameOver":"false"}}';
+    $expected='{"situation":{"outs":"0","runsV":"0","runsH":"0","hitsV":"0","hitsH":"0","errorsV":"0","errorsH":"0","inning":"1","side":"0","first":"","second":"","third":"","batter":"","pitcher":"","betweenInnings":true,"gameOver":false}}';
     if ($sit->toString() !== $expected) {
       print "Error 1<br>";
       print $sit->toString() . "<br>";
@@ -734,7 +734,7 @@ class ApiClass {
       exit;
     }
     $sit->switchSides();
-    $expected='{"situation":{"outs":"0","runsV":"0","runsH":"0","hitsV":"0","hitsH":"0","errorsV":"0","errorsH":"0","inning":"1","side":"1","first":"","second":"","third":"","batter":"","pitcher":"","gameOver":"false"}}';
+    $expected='{"situation":{"outs":"0","runsV":"0","runsH":"0","hitsV":"0","hitsH":"0","errorsV":"0","errorsH":"0","inning":"1","side":"1","first":"","second":"","third":"","batter":"","pitcher":"","betweenInnings":true,"gameOver":false}}';
     if ($sit->toString() !== $expected) {
       print "Error 2<br>";
       print $sit->toString() . "<br>";
@@ -744,7 +744,7 @@ class ApiClass {
     $sit->runs[\ProjectScoresheet\Side::Visitor]=3;
     $sit->runs[\ProjectScoresheet\Side::Home]=3;
     $sit->inning=9;
-    $expected='{"situation":{"outs":"0","runsV":"3","runsH":"3","hitsV":"0","hitsH":"0","errorsV":"0","errorsH":"0","inning":"9","side":"1","first":"","second":"","third":"","batter":"","pitcher":"","gameOver":"false"}}';
+    $expected='{"situation":{"outs":"0","runsV":"3","runsH":"3","hitsV":"0","hitsH":"0","errorsV":"0","errorsH":"0","inning":"9","side":"1","first":"","second":"","third":"","batter":"","pitcher":"","betweenInnings":true,"gameOver":false}}';
     if ($sit->toString() !== $expected) {
       print "Error 3<br>";
       print $sit->toString() . "<br>";
@@ -754,7 +754,7 @@ class ApiClass {
     $sit->addRun();
     $sit->addHit();
     $sit->addError();
-    $expected='{"situation":{"outs":"0","runsV":"3","runsH":"4","hitsV":"0","hitsH":"1","errorsV":"1","errorsH":"0","inning":"9","side":"1","first":"","second":"","third":"","batter":"","pitcher":"","gameOver":"true"}}';
+    $expected='{"situation":{"outs":"0","runsV":"3","runsH":"4","hitsV":"0","hitsH":"1","errorsV":"1","errorsH":"0","inning":"9","side":"1","first":"","second":"","third":"","batter":"","pitcher":"","betweenInnings":true,"gameOver":true}}';
     if ($sit->toString() !== $expected) {
       print "Error 4<br>";
       print $sit->toString() . "<br>";
