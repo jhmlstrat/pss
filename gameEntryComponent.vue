@@ -165,6 +165,8 @@ GameEntryComponent
       </b-row>
       <b-modal id="verify-runners" title="Verify Runners" hide-header-close>
       </b-modal>
+      <b-modal id="infield-position" title="Infield Positioning"  hide-header-close>
+      </b-modal>
 <!--
     {{ gameInfo }}   
 -->
