@@ -82,7 +82,8 @@
                '"third":"' . ($this->runner[3] == null ? "" : trim($this->runner[3]->name)) . '",' .
                '"batter":"' . ($this->batter == null ? "" : trim($this->batter->name)) . '",' .
                '"pitcher":"' . ($this->pitcher == null ? "" : trim($this->pitcher->name)) . '",' .
-               '"gameOver":"' . ($this->gameOver()?"true":"false") . '"}}';
+               '"betweenInnings":' . ($this->betweenInnings?"true":"false") . ',' .
+               '"gameOver":' . ($this->gameOver()?"true":"false") . '}}';
     }
     public function json() {
       return json_decode($this->toString());

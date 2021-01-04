@@ -33,10 +33,10 @@ var LineupsComponent = {
         <b-col cols='12'>
           <b-tabs v-show="gameInfo != {}">
             <b-tab v-bind:title="gameInfo.visitor.name.toUpperCase()" v-bind:active="team.team == gameInfo.visitor.name">
-              <lineup-component v-bind:side="gameInfo.visitor" v-bind:oside="gameInfo.home" v-bind:roster="vRoster()" v-bind:oroster="hRoster()" v-bind:rotation="vRotation()" v-bind:orotation="hRotation()" v-on:rotationUpdate="rotationUpdate('away',$event)"></lineup-component>
+              <lineup-component v-bind:side="gameInfo.visitor" v-bind:oside="gameInfo.home" v-bind:roster="vRoster()" v-bind:oroster="hRoster()" v-bind:rotation="vRotation()" v-bind:orotation="hRotation()" v-on:rotationUpdate="rotationUpdate('away',$event)" v-on:lineupUpdate="lineupUpdate('away',$event)"></lineup-component>
             </b-tab>
             <b-tab v-bind:title="gameInfo.home.name.toUpperCase()" v-bind:active="team.team == gameInfo.home.name">
-              <lineup-component v-bind:side="gameInfo.home" v-bind:oside="gameInfo.visitor" v-bind:roster="hRoster()" v-bind:oroster="vRoster()" v-bind:rotation="hRotation()" v-bind:orotation="vRotation()" v-on:rotationUpdate="rotationUpdate('home',$event)""></lineup-component>
+              <lineup-component v-bind:side="gameInfo.home" v-bind:oside="gameInfo.visitor" v-bind:roster="hRoster()" v-bind:oroster="vRoster()" v-bind:rotation="hRotation()" v-bind:orotation="vRotation()" v-on:rotationUpdate="rotationUpdate('home',$event)" v-on:lineupUpdate="lineupUpdate('away',$event)"></lineup-component>
             </b-tab>
           </b-tabs>
         </b-col>
@@ -47,7 +47,6 @@ var LineupsComponent = {
     return {
       team: {"team_name":""},
       teamname: 't',
-      config: {},
     }
   },
   components: {
@@ -56,7 +55,6 @@ var LineupsComponent = {
   watch: {
   },
   mounted() {
-    eBus.$on('configUpdated',(c) => { this.config = vue.cyConfig;});
     eBus.$on('teamUpdated',(t) => { this.team = t;});
     if (this.teamname == 't' && vue != undefined) vue.emitData();
   },
@@ -69,15 +67,13 @@ var LineupsComponent = {
       vue.currentComponent='menuComponent';
       vue.emitData();
     },
-    lineupsValid() {
-return true;
-    },
     teamInfo(s) {
+      if (! vue.cyConfig.teams) return;
       city = '';
       nickname = ''
       gameNumber = '';
       if (s.name != '') {
-        for (t of this.config.teams) {
+        for (t of vue.cyConfig.teams) {
           if (t.team == s.name) {
             city=t.city;
             nickname=t.team_name;
@@ -105,8 +101,8 @@ return true;
     },
     weather(g) {
       rtn = '<span id="weather-string" v-b-tooltip.hover title="';
-      if (g.weather) {
-        for (t of this.config.teams) {
+      if (g.weather && vue.cyConfig.teams) {
+        for (t of vue.cyConfig.teams) {
           if (t.team == g.home.name) {
             rtn += 'BPS: ';
             rtn += t.weather.values[g.weather].bps.left;
@@ -124,12 +120,41 @@ return true;
       rtn += '</span>';
       return rtn;
     },
+    lineupUpdate(side,event) {
+      if (side == 'home') {
+        vue.gameInfo.home.lineup = event;
+      } else {
+        vue.gameInfo.visitor.lineup = event;
+      }
+      var self = this;
+      let headers = {headers:{'X-Authorization':'TooManyMLs'}};
+      axios.put('/pss/api/updateLineup.php',{data: { 'year':vue.year,
+                                                     'game':vue.gameInfo}}
+                ,headers)
+        .then(function (response) {
+          vue.loadGameInfo();
+        })
+        .catch(function (error) {
+          console.error(error);
+      });
+    },
     rotationUpdate(side,event) {
       if (side == 'home') {
-        vue.gameInfo.home.rotation = event;
+        vue.gameInfo.home.rotation.push(event);
       } else {
-        vue.gameInfo.visitor.rotation = event;
+        vue.gameInfo.visitor.rotation.push(event);
       }
+      var self = this;
+      let headers = {headers:{'X-Authorization':'TooManyMLs'}};
+      axios.put('/pss/api/updateLineup.php',{data: { 'year':vue.year,
+                                                     'game':vue.gameInfo}}
+                ,headers)
+        .then(function (response) {
+          vue.loadGameInfo();
+        })
+        .catch(function (error) {
+          console.error(error);
+      });
     },
   },
 };

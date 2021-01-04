@@ -201,5 +201,10 @@
       $inst = \ProjectScoresheet\ProjectScoresheet::fromString(file_get_contents($g->scoreSheetName()));
       return $inst;
     }
+    public static function save($year,$game) {
+      $g = Game::getGameFromScoreSheet($year,$game->visitor->name,$game->visitor->gameNumber,$game->home->name,$game->visitor->gameNumber);
+      $inst = \ProjectScoresheet\ProjectScoresheet::fromString(json_encode($game));
+      file_put_contents($g->scoreSheetName(),$inst->toString());
+    }
   }
 ?>

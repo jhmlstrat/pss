@@ -9,25 +9,44 @@ var LineupComponent = {
 {{roster}}
 {{rotation}}
 -->
-
           <b-row class='mt-3'>
             <b-col cols='6'>
               <b-row>
                 <b-col cols="1">
                 </b-col>
                 <b-col>
-                  Opposing Pitcher: {{ ((!oside.rotation) || oside.rotation.length == 0) ? "Unassigned" : oside.rotation[oside.rotation.length - 1].name + '(' +  oPitchHand(oside.rotation[oside.rotation.length - 1].name) + ')'}}
+                  Opposing Pitcher: {{ ((!oside.rotation) || oside.rotation.length == 0) ? "Unassigned" : oside.rotation[oside.rotation.length - 1].player.name + '(' +  oPitchHand(oside.rotation[oside.rotation.length - 1].player.name) + ')'}}
                 </b-col>
               </b-row>
               <b-row  v-for="(sB,index) in selectedB" v-bind:key="index" class="mt-1">
                 <b-col cols="1">
                   {{ index + 1 }}
                 </b-col>
-                <b-col cols="9">
-                  <b-form-select v-model="selectedB[index]" v-bind:options="batterSelections"></b-form-select>
-                </b-col>
-                <b-col cols="2">
-                  <b-form-select v-model="selectedPos[index]" v-bind:options="posSelections"></b-form-select>
+                <b-col cols="11">
+<!--
+                  <b-table hover small v-bind:items="l_lineup[index]" v-bind:fields="lfields" thead-class="d-none">
+                  </b-table>
+-->
+                  <b-row v-for="(bat, iindex) in l_lineup[index]" v-bind:key="iindex">
+                    <b-col cols="6">
+                      {{bat.name}}
+                    </b-col>
+                    <b-col cols="2">
+                      {{bat.positions}}
+                    </b-col>
+                    <b-col cols="4">
+                      <b-button v-on:click='onMoveB(index)' size='sm' variant='primary' class='float-right ml-1 mb-1' v-show="iindex == l_lineup[index].length - 1">Move</b-button>
+                      <b-button v-on:click='onChangeB(index)' size='sm' variant='primary' class='float-right mr-1 mb-1' v-show="iindex == l_lineup[index].length - 1">Change</b-button>
+                    </b-col>
+                  </b-row>
+                  <b-row v-show="l_lineup[index].length == 0 || l_change[index]">
+                    <b-col cols="9">
+                      <b-form-select v-model="selectedB[index]" v-bind:options="batterSelections" v-show="! l_moveOnly[index]"></b-form-select>
+                    </b-col>
+                    <b-col cols="2">
+                      <b-form-select v-model="selectedPos[index]" v-bind:options="posSelections"></b-form-select>
+                    </b-col>
+                  </b-row>
                 </b-col>
               </b-row>
               <b-row v-show="errorString != ''" class="mt-3">
@@ -102,7 +121,6 @@ var LineupComponent = {
     return {
       team: {'team_name':''},
       teamname: 't',
-      config: {},
       availableBatters: [],
       batterSelections: [],
       selectedB: [],
@@ -134,10 +152,17 @@ var LineupComponent = {
         'hand',
         'endurance',
       ],
+      lfields: [
+        'name',
+        'positions',
+        'actions',
+      ],
       rfields: [
         'name',
       ],
       l_lineup: [[],[],[],[],[],[],[],[],[]],
+      l_change: [false,false,false,false,false,false,false,false,false],
+      l_moveOnly: [false,false,false,false,false,false,false,false,false],
       l_rotation: [],
       errorString: '',
       warnString: '',
@@ -150,77 +175,54 @@ var LineupComponent = {
     },
   },
   mounted() {
-    eBus.$on('configUpdated',(c) => { this.config = vue.cyConfig;});
     eBus.$on('teamUpdated',(t) => { this.team = t;});
+    this.setAvailableBatters();
+    this.setAvailablePitchers();
   },
   methods: {
     lineupValid() {
-      let pos=[false,false,false,false,false,false,false,false,false];
-      dupePlayer = false;
-      dupePos = false;
-      missingPlayer = false;
-      missingPos = false;
-      errorString = "";
-      warnString = "";
-      assigned = [];
+      let l = JSON.parse(JSON.stringify(this.side.lineup));
+      change = false;
       for (let i = 0; i < this.selectedB.length; i++) {
         b = this.selectedB[i];
-        if (b == '') {
-          missingPlayer = true;
-          continue;
-        }
-        if (assigned.includes(b)) { dupePlayer = true; }
-        else { assigned.push(b); }
-        if (this.selectedPos[i] == '') continue;
-        p = this.selectedPos[i];
-        for (a of this.roster.roster.batters) {
-          if (a.rosterItem.player.name == b) {
-            oop = true;
-            for (ps of a.rosterItem.player.strat.positionsPlayed) {
-              if (ps.position.pos == p) oop = false;
-            }
-            if (oop) warnString = 'Player out of position';
-          }
+        if (b != '') {
+          change = true;
+          a = {'player':{'name':b,'positions':[]}};
+          if (this.selectedPos[i] != '') a.player.positions.push({'position':{'pos':this.selectedPos[i]}});
+          l[i].push(a);
         }
       }
-      for (p of this.selectedPos) {
-        if (p == '') continue;
-        if (p == 'P' || p == 'DH') { pc = 0; }
-        if (p == 'C') { pc = 1; }
-        if (p == '1B') { pc = 2; }
-        if (p == '2B') { pc = 3; }
-        if (p == '3B') { pc = 4; }
-        if (p == 'SS') { pc = 5; }
-        if (p == 'LF') { pc = 6; }
-        if (p == 'CF') { pc = 7; }
-        if (p == 'RF') { pc = 8; }
-        if (pos[pc]) { dupePos = true; }
-        else { pos[pc] = true; }
-      }
-      for (p of pos) if (! p) missingPos = true;
-      if (dupePlayer) {
+      lv = vue.lineupValid(l);
+      if (lv.playerOutOfPosition) this.warnString = 'Player out of position';
+      else this.warnString = '';
+      errorString = '';
+      if (lv.duplicatePlayer) {
         errorString += 'Duplicate players assigned';
       }
-      if (dupePos) {
+      if (lv.duplicatePosition) {
         if (errorString != '') errorString += '<br/>';
         errorString += 'Duplicate positions assigned';
       }
-      if (missingPlayer) {
+      if (lv.missingPlayer) {
         if (errorString != '') errorString += '<br/>';
         errorString += 'Not all players assigned';
       }
-      if (missingPos) {
+      if (lv.missingPosition) {
         if (errorString != '') errorString += '<br/>';
         errorString += 'Not all positions assigned';
       }
       this.errorString = errorString;
-      this.warnString = warnString;
-      if (dupePlayer || dupePos || missingPlayer || missingPos) return false;
-      return true;
+      return change && lv.valid;
     },
     setAvailableBatters() {
       this.availableBatters = [];
       this.batterSelections=[{'value':'','text':''}];
+      for (i=0; i<this.side.lineup.length;i++) {
+        this.l_lineup[i] = [];
+        for (lu of this.side.lineup[i]) {
+          this.l_lineup[i].push({'name':lu.player.name,'positions':this.formatInGamePositions(lu.player.positions)});
+        }
+      }
       for (b of this.roster.roster.batters) {
         if (b.rosterItem.moves.length > 0 && b.rosterItem.moves[b.rosterItem.moves.length -1].move.moveType == 'To minors') continue;
         if (b.rosterItem.moves.length > 0 && b.rosterItem.moves[b.rosterItem.moves.length -1].move.moveType == 'On DL') continue;
@@ -229,7 +231,7 @@ var LineupComponent = {
         let inLineup = false;
         for (l of this.side.lineup) {
           for (lu of l) {
-            if (lu.name == b.rosterItem.player.name) inLineup=true;
+            if (lu.player.name == b.rosterItem.player.name) inLineup=true;
           }
         }
         if (inLineup) continue;
@@ -290,12 +292,41 @@ var LineupComponent = {
       }
       return rtn;
     },
+    formatInGamePositions(positions) {
+      rtn = '';
+      for (p of positions) {
+        if (rtn != '') rtn += ', ';
+        pm = p.position.pos;
+        if (pm == 'B1') pm = '1B';
+        if (pm == 'B2') pm = '2B';
+        if (pm == 'B3') pm = '3B';
+        rtn += pm;
+      }
+      return rtn;
+    },
     onSubmitB() {
+      for (let i=0; i<9; i++) {
+        if (this.selectedB[i] == '' && this.selectedpos[i] == '') continue;
+        pm = this.selectedPos[i];
+        if (pm == '1B') pm = 'B1';
+        if (pm == '2B') pm = 'B2';
+        if (pm == '3B') pm = 'B3';
+        if (this.side.lineup[i].length == 0 || this.side.lineup[i].player.name != this.selectedB[i]) {
+          this.side.lineup[i].push({'player':{'name':this.selectedB[i],'positions':[{'position':{'pos':pm}}]}});
+        } else {
+          if (this.side.lineup[i].player.positions[this.side.lineup[i].player.positions.length -1].position.pos != this.selectedpos[i]) {
+            this.side.lineup[i].player.positions.push({'position':{'pos':pm}});
+          }
+        }
+      }
+      this.setAvailableBatters();
+      this.$emit('lineupUpdate',this.side.lineup);
+      this.submittedB = true;
     },
     onSubmitP() {
-      this.side.rotation.push({'name':this.selectedP});
+      this.side.rotation.push({'player':{'name':this.selectedP}});
       this.setAvailablePitchers();
-      this.$emit('rotationUpdate',this.side.rotation);
+      this.$emit('rotationUpdate',this.side.rotation[this.side.rotation.length -1]);
       this.submittedP = true;
     },
     oPitchHand(pitch) {
@@ -304,7 +335,16 @@ var LineupComponent = {
           return p.rosterItem.player.strat.hand;
         }
       }
-    }
+    },
+    onMoveB(i) {
+      this.selectedB[i] = this.side.lineup[i][this.side.lineup[i].length-1].player.name;
+      this.l_change.splice(i, 1, true);
+      this.l_moveOnly.splice(i, 1, true);
+    },
+    onChangeB(i) {
+      this.l_change[i] = true;
+      this.l_change.splice(i, 1, true);
+    },
   },
 };
 

@@ -17,6 +17,19 @@ var GameComponent = {
           </b-button>
         </b-col>
       </b-row>
+      <b-row>
+        <b-col cols='6'>
+          <situation-component v-bind:gameInfo="gameInfo"></situation-component>
+        </b-col>
+        <b-col cols='6'>
+          <line-score-component v-bind:gameInfo="gameInfo"></line-score-component>
+        </b-col>
+      </b-row>
+      <b-row>
+        <b-col cols='12'>
+          <game-entry-component v-bind:gameInfo="gameInfo"></game-entry-component>
+        </b-col>
+      </b-row>
     </div>
   `,
   data() {
@@ -25,14 +38,25 @@ var GameComponent = {
       teamname: 't',
     }
   },
+  components: {
+    'game-entry-component': GameEntryComponent,
+    'line-score-component': LineScoreComponent,
+    'situation-component': SituationComponent,
+  },
   watch: {
   },
   mounted() {
-    eBus.$on('configUpdated',(c) => { this.config = vue.cyConfig;});
     eBus.$on('teamUpdated',(t) => { this.team = t;});
+  },
+  computed: {
+    gameInfo() { if (vue == undefined) return {'visitor':{'name':'','gameNumber':''},'home':{'name':'','gameNumber':''}}; return vue.gameInfo; },
   },
   methods: {
     currentComponent() { if (vue == undefined) return ''; return vue.currentComponent; },
+    switchToMenu() {
+      vue.currentComponent='menuComponent';
+      vue.emitData();
+    },
   },
 };
 

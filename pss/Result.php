@@ -14,7 +14,11 @@
       $js = json_decode($str);
       if (array_key_exists("before",$js->result)) $inst->before = $js->result->before;
       if (array_key_exists("during",$js->result)) $inst->during = $js->result->during;
-      if (array_key_exists("after",$js->result)) $inst->after = $js->result->after;
+      if (array_key_exists("after",$js->result)) {
+        $inst->after = $js->result->after;
+      } else {
+        if (array_key_exists("during",$js->result)) $inst->after = 'Bx';
+      }
       return $inst;
     }
     public function toString() {

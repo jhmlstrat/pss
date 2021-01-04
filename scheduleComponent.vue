@@ -80,7 +80,6 @@ var ScheduleComponent = {
           </span>
         </b-col>
       </b-row>
-      <!-- {{ config }} -->
       <!-- {{ schedule }} -->
       <b-modal ref='startGameModal' hide-footer title='Start Game'>
         <b-row>
@@ -133,7 +132,6 @@ var ScheduleComponent = {
       gameNumber: 0,
       spring: 0,
       fall: 0,
-      config: [],
       fetching: false,
       home: true,
       opponent: {
@@ -160,7 +158,6 @@ var ScheduleComponent = {
     },
   },
   mounted() {
-    eBus.$on('configUpdated',(c) => { this.config = vue.cyConfig;});
     eBus.$on('teamUpdated',(t) => { this.team = t;});
     eBus.$on('scheduleUpdated',(s) => { this.schedule=s; this.gameNumber = vue.game; })
     if (this.teamname == 't' && vue != undefined) vue.emitData();
@@ -175,13 +172,9 @@ var ScheduleComponent = {
       vue.currentComponent='menuComponent';
       vue.emitData();
     },
-    switchToLineups() {
-      vue.currentComponent='lineupsComponent';
-      vue.emitData();
-    },
     teamName(team) {
       rtn = team;
-      for (t of this.config.teams) {
+      for (t of vue.cyConfig.teams) {
         //console.log(t);
         if (t.team == team) rtn=t.city;
       }
@@ -213,9 +206,7 @@ var ScheduleComponent = {
                                                      'weather':this.weather.toLowerCase()}}
                 ,headers)
         .then(function (response) {
-console.log(response);
           vue.loadGameInfo();
-          self.switchToLineups();
         })
         .catch(function (error) {
           console.error(error);
@@ -229,7 +220,7 @@ console.log(response);
         this.opponent.team = si.homeTeam;
         this.home = false;
       }
-      for (t of this.config.teams) {
+      for (t of vue.cyConfig.teams) {
         if (t.team == this.opponent.team) this.opponent.city=t.city;
       }
       var self = this;
@@ -272,7 +263,6 @@ console.log(response);
     },
     doResumeGame(si) {
       vue.loadGameInfo();
-      this.switchToLineups();
     },
 
   },

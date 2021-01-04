@@ -14,25 +14,31 @@
   <link href="pss.css" rel="stylesheet">
   <link type="text/css" rel="stylesheet" href="//unpkg.com/bootstrap/dist/css/bootstrap.min.css"/>
   <link type="text/css" rel="stylesheet" href="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css"/>
+  <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/fontawesome.min.css"/>
   <script src="https://unpkg.com/vue/dist/vue.js" type="text/javascript"></script>
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   <script src="https://unpkg.com/babel-polyfill/dist/polyfill.min.js"></script>
   <script src="https://unpkg.com/bootstrap-vue/dist/bootstrap-vue.js"></script>
+  <script src="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue-icons.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.9.0/Sortable.min.js"></script>
 <!--
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/js/fontawesome.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Vue.Draggable/15.0.0/vuedraggable.min.js" crossorigin="anonymous"></script>
   <script src="https://unpkg.com/sortablejs/Sortable.min.js"></script>
   <script src="https://unpkg.com/vue-draggable/lib/vue-draggable.min.js"></script>
   <script src="https://unpkg.com/vue-draggable/polyfills/index.js"></script>
 -->
   <script src="https://unpkg.com/lodash/lodash.min.js"></script>
-  <script src="gameComponent.vue" type="text/javascript"></script>
+  <script src="gameEntryComponent.vue" type="text/javascript"></script>
+  <script src="lineScoreComponent.vue" type="text/javascript"></script>
   <script src="lineupComponent.vue" type="text/javascript"></script>
   <script src="lineupsComponent.vue" type="text/javascript"></script>
   <script src="menuComponent.vue" type="text/javascript"></script>
   <script src="rosterComponent.vue" type="text/javascript"></script>
   <script src="rotationComponent.vue" type="text/javascript"></script>
   <script src="scheduleComponent.vue" type="text/javascript"></script>
+  <script src="situationComponent.vue" type="text/javascript"></script>
+  <script src="gameComponent.vue" type="text/javascript"></script>
 </head>
 
 <body background="../gif/paper1.jpg">
@@ -188,6 +194,15 @@
             self.gameInfo = response.data;
             self.loadingGameInfo = false;
             self.emitData();
+            //console.log(self.gameInfo); 
+            if (self.gameInfo.situation.situation.betweenInnings) {
+              v = self.lineupValid(self.gameInfo.visitor.lineup);
+              h = self.lineupValid(self.gameInfo.home.lineup);
+              if (v.valid && h.valid) self.currentComponent = "gameComponent";
+              else self.currentComponent = "lineupsComponent";
+            } else {
+              self.currentComponent = "gameComponent";
+            }
           })
           .catch(function (error) {
             console.error(error);
@@ -476,6 +491,70 @@
             }
           }
           return {"series":series,"gameInSeries":gameInSeries};
+        },
+        lineupValid(lineup) {
+          let pos=[false,false,false,false,false,false,false,false,false];
+          dupePlayer = false;
+          dupePos = false;
+          missingPlayer = false;
+          missingPos = false;
+          playerOop = false;
+          assigned = [];
+          for (let i = 0; i < lineup.length; i++) {
+            if (lineup[i].length == 0) {
+              missingPlayer=true;
+              continue;
+            }
+            pl = lineup[i][lineup[i].length-1].player;
+            b = pl.name;
+            if (pl.positions.length == 0) p = '';
+            else p = pl.positions[pl.positions.length - 1].position.pos;
+            if (p == 'B1') p='1B';
+            if (p == 'B2') p='2B';
+            if (p == 'B3') p='3B';
+            if (b == '') {
+              missingPlayer = true;
+              continue;
+            }
+            if (assigned.includes(b)) { dupePlayer = true; }
+            else { assigned.push(b); }
+            if (p == '') continue;
+            for (a of this.roster.roster.batters) {
+              if (a.rosterItem.player.name == b) {
+                if (p == 'PR') continue;
+                if (p == 'PH') continue;
+                oop = true;
+                if (p == 'DH') oop = false;
+                for (ps of a.rosterItem.player.strat.positionsPlayed) {
+                  if (ps.position.pos == p) oop = false;
+                  if (ps.position.pos == 'B1' && p == '1B') oop = false;
+                  if (ps.position.pos == 'B2' && p == '2B') oop = false;
+                  if (ps.position.pos == 'B3' && p == '3B') oop = false;
+                }
+                if (oop) {
+                  playerOop = true;
+                }
+              }
+            }
+            if (p == 'P' || p == 'DH') { pc = 0; }
+            if (p == 'C') { pc = 1; }
+            if (p == '1B') { pc = 2; }
+            if (p == '2B') { pc = 3; }
+            if (p == '3B') { pc = 4; }
+            if (p == 'SS') { pc = 5; }
+            if (p == 'LF') { pc = 6; }
+            if (p == 'CF') { pc = 7; }
+            if (p == 'RF') { pc = 8; }
+            if (pos[pc]) { dupePos = true; }
+            else { pos[pc] = true; }
+          }
+          for (p of pos) if (! p) missingPos = true;
+          return {'valid': ! (dupePlayer || dupePos || missingPlayer || missingPos),
+                  'duplicatePlayer': dupePlayer,
+                  'duplicatePosition': dupePos,
+                  'missingPlayer': missingPlayer,
+                  'missingPosition': missingPos,
+                  'playerOutOfPosition': playerOop}
         },
       },
     });

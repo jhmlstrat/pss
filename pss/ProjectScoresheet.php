@@ -36,7 +36,7 @@
     public $situation_;
     private $result_;
     private $plus_ = false;
-    private $debug_ = false;
+    public $debug_ = false;
     function __construct() {
       $this->teamName_ = array();
       $this->gameNumber_ = array();
@@ -55,10 +55,18 @@
       $this->situation_->betweenInnings = true;
     }
     public static function fromString($str) {
+//error_log('PSS:fromString');
+//error_log($str);
       $json = json_decode($str);
+//error_log(JSON_ERROR_SYNTAX);
+//error_log(json_last_error());
+//error_log(print_r($json,true));
       $v = $json->visitor;
+//error_log(print_r($v,true));
       $h = $json->home;
+//error_log(print_r($h,true));
       $inst = new self();
+      //$inst->debug_ = true;
 //var_dump($json->visitor);
       $inst->teamName_[0] = $v->name;
       $inst->teamName_[1] = $h->name;
@@ -83,18 +91,22 @@
           array_push($inst->results_[0],$r);
         }
       }
+//error_log(print_r($inst->results_[0],true));
       if ($h->results != null) {
         foreach($h->results as $rslt) {
           $r = Result::fromString(json_encode($rslt));
           array_push($inst->results_[1],$r);
         }
       }
+//error_log(print_r($inst->results_[1],true));
       if ($json->date) $inst->date_ = $json->date;
       if ($json->startTime) $inst->startTime_ = $json->startTime;
       if ($json->duration) $inst->duration_ = $json->duration;
       if ($json->weather) $inst->weather_ = $json->weather;
       //$inst->debugOn();
+//error_log(print_r($inst->situation_,true));
       $inst->updateSituation();
+//error_log(print_r($inst->situation_,true));
       return $inst;
     }
     public function toString() {
@@ -112,7 +124,8 @@
         $rtn .= '],"results":[';
         for ($i = 0; $i < count($this->results_[$side]); $i++) {
           if ($i > 0) $rtn .= ",";
-          $rtn .= '"' . $this->results_[$side][$i]->toString() . '"';
+          //$rtn .= '"' . $this->results_[$side][$i]->toString() . '"';
+          $rtn .= $this->results_[$side][$i]->toString() ;
         }
         $rtn .= ']';
         $rtn .= '}';
@@ -121,6 +134,7 @@
       if ($this->startTime_ != "") $rtn .= ',"startTime":"' . $this->startTime_ . '"';
       if ($this->duration_ != "") $rtn .= ',"duration":"' . $this->duration_ . '"';
       if ($this->weather_ != "") $rtn .= ',"weather":"' . $this->weather_ . '"';
+      $rtn .= ',"situation":' . $this->situation_->toString();
       $rtn .= '}';
       return $rtn;
     }
@@ -301,10 +315,13 @@
             $this->situation_->switchSides();
             if ($side == 0) { $r[3]=null; $r[2]=null; $r[1]=null;}
           }
+          //$this->situation_->batter = $this->lineup_[$side]->getHitter(($i+1)%9);
         }
         if (! $doneResult && $side == $sit->side) array_pop($this->results_[$side]);
-        if ($this->debug_ && $side == 0) print "3: " . ($this->situation_->runner[3] == null ? "empty" : $this->situation_->runner[3]->name) . ", 2: " .  ($this->situation_->runner[2] == null ? "empty" : $this->situation_->runner[2]->name) . ", 1: ".  ($this->situation_->runner[1] == null ? "empty" : $this->situation_->runner[1]->name) . "\n";
+        //if ($this->debug_ && $side == 0) print "3: " . ($this->situation_->runner[3] == null ? "empty" : $this->situation_->runner[3]->name) . ", 2: " .  ($this->situation_->runner[2] == null ? "empty" : $this->situation_->runner[2]->name) . ", 1: ".  ($this->situation_->runner[1] == null ? "empty" : $this->situation_->runner[1]->name) . "\n";
+//if ($this->debug_) error_log(print_r($this->situation_,true));
       }
+//if ($this->debug_) error_log(print_r($inn,true));
       if ($outs[0] != 0) $this->situation_->side = 0;
       else if ($outs[1] != 0) $this->situation_->side = 1;
       else if ($inn[0] == $inn[1]) $this->situation_->side = 0;
@@ -316,6 +333,17 @@
       
       if ($this->debug_) print $this->situation_->side . ', ' . $outs[0] . ' - ' . $outs[1] . ', ' . $inn[0] . ' - ' . $inn[1] . "\n";
       if ($this->debug_) print "3: " . ($this->situation_->runner[3] == null ? "empty" : $this->situation_->runner[3]->name) . ", 2: " .  ($this->situation_->runner[2] == null ? "empty" : $this->situation_->runner[2]->name) . ", 1: ".  ($this->situation_->runner[1] == null ? "empty" : $this->situation_->runner[1]->name) . "\n";
+      if (! $this->situation_->gameOver()) {
+        if (count($this->results_[$this->situation_->side]) > 0 && 
+            $this->results_[$this->situation_->side][count($this->results_[$this->situation_->side])-1]->during == "") 
+             $this->situation_->batter = $this->lineup_[$this->situation_->side]->getHitter((count($this->results_[$this->situation_->side])-1)%9);
+        else $this->situation_->batter = $this->lineup_[$this->situation_->side]->getHitter(count($this->results_[$this->situation_->side])%9);
+        $this->situation_->pitcher = $this->lineup_[($this->situation_->side+1)%2]->getCurrentPitcher();
+      } else {
+        $this->situation_->batter = "";
+        $this->situation_->pitcher = "";
+      }
+      
       
  
 //sleep(1);
@@ -405,6 +433,12 @@
         if ($before) $this->result_->before .= "1-2"; 
         else $this->result_->after .= "1-2";
       }
+    }
+    public function play($p, $third, $second, $first, $bat) {
+      $this->result_->during = $p; 
+      $this->advance($third, $second, $first, false); 
+      $this->batter($bat); 
+      $this->saveResult(); 
     }
     public function k() {$this->result_->during = "K"; $this->result_->after = "Bx"; $this->saveResult(); }
     public function k23() {$this->result_->during = "K/23"; $this->result_->after = "Bx1"; $this->saveResult(); }
