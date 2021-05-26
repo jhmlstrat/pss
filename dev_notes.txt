@@ -1,0 +1,16 @@
+undo undo moves?
+
+how to handle in-game moves
+	- seems best as situation buttons
+        - and defensive panel (how to display PH/PR??) (Need lineup on side?)
+
+If initial date = today supply start time (server-side)
+
+Mid series trades
+
+- 1 Finish funky input
+- 2 Finish substitution
+- 3 2021 setup (complete?)
+
+Add per inning to situation
+
