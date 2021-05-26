@@ -1,6 +1,18 @@
 <?php
+/**
+ * This script is the main test driver
+ *
+ * PHP version 5
+ *
+ * @category Support
+ * @package  TEST
+ * @author   Doug Smith <nope@nope.org>
+ * @license  http://notgiven.org/no-license.html none
+ * @version  GIT:<git_id>
+ * @link     none
+ */
 
-require_once('../api/apiClass.php');
+require_once '../api/apiClass.php' ;
   $api = new ApiClass();
 
   echo "<html>\n<meta charset='UTF-8'>\n";
