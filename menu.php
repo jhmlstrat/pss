@@ -3,27 +3,40 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="The JHML is a face-to-face Strat-o-Matic league, based in the state of Maryland.">
+  <meta name="description" content="The JHML is a face-to-face Strat-o-Matic 
+              league, based in the state of Maryland.">
   <meta name="author" content="">
   <meta name="keywords" content="JHML, Strat-o-Matic, Stratomatic, Maryland">
 
   <title>JHML</title>
   <link rel="icon" href="favicon.ico">
-  <link href="/css/ie10-viewport-bug-workaround.css" rel="stylesheet">   <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+  <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+  <link href="/css/ie10-viewport-bug-workaround.css" rel="stylesheet">
   <link href="/css/site.css" rel="stylesheet">
+  <link type="text/css" rel="stylesheet" 
+    href="//unpkg.com/bootstrap/dist/css/bootstrap.min.css"/>
+  <link type="text/css" rel="stylesheet" 
+    href="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css"/>
+  <link type="text/css" rel="stylesheet" href=
+    "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/fontawesome.min.css"
+  />
   <link href="pss.css" rel="stylesheet">
-  <link type="text/css" rel="stylesheet" href="//unpkg.com/bootstrap/dist/css/bootstrap.min.css"/>
-  <link type="text/css" rel="stylesheet" href="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css"/>
-  <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/fontawesome.min.css"/>
   <script src="https://unpkg.com/vue/dist/vue.js" type="text/javascript"></script>
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   <script src="https://unpkg.com/babel-polyfill/dist/polyfill.min.js"></script>
   <script src="https://unpkg.com/bootstrap-vue/dist/bootstrap-vue.js"></script>
-  <script src="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue-icons.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.9.0/Sortable.min.js"></script>
+  <script src="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue-icons.min.js">
+  </script>
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.9.0/Sortable.min.js">
+  </script>
 <!--
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/js/fontawesome.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Vue.Draggable/15.0.0/vuedraggable.min.js" crossorigin="anonymous"></script>
+  <script src=
+   "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/js/fontawesome.min.js"
+  </script>
+  <script src=
+    "https://cdnjs.cloudflare.com/ajax/libs/Vue.Draggable/15.0.0/vuedraggable.min.js"
+    crossorigin="anonymous"></script>
   <script src="https://unpkg.com/sortablejs/Sortable.min.js"></script>
   <script src="https://unpkg.com/vue-draggable/lib/vue-draggable.min.js"></script>
   <script src="https://unpkg.com/vue-draggable/polyfills/index.js"></script>
@@ -38,6 +51,7 @@
   <script src="rotationComponent.vue" type="text/javascript"></script>
   <script src="scheduleComponent.vue" type="text/javascript"></script>
   <script src="situationComponent.vue" type="text/javascript"></script>
+  <script src="defenseComponent.vue" type="text/javascript"></script>
   <script src="gameComponent.vue" type="text/javascript"></script>
 </head>
 
@@ -46,6 +60,9 @@
     <component :is="currentComponent"><component>  
   </div>
 
+  <script type="module">
+    import vueSse from 'https://cdn.skypack.dev/vue-sse';
+  </script>
   <script>
     const eBus = new Vue();
 
@@ -103,7 +120,10 @@
         } else {
           this.setTeamName("guest");
         }
-        if ("<?php echo $_GET['year']?>" !=  undefined && "<?php echo $_GET['year']?>" != '') {
+        if (
+          "<?php echo $_GET['year']?>" !=  undefined 
+          && "<?php echo $_GET['year']?>" != ''
+        ) {
           this.year = "<?php echo $_GET['year']?>";
         }
         this.loadConfig();
@@ -189,7 +209,10 @@
           var self = this;
           let headers = {headers:{'X-Authorization':'TooManyMLs'}};
           this.loadingGameInfo = true;
-          axios.get('/pss/api/getGameInfo.php?team='+this.teamname+'&year='+this.year+'&game='+this.game,headers)
+          axios.get(
+            '/pss/api/getGameInfo.php?team='+this.teamname+'&year='+
+            this.year+'&game='+this.game,headers
+          )
           .then(function (response) {
             self.gameInfo = response.data;
             self.loadingGameInfo = false;
@@ -268,7 +291,9 @@
         rosterValid() {
           if (JSON.stringify(this.roster) == '{}') return false;
           if (JSON.stringify(this.schedule) == '{}') return false;
-          if (this.schedule.results.length > 83 && this.majors.length <= 40) return true;
+          if (this.schedule.results.length > 83 && 
+              this.majors.length <= 40
+          ) return true;
           if (this.majors.length <= this.roster_size) return true;
           return false;
         },
@@ -295,7 +320,10 @@
           var self = this;
           this.loadingSchedule = true;
           let headers = {headers:{'X-Authorization':'TooManyMLs'}};
-          axios.get('/pss/api/getSchedule.php?team='+this.teamname+'&year='+this.year,headers)
+          axios.get(
+            '/pss/api/getSchedule.php?team='+this.teamname+
+            '&year='+this.year,headers
+          )
           .then(function (response) {
             self.schedule = response.data;
             //console.log(JSON.stringify(self.schedule));
@@ -344,10 +372,12 @@
           this.day = this.schedule.results.length;
           if (this.day == 0) {this.day ++; return;}
           if (this.schedule.results[this.day-1].home.gameNumber != 'DO') {
-            if (this.team.team.toUpperCase() === this.schedule.results[this.day-1].home.team.toUpperCase()) {
-              this.game = parseInt(this.schedule.results[this.day-1].home.gameNumber);
+            if (this.team.team.toUpperCase() === 
+                this.schedule.results[this.day-1].home.team.toUpperCase()
+            ) {
+              this.game=parseInt(this.schedule.results[this.day-1].home.gameNumber);
             } else {
-              this.game = parseInt(this.schedule.results[this.day-1].away.gameNumber);
+              this.game=parseInt(this.schedule.results[this.day-1].away.gameNumber);
             }
             if (this.schedule.results[this.day-1].final == false) {
               this.gameInProgress = true;
@@ -357,15 +387,19 @@
               this.betweenSeries = this.schedule.results[this.day-1].seriesComplete;
             }
           } else {
-            if (this.team.team.toUpperCase() === this.schedule.results[this.day-2].home.team.toUpperCase()) {
-              this.game = parseInt(this.schedule.results[this.day-2].home.gameNumber);
+            if (this.team.team.toUpperCase() ===
+                this.schedule.results[this.day-2].home.team.toUpperCase()
+            ) {
+              this.game=parseInt(this.schedule.results[this.day-2].home.gameNumber);
             } else {
-              this.game = parseInt(this.schedule.results[this.day-2].away.gameNumber);
+              this.game=parseInt(this.schedule.results[this.day-2].away.gameNumber);
             }
           }
           this.day ++;
           if (! this.gameInProgress) {
-            for (let i=0; i< this.roster.roster.batters.length && this.injury == false; i++) {
+            for (let i=0; i< this.roster.roster.batters.length 
+                && this.injury == false; i++
+            ) {
               lm=this.lastMove(this.roster.roster.batters[i].rosterItem);
               mt=lm.lastMove;
               mg=lm.gameNumber;
@@ -378,7 +412,9 @@
                 let dg = 0;
                 let dig = 0;
                 for (let j=mg-1; dg == 0 && j < this.day; j++) {
-                  if (this.team.team.toUpperCase() === this.schedule.results[j].home.team.toUpperCase()) {
+                  if (this.team.team.toUpperCase() === 
+                      this.schedule.results[j].home.team.toUpperCase()
+                  ) {
                     dig = parseInt(this.schedule.results[j].home.gameNumber);
                   } else {
                     dig = parseInt(this.schedule.results[j].away.gameNumber);
@@ -437,10 +473,14 @@
         dayGame(gameNumber) {
           let gd=0;
           if (gameNumber > 0 && this.day >= gameNumber) {
-            for (let i=gameNumber; gd == 0 && i < this.schedule.results.length; i++) {
+            for (let i=gameNumber; gd == 0 
+                 && i < this.schedule.results.length; i++
+            ) {
               if (this.schedule.results[i].home.gameNumber == 'DO') continue;
               let g = 0;
-              if (this.team.team.toUpperCase() === this.schedule.results[i].home.team.toUpperCase()) {
+              if (this.team.team.toUpperCase() === 
+                  this.schedule.results[i].home.team.toUpperCase()
+              ) {
                 g = parseInt(this.schedule.results[i].home.gameNumber);
               } else {
                 g = parseInt(this.schedule.results[i].away.gameNumber);
@@ -462,7 +502,9 @@
             let g = 0;
             let currOpp = '';
             let currHA = '';
-            if (this.team.team.toUpperCase() === this.schedule.results[i].home.team.toUpperCase()) {
+            if (this.team.team.toUpperCase() === 
+                this.schedule.results[i].home.team.toUpperCase()
+            ) {
               g = parseInt(this.schedule.results[i].home.gameNumber);
               currOpp = this.schedule.results[i].away.team.toUpperCase();
               currHA = 'home';
