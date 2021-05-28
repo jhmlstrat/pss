@@ -1,5 +1,7 @@
 <?php
-#if ($_SERVER['HTTP_X_AUTHORIZATION'] != 'TooManyMLs') return;
+if ($_SERVER['HTTP_X_AUTHORIZATION'] != 'TooManyMLs') {
+    return;
+}
 // required headers
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: access");
@@ -8,61 +10,78 @@ header("Access-Control-Allow-Credentials: true");
 header("Content-Type: application/json; charset=UTF-8");
 
 // get posted data
-if ($_SERVER['REQUEST_METHOD'] == 'PUT')
-{
-  //error_log(file_get_contents("php://input"),3,'error_log');
-  //parse_str(file_get_contents("php://input"), $_PUT);
-  $foo = json_decode(file_get_contents("php://input"));
+if ($_SERVER['REQUEST_METHOD'] == 'PUT') {
+    //error_log(file_get_contents("php://input"),3,'error_log');
+    //parse_str(file_get_contents("php://input"), $_PUT);
+    $foo = json_decode(file_get_contents("php://input"));
 
-  $data = isset($foo->data) ? $foo->data : die();
-  //error_log(json_encode($data).PHP_EOL,3,'error_log');
+    $data = isset($foo->data) ? $foo->data : die();
+    //error_log(json_encode($data).PHP_EOL,3,'error_log');
 
-  include_once '../pss/Game.php';
+    include_once '../pss/Game.php';
 
-  $year = isset($data->year) ? $data->year : die();
-  //error_log($year.PHP_EOL,3,'error_log');
-  $game = isset($data->game) ? $data->game : die();
-  error_log(json_encode($game).PHP_EOL,3,'error_log');
-  $team = $game->home->name;
-  //error_log($team.PHP_EOL,3,'error_log');
-  $gn = $game->home->gameNumber;
-  //error_log($gn.PHP_EOL,3,'error_log');
-  $g = \Scoring\Game::findGameforTeam($year,$team,$gn);
-  error_log($g->toString());
+    $year = isset($data->year) ? $data->year : die();
+    //error_log($year.PHP_EOL,3,'error_log');
+    $game = isset($data->game) ? $data->game : die();
+    //error_log(json_encode($game).PHP_EOL,3,'error_log');
+    $team = $game->home->name;
+    //error_log($team.PHP_EOL,3,'error_log');
+    $gn = $game->home->gameNumber;
+    //error_log($gn.PHP_EOL,3,'error_log');
+    $g = \Scoring\Game::findGameforTeam($year, $team, $gn);
+    //error_log($g->toString());
 
-  for ($i = 0; $i < 2; $i++) {
-    if ($i == 0) $side = $game->visitor;
-    else $side = $game->home;
-error_log(json_encode($side).PHP_EOL,3,'error_log');
-    $li = $g->lineup_[$i];
-error_log($li->toString());
-    for ($j=0; $j < count($side->lineup); $j++) {
-error_log(print_r($li->getHitters($j),true));
-error_log(print_r($side->lineup[$j],true));
-      if (count($li->getHitters($j)) != count($side->lineup[$j])) {
-error_log('Add ' . $j);
-        $play = \ProjectScoresheet\Player::initial($side->lineup[$j][count($side->lineup[$j])-1]->player->name,null);
-error_log('Add ' . $j);
-        $g->battingOrder($i, $j, $play, \ProjectScoresheet\Position::position($side->lineup[$j][count($side->lineup[$j])-1]->player->positions[0]->position->pos));
-error_log('Add ' . $j);
-      } else {
-        $o = count($li->getHitters($j)) - 1;
-        if ($o >= 0) {
+    for ($i = 0; $i < 2; $i++) {
+        if ($i == 0) {
+            $side = $game->visitor;
+        } else {
+            $side = $game->home;
         }
-      }
+        //error_log(json_encode($side).PHP_EOL,3,'error_log');
+        $li = $g->lineup_[$i];
+        //error_log($li->toString());
+        for ($j=0; $j < count($side->lineup); $j++) {
+            //error_log(print_r($li->getHitters($j),true));
+            //error_log(print_r($side->lineup[$j],true));
+            if (count($li->getHitters($j)) != count($side->lineup[$j])) {
+                //error_log('Add ' . $j);
+                $play = \ProjectScoresheet\Player::initial(
+                    $side->lineup[$j][count($side->lineup[$j])-1]->player->name,
+                    null
+                );
+                //error_log('Add ' . $j);
+                $g->battingOrder(
+                    $i,
+                    $j,
+                    $play,
+                    \ProjectScoresheet\Position::position(
+                        $side->lineup[$j][count(
+                            $side->lineup[$j]
+                        )-1]->player->positions[0]->position->pos
+                    )
+                );
+                //error_log('Add ' . $j);
+            } else {
+                $o = count($li->getHitters($j)) - 1;
+                if ($o >= 0) {
+                }
+            }
+        }
+        //error_log(count($li->getPitchers()));
+        //error_log(count($side->rotation));
+        if (count($li->getPitchers()) != count($side->rotation)) {
+            //error_log(json_encode($side->rotation[count($side->rotation)-1]));
+            $play = \ProjectScoresheet\Player::initial(
+                $side->rotation[count($side->rotation)-1]->player->name,
+                null
+            );
+            $g->pitcher($i, $play);
+        }
     }
-error_log(count($li->getPitchers()));
-error_log(count($side->rotation));
-    if (count($li->getPitchers()) != count($side->rotation)) {
-error_log(json_encode($side->rotation[count($side->rotation)-1]));
-      $play = \ProjectScoresheet\Player::initial($side->rotation[count($side->rotation)-1]->player->name,null);
-      $g->pitcher($i,$play);
-    }
-  }
-  //$g->save();
-  \Scoring\Game::save($year,json_decode($g->toString()));
-error_log($g->toString());
-  http_response_code(201);
+    //$g->save();
+    \Scoring\Game::save($year, json_decode($g->toString()));
+    //error_log($g->toString());
+    http_response_code(201);
 }
 ?>
 

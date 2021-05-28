@@ -28,7 +28,7 @@ class ApiClass
 
     public function testInjury()
     {
-        $inj = new \Scoring\Injury;
+        $inj = new \Scoring\Injury();
         $expected = '{"injury":{"gameNumber":"0","duration":"0"}}';
         if ($inj->toString() !== $expected) {
             print "Error 1<br>";
@@ -49,7 +49,7 @@ class ApiClass
 
     public function testMove()
     {
-        $move = new \Scoring\Move;
+        $move = new \Scoring\Move();
         $expected = '{"move":{"moveType":"Fm minors","gameNumber":"0"}}';
         if ($move->toString() !== $expected) {
             print "Error 1<br>";
@@ -70,7 +70,7 @@ class ApiClass
 
     public function testPlayer()
     {
-        $play = new \ProjectScoresheet\Player;
+        $play = new \ProjectScoresheet\Player();
         $expected = '{"player":{"name":"","age":"99"}}';
         if ($play->toString() !== $expected) {
             print "Error 1<br>";
@@ -121,7 +121,7 @@ class ApiClass
 
     public function testPosition()
     {
-        $pos = new \ProjectScoresheet\Position;
+        $pos = new \ProjectScoresheet\Position();
         $expected = '{"position":{"pos":"DH","when":{"visitor":"0","home":"0"}}}';
         if ($pos->toString() !== $expected) {
             print "Error 1<br>";
@@ -180,7 +180,7 @@ class ApiClass
 
     public function testResult()
     {
-        $rslt=new \ProjectScoresheet\Result;
+        $rslt=new \ProjectScoresheet\Result();
         $rslt->before='22;34';
         $rslt->during='here';
         $rslt->after='done';
@@ -218,7 +218,7 @@ class ApiClass
 
     public function testRoster()
     {
-        $r = new \Jhml\Roster;
+        $r = new \Jhml\Roster();
         $expected = '{"roster":{"team":"","batters":[],"pitchers":[]}}';
         if ($r->toString() !== $expected) {
             print "Error 1<br>";
@@ -400,7 +400,7 @@ class ApiClass
             print $expected . "<br>";
             exit;
         }
-        $r = new \Jhml\Roster;
+        $r = new \Jhml\Roster();
         $r->team = 'PIT';
         $ll = 'Player 1	999	PIT';
         $ri = \Scoring\RosterItem::fromRosterFileString($ll);
@@ -495,7 +495,7 @@ class ApiClass
 
     public function testRosterItem()
     {
-        $ri = new \Scoring\RosterItem;
+        $ri = new \Scoring\RosterItem();
         $expected = '{"rosterItem":{"player":{"name":"","age":"99"},"team":""' .
                     ',"moves":[],"injuries":[],"startGame":"0","endGame":' .
                     '"999"}}';
@@ -815,7 +815,7 @@ class ApiClass
             $r = $r2017->getRoster($t17[$i]);
             $ma = $r->getMajors(0);
             if (count($ma->batters) + count($ma->pitchers) != $expected[$i]) {
-                print "Error 3 " . $t17[$i] . "  " . (count($ma->batters) + 
+                print "Error 3 " . $t17[$i] . "  " . (count($ma->batters) +
                        count($ma->pitchers)) . "<br>";
                 exit;
             }
@@ -828,7 +828,7 @@ class ApiClass
             $r = $r2018->getRoster($t18[$i]);
             $ma = $r->getMajors(0);
             if (count($ma->batters) + count($ma->pitchers) != $expected[$i]) {
-                print "Error 4 " . $t18[$i] . "  " . (count($ma->batters) + 
+                print "Error 4 " . $t18[$i] . "  " . (count($ma->batters) +
                        count($ma->pitchers)) . "<br>";
                 exit;
             }
@@ -884,11 +884,11 @@ class ApiClass
             }
             exit;
         }
-            // Not quite sure what I was thinking here...
-            //        $rs2018n = $r2018n->toString(true);
-            //        if ($rs2018n == $rs2018) {
-            //            print "Error 8<br>";
-            //        }
+        // Not quite sure what I was thinking here...
+        //        $rs2018n = $r2018n->toString(true);
+        //        if ($rs2018n == $rs2018) {
+        //            print "Error 8<br>";
+        //        }
         $expected = ["atl","bri","col","cws","fre","kcr","lad","mia",
                      "mil","min","oak","pit","sfq","stl","tbp","was"];
         foreach ($expected as $team) {
@@ -8846,7 +8846,7 @@ class ApiClass
             print strlen($expected) . "<br>";
             for ($c=0; (! $found) && $c < strlen($expected); $c++) {
                 if ($s_error[$c] != $expected[$c]) {
-                      $found = true;
+                    $found = true;
                 }
             }
             print $c . "<br>";
@@ -8874,7 +8874,7 @@ class ApiClass
 
     public function testScheduleItem()
     {
-        $s = new \Scoring\ScheduleItem;
+        $s = new \Scoring\ScheduleItem();
         $expected = '{"scheduleItem":{"homeTeam":"","awayTeam":"",' .
                     '"numberOfGames":"","season":"","results":[]}}';
         if ($s->toString() !== $expected) {
@@ -8884,7 +8884,7 @@ class ApiClass
             exit;
         }
         $s = \Scoring\ScheduleItem::newSI("Home", "Away", 3, \Scoring\Seasons::Fall);
-        $s->results_[0] = new \Scoring\Game;
+        $s->results_[0] = new \Scoring\Game();
         $s->results_[0]->team_[0] = 'Away';
         $s->results_[0]->team_[1] = 'Home';
         $expected = '{"scheduleItem":{"homeTeam":"Home","awayTeam":"Away",' .
@@ -8907,7 +8907,7 @@ class ApiClass
 
     public function testSide()
     {
-        $side = new \ProjectScoresheet\Side;
+        $side = new \ProjectScoresheet\Side();
         $side = $side->sides();
         if ($side[0] !== \ProjectScoresheet\Side::Visitor
             || $side[1] !== \ProjectScoresheet\Side::Home
@@ -8922,7 +8922,7 @@ class ApiClass
 
     public function testSituation()
     {
-        $sit = new \ProjectScoresheet\Situation;
+        $sit = new \ProjectScoresheet\Situation();
         $expected = '{"situation":{"outs":"0","runsV":"0","runsH":"0","hitsV"' .
                     ':"0","hitsH":"0","errorsV":"0","errorsH":"0","inning":' .
                     '"1","side":"0","first":"","second":"","third":"",' .
@@ -8979,7 +8979,7 @@ class ApiClass
 
     public function testWhen()
     {
-        $when = new \ProjectScoresheet\When;
+        $when = new \ProjectScoresheet\When();
         //$expected = "visitor: 0<br>home: 0<br>";
         $expected = '{"when":{"visitor":"0","home":"0"}}';
         if ($when->toString() !== $expected) {

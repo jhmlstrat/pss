@@ -9,9 +9,21 @@ header("Access-Control-Allow-Methods: GET");
 header("Access-Control-Allow-Credentials: true");
 header("Content-Type: application/json; charset=UTF-8");
 
+// get posted data
+$team = isset($_GET['team']) ? $_GET['team'] : die();
+//$team='pit';
+
+require_once '../pss/Schedule.php';
 require_once 'config.php';
 
 $conf = new Config();
-print(json_encode($conf->config));
-?>
+$config = json_encode($conf->config);
+$year = $conf->config['current_year'];
+if (isset($_GET['year'])) {
+    $year = $_GET['year'];
+}
+//$year=2018;
 
+$schedule = new \Scoring\Schedule($year);
+
+print $schedule->getSchedule($team);

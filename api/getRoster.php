@@ -1,5 +1,7 @@
 <?php
-//if ($_SERVER['HTTP_X_AUTHORIZATION'] != 'TooManyMLs') return;
+if ($_SERVER['HTTP_X_AUTHORIZATION'] != 'TooManyMLs') {
+    return;
+}
 // required headers
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: access");
@@ -10,8 +12,8 @@ header("Content-Type: application/json; charset=UTF-8");
 // get posted data
 $team = isset($_GET['team']) ? $_GET['team'] : die();
 
-include_once '../pss/Rosters.php';
-include_once 'config.php';
+require_once '../pss/Rosters.php';
+require_once 'config.php';
 
 $conf = new Config();
 $config = json_encode($conf->config);
@@ -21,4 +23,3 @@ $rosters = new \Jhml\Rosters($year, false, false);
 
 //print(json_encode($rosters->getRoster($team)));
 print($rosters->getRoster($team)->toString(true));
-?>
