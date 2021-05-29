@@ -34,3 +34,8 @@
 .w-100 {
   width: 100%;
 }
+
+.lineScoreTable {
+  font-size: small;
+  line-height: 1.0;
+}
