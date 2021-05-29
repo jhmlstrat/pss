@@ -1,10 +1,14 @@
 <?php
+
   namespace ProjectScoresheet;
-  class Side {
-    const Visitor = 0;
-    const Home = 1;
-    public static function sides() { return array(Side::Visitor, Side::Home); }
-  }
-/*
-*/
+
+class Side
+{
+    const VISITOR = 0;
+    const HOME = 1;
+    public static function sides()
+    {
+        return array(Side::VISITOR, Side::HOME);
+    }
+}
 ?>

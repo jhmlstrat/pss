@@ -1,7 +1,10 @@
 <?php
+
   namespace Scoring;
-  abstract class Seasons {
-    const Spring = 0;
-    const Fall = 1;
-  }
+
+abstract class Seasons
+{
+    const SPRING = 0;
+    const FALL = 1;
+}
 ?>

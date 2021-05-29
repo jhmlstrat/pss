@@ -229,7 +229,7 @@ class ApiClass
         $r->team = 'PIT';
         $ll = 'Marte, Starling	29	PIT';
         $ri = \Scoring\RosterItem::fromRosterFileString($ll);
-        \Scoring\RosterItem::processMove($ri, 15, \Scoring\MoveType::ToMinors);
+        \Scoring\RosterItem::processMove($ri, 15, \Scoring\MoveType::TO_MINORS);
         $r->addBatter($ri);
         $expected = '{"roster":{"team":"PIT","batters":[{"rosterItem":{' .
                     '"player":{"name":"Marte, Starling","age":"29"},"team":' .
@@ -261,7 +261,7 @@ class ApiClass
         }
         $ll = 'Cole, Gerrit	26	PIT';
         $ri = \Scoring\RosterItem::fromRosterFileString($ll);
-        \Scoring\RosterItem::processMove($ri, 15, \Scoring\MoveType::ToMinors);
+        \Scoring\RosterItem::processMove($ri, 15, \Scoring\MoveType::TO_MINORS);
         $r->addPitcher($ri);
         $expected = '{"roster":{"team":"PIT","batters":[{"rosterItem":{' .
                     '"player":{"name":"Donaldson, Josh","age":"32"},"team":' .
@@ -369,7 +369,7 @@ class ApiClass
             print $expected . "<br>";
             exit;
         }
-        $r->move('Marte, Starling', \Scoring\MoveType::ToMajors, 17);
+        $r->move('Marte, Starling', \Scoring\MoveType::TO_MAJORS, 17);
         $expected = '{"roster":{"team":"PIT","batters":[{"rosterItem":{' .
                     '"player":{"name":"Donaldson, Josh","age":"32"},"team":' .
                     '"PIT","moves":[],"injuries":[],"startGame":"0",' .
@@ -8883,7 +8883,7 @@ class ApiClass
             print $expected . "<br>";
             exit;
         }
-        $s = \Scoring\ScheduleItem::newSI("Home", "Away", 3, \Scoring\Seasons::Fall);
+        $s = \Scoring\ScheduleItem::newSI("Home", "Away", 3, \Scoring\Seasons::FALL);
         $s->results_[0] = new \Scoring\Game();
         $s->results_[0]->team_[0] = 'Away';
         $s->results_[0]->team_[1] = 'Home';
@@ -8909,12 +8909,12 @@ class ApiClass
     {
         $side = new \ProjectScoresheet\Side();
         $side = $side->sides();
-        if ($side[0] !== \ProjectScoresheet\Side::Visitor
-            || $side[1] !== \ProjectScoresheet\Side::Home
+        if ($side[0] !== \ProjectScoresheet\Side::VISITOR
+            || $side[1] !== \ProjectScoresheet\Side::HOME
         ) {
             print "Error 1<br>";
-            print $side[0] . " is not " . \ProjectScoresheet\Side::Visitor . " or ";
-            print $side[1] . " is not " . \ProjectScoresheet\Side::Home . "<br>";
+            print $side[0] . " is not " . \ProjectScoresheet\Side::VISITOR . " or ";
+            print $side[1] . " is not " . \ProjectScoresheet\Side::HOME . "<br>";
             exit;
         }
         print "Test successful<br>";
@@ -8946,8 +8946,8 @@ class ApiClass
             print $expected . "<br>";
             exit;
         }
-        $sit->runs[\ProjectScoresheet\Side::Visitor]=3;
-        $sit->runs[\ProjectScoresheet\Side::Home]=3;
+        $sit->runs[\ProjectScoresheet\Side::VISITOR]=3;
+        $sit->runs[\ProjectScoresheet\Side::HOME]=3;
         $sit->inning=9;
         $expected = '{"situation":{"outs":"0","runsV":"3","runsH":"3","hitsV"' .
                     ':"0","hitsH":"0","errorsV":"0","errorsH":"0","inning":' .
