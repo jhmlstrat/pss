@@ -39,11 +39,11 @@ var LineupComponent = {
                       <b-button v-on:click='onChangeB(index)' size='sm' variant='primary' class='float-right mr-1 mb-1' v-show="iindex == l_lineup[index].length - 1">Change</b-button>
                     </b-col>
                   </b-row>
-                  <b-row v-show="l_lineup[index].length == 0 || l_change[index]">
-                    <b-col cols="9">
+                  <b-row v-show="l_lineup[index].length == 0 || l_change[index]" no-gutters>
+                    <b-col cols="10" class="pr-2">
                       <b-form-select v-model="selectedB[index]" v-bind:options="batterSelections" v-show="! l_moveOnly[index]"></b-form-select>
                     </b-col>
-                    <b-col cols="2">
+                    <b-col cols="2" class="pr-2">
                       <b-form-select v-model="selectedPos[index]" v-bind:options="posSelections"></b-form-select>
                     </b-col>
                   </b-row>
@@ -119,8 +119,6 @@ var LineupComponent = {
   props: ['side','oside','roster','oroster','rotation','orotation'],
   data: function() {
     return {
-      team: {'team_name':''},
-      teamname: 't',
       availableBatters: [],
       batterSelections: [],
       selectedB: [],
@@ -175,7 +173,6 @@ var LineupComponent = {
     },
   },
   mounted() {
-    eBus.$on('teamUpdated',(t) => { this.team = t;});
     this.setAvailableBatters();
     this.setAvailablePitchers();
   },

@@ -30,8 +30,8 @@ var ScheduleComponent = {
       <b-row v-for="n in spring" class='pb-1' v-bind:key='"S"+n'>
         <b-col cols='6'>
           <!-- {{ schedule.home[n-1] }} -->
-          <span class='text-monospace pl-5'>
-            <span v-html="teamName(schedule.home[n-1].scheduleItem.awayTeam)"></span>
+          <span class='text-monospace pl-5 w-100'>
+            <span v-html="teamName(schedule.home[n-1].scheduleItem.awayTeam)" class="text-monospace"></span>
             ({{ schedule.home[n-1].scheduleItem.numberOfGames }})
             <span v-html="results(schedule.home[n-1].scheduleItem,'h')"></span>
             <b-button variant='primary' size='sm' href='#' v-on:click="doStartSeries(schedule.home[n-1].scheduleItem)" v-show="startSeries(schedule.home[n-1].scheduleItem,'h')" v-bind:disable="fetching">Start Series</b-button>
@@ -233,6 +233,8 @@ var ScheduleComponent = {
           self.opponent.gameNumber = d.gameNumber;
           //console.log(self.opponent);
           self.$refs['startGameModal'].show();
+          vue.loadRoster(self.opponent.team);
+          vue.loadRotation(self.opponent.team);
         })
         .catch(function (error) {
           console.error(error);

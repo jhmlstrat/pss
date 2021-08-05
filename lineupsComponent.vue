@@ -36,7 +36,7 @@ var LineupsComponent = {
               <lineup-component v-bind:side="gameInfo.visitor" v-bind:oside="gameInfo.home" v-bind:roster="vRoster()" v-bind:oroster="hRoster()" v-bind:rotation="vRotation()" v-bind:orotation="hRotation()" v-on:rotationUpdate="rotationUpdate('away',$event)" v-on:lineupUpdate="lineupUpdate('away',$event)"></lineup-component>
             </b-tab>
             <b-tab v-bind:title="gameInfo.home.name.toUpperCase()" v-bind:active="team.team == gameInfo.home.name">
-              <lineup-component v-bind:side="gameInfo.home" v-bind:oside="gameInfo.visitor" v-bind:roster="hRoster()" v-bind:oroster="vRoster()" v-bind:rotation="hRotation()" v-bind:orotation="vRotation()" v-on:rotationUpdate="rotationUpdate('home',$event)" v-on:lineupUpdate="lineupUpdate('away',$event)"></lineup-component>
+              <lineup-component v-bind:side="gameInfo.home" v-bind:oside="gameInfo.visitor" v-bind:roster="hRoster()" v-bind:oroster="vRoster()" v-bind:rotation="hRotation()" v-bind:orotation="vRotation()" v-on:rotationUpdate="rotationUpdate('home',$event)" v-on:lineupUpdate="lineupUpdate('home',$event)"></lineup-component>
             </b-tab>
           </b-tabs>
         </b-col>
