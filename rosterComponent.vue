@@ -319,7 +319,7 @@ var RosterComponent = {
       axios.put('/pss/api/putRosterMoves.php',{data: {'year':vue.year,'team':self.team.team,'game':vue.game,'moves':this.moves}},headers)
       .then(function (response) {
         //console.log(response);
-        vue.loadRoster();
+        vue.loadRoster(self.team.team);
         self.switchToMenu();
       })
       .catch(function (error) {
