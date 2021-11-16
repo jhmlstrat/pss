@@ -31,7 +31,7 @@ var SituationComponent = {
             </b-col>
             <b-col cols="4" class="text-center">
               <b-icon icon="square" rotate="45" font-scale="1.0" v-if="gameInfo.situation.situation.second == ''"></b-icon>
-              <b-icon icon="square-fill" rotate="45" font-scale="1.0" v-b-tooltip.hover v-bind:title="gameInfo.situation.situation.second" v-on:click="doPinchRunner(2)" v-else></b-icon>
+              <b-icon icon="square-fill" rotate="45" font-scale="1.0" v-b-tooltip.hover v-bind:title="runnerInfo(gameInfo.situation.situation.second)" v-on:click="doPinchRunner(2)" v-else></b-icon>
             </b-col>
             <b-col cols="3">
             </b-col>
@@ -39,13 +39,13 @@ var SituationComponent = {
           <b-row no-gutters class="mt-2">
             <b-col cols="3" class="text-left">
               <b-icon icon="square" rotate="45" font-scale="1.0" v-if="gameInfo.situation.situation.third == ''"></b-icon>
-              <b-icon icon="square-fill" rotate="45" font-scale="1.0" v-b-tooltip.hover v-bind:title="gameInfo.situation.situation.third" v-on:click="doPinchRunner(3)" v-else></b-icon>
+              <b-icon icon="square-fill" rotate="45" font-scale="1.0" v-b-tooltip.hover v-bind:title="runnerInfo(gameInfo.situation.situation.third)" v-on:click="doPinchRunner(3)" v-else></b-icon>
             </b-col>
             <b-col cols="2">
             </b-col>
             <b-col cols="3" class="text-right">
               <b-icon icon="square" rotate="45" font-scale="1.0" v-if="gameInfo.situation.situation.first == ''"></b-icon>
-              <b-icon icon="square-fill" rotate="45" font-scale="1.0" v-b-tooltip.hover v-bind:title="gameInfo.situation.situation.first" v-on:click="doPinchRunner(1)" v-else></b-icon>
+              <b-icon icon="square-fill" rotate="45" font-scale="1.0" v-b-tooltip.hover v-bind:title="runnerInfo(gameInfo.situation.situation.first)" v-on:click="doPinchRunner(1)" v-else></b-icon>
             </b-col>
           </b-row>
         </b-col>
@@ -151,6 +151,24 @@ Bat: {{ gameInfo.situation.situation.batter.substring(0,15) }}
         if (Object.keys(p)[0] == t) style = 'background-color: ' + Object.values(p)[0] + '; padding-top: 0.8rem !important;';
       }
       return style;
+    },
+    runnerInfo(runner) {
+      if (s=='visitor') r=this.vRoster;
+      else r=this.hRoster;
+      p = null;
+      for (let i=0; i < r.roster.batters.length; i++) {
+        if (r.roster.batters[i].rosterItem.player.name == runner) {
+          p = r.roster.batters[i].rosterItem.player;
+        }
+      }
+      console.log(p);
+      if (p != null) {
+        if (p.strat.caught == '') {
+          return runner + ' - ' + p.strat.lead + ' (' + p.strat.first + '-' + p.strat.second + ') R: ' + p.strat.running; 
+        }
+        return runner + ' - ' + p.strat.lead + '/' + p.strat.caught + ' (' + p.strat.first + '-' + p.strat.second + ') R: ' + p.strat.running; 
+      }
+      return runner;
     },
     cancelPinchHitter() {
       this.$bvModal.hide('pinch-hitter-modal');

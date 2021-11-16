@@ -155,17 +155,17 @@ var GameEntryComponent = {
       </b-row>
       <b-row v-show="!rarePlay">
         <b-col cols="12">
-          <b-button variant="link" href="#" v-on:click="fielder='6';showInfield('gbA')">gbA</b-button> 
+          <b-button variant="link" href="#" v-on:click="fielder='6';showInfield('gbA')" v-show="occupied(1) || occupied(2) || occupied(3)">gbA</b-button> 
           <b-button variant="link" href="#" v-on:click="fielder='6';showInfield('gbB')">gbB</b-button> 
-          <b-button variant="link" href="#" v-on:click="fielder='6';showInfield('gbC')">gbC</b-button> 
-          <b-button variant="link" href="#" v-on:click="fielder='6';showInfield('gb!')" v-show="gameInfo.situation.situation.outs != 2">gb!</b-button> 
-          <b-button variant="link" href="#" v-on:click="fielder='5';showInfield('SAC')" v-show="gameInfo.situation.situation.outs != 2">SAC</b-button> 
-          <b-button variant="link" href="#" v-on:click="fielder='8';showOutfield('flyA')">flyA</b-button> 
+          <b-button variant="link" href="#" v-on:click="fielder='6';showInfield('gbC')" v-show="occupied(1) || occupied(2) || occupied(3)">gbC</b-button> 
+          <b-button variant="link" href="#" v-on:click="fielder='6';showInfield('gb!')" v-show="gameInfo.situation.situation.outs != 2 && (occupied(1) || occupied(2) || occupied(3))">gb!</b-button> 
+          <b-button variant="link" href="#" v-on:click="fielder='5';showInfield('SAC')" v-show="gameInfo.situation.situation.outs != 2 && (occupied(1) || occupied(2) || occupied(3))">SAC</b-button> 
+          <b-button variant="link" href="#" v-on:click="fielder='8';showOutfield('flyA')" v-show="occupied(1) || occupied(2) || occupied(3)">flyA</b-button> 
           <b-button variant="link" href="#" v-on:click="fielder='8';showOutfield('flyB')">flyB</b-button> 
-          <b-button variant="link" href="#" v-on:click="fielder='8';showOutfield('flyC')">flyC</b-button> 
-          <b-button variant="link" href="#" v-on:click="fielder='8';showOutfield('fly!')" v-show="gameInfo.situation.situation.outs != 2">fly!</b-button> 
+          <b-button variant="link" href="#" v-on:click="fielder='8';showOutfield('flyC')" v-show="occupied(1) || occupied(2) || occupied(3)">flyC</b-button> 
+          <b-button variant="link" href="#" v-on:click="fielder='8';showOutfield('fly!')" v-show="gameInfo.situation.situation.outs != 2 && (occupied(1) || occupied(2) || occupied(3))">fly!</b-button> 
           <b-button variant="link" href="#" v-on:click="fielder='6';showInfield('lo')">lo</b-button> 
-          <b-button variant="link" href="#" v-on:click="fielder='6';showInfield('lo!')" v-show="gameInfo.situation.situation.outs != 2">lo!</b-button> 
+          <b-button variant="link" href="#" v-on:click="fielder='6';showInfield('lo!')" v-show="gameInfo.situation.situation.outs != 2 && (occupied(1) || occupied(2) || occupied(3))">lo!</b-button> 
           <b-button variant="link" href="#" v-on:click="fielder='6';showInfield('po')">po</b-button> 
           <b-button variant="link" href="#" v-on:click="fielder='2';showInfield('fo')">fo</b-button> 
           <b-button variant="link" href="#" v-on:click="doPlay('K')">K</b-button> 
@@ -175,15 +175,15 @@ var GameEntryComponent = {
       <b-row v-show="!rarePlay">
         <b-col cols="12">
           <b-button variant="link" href="#" v-on:click="doPlay('S*')">S*</b-button> 
-          <b-button variant="link" href="#" v-on:click="doPlay('S**')">S**</b-button> 
+          <b-button variant="link" href="#" v-on:click="doPlay('S**')" v-show="occupied(1) || occupied(2) || occupied(3)">S**</b-button> 
           <b-button variant="link" href="#" v-on:click="doPlay('S-dot')">S-dot</b-button> 
           <b-button variant="link" href="#" v-on:click="doPlay('S+')">S-plus</b-button> 
-          <b-button variant="link" href="#" v-on:click="doPlay('S!')">S!</b-button> 
+          <b-button variant="link" href="#" v-on:click="doPlay('S!')" v-show="occupied(1) || occupied(2) || occupied(3)">S!</b-button> 
           <b-button variant="link" href="#" v-on:click="doPlay('BPS+')">BPS+</b-button> 
           <b-button variant="link" href="#" v-on:click="fielder='6';showInfield('BPS-')">BPS-</b-button>
           <b-button variant="link" href="#" v-on:click="doPlay('D**')">D**</b-button> 
-          <b-button variant="link" href="#" v-on:click="doPlay('D***')">D***</b-button> 
-          <b-button variant="link" href="#" v-on:click="doPlay('D!')">D!</b-button> 
+          <b-button variant="link" href="#" v-on:click="doPlay('D***')" v-show="occupied(1) || occupied(2) || occupied(3)">D***</b-button> 
+          <b-button variant="link" href="#" v-on:click="doPlay('D!')" v-show="occupied(1) || occupied(2) || occupied(3)">D!</b-button> 
           <b-button variant="link" href="#" v-on:click="doPlay('T')">T</b-button> 
           <b-button variant="link" href="#" v-on:click="doPlay('HR')">HR</b-button> 
           <b-button variant="link" href="#" v-on:click="doPlay('BPHR+')">BPHR+</b-button> 
@@ -451,7 +451,7 @@ TBD
       this.plus = false;
     },
     doPlay(play) {
-      console.log(play);
+      //console.log(play);
       addBat=0;
       addFirst=0;
       addSecond=0;
@@ -475,7 +475,7 @@ TBD
           injury = true;
           this.plus = false;
         } else {
-          console.log('Data entry - + with 2 nonsense choices');
+          console.error('Data entry - + with 2 nonsense choices');
           this.plus = false;
           return; //HUH?
         }
@@ -506,13 +506,10 @@ TBD
         if (baseCount == 1) needModal = false;
         else needModal = true;
       } else if (play == 'DI') {
-//DI!?
         baseCount = 0;
         if (this.occupied(1)) { addFirst ++; baseCount++; }
         if (this.occupied(2)) { addSecond ++; baseCount++; }
         if (this.occupied(3)) { addThird ++; baseCount++; }
-        if (baseCount == 1) needModal = false;
-        else needModal = true;
       } else if (play == 'gb!') {
         if ((this.empty(1) && this.empty(2) && this.empty(3)) ||  // empty
             (sit.outs == 2)) { 
@@ -571,7 +568,7 @@ TBD
         let headers = {headers:{'X-Authorization':'TooManyMLs'}};
         axios.put('/pss/api/updateGame.php',{data: {'year':vue.year,'team':vue.team.team,'game':vue.game,'play':play,'fielder':self.fielder,'infield':self.infield,'eBases':self.eBases}},headers)
         .then(function (response) {
-          console.log(response);
+          //console.log(response);
           vue.loadGameInfo();
           if (injury) {
             showInjury();
@@ -696,6 +693,15 @@ TBD
         if (this.occupied(3)) this.expected[3] = 4;
         this.expected[2] = 3;
         if (this.occupied(1)) this.expected[1] = 1;
+      } else if (this.tmpPlay == 'SB') {
+        // Multiple baserunners
+        this.expected[0] = 0;
+      } else if (this.tmpPlay == 'CS') {
+        // Multiple baserunners
+        this.expected[0] = 0;
+      } else if (this.tmpPlay == 'PO') {
+        // Multiple baserunners
+        this.expected[0] = 0;
       } else {
         console.error ('Should NOT get here - showUnusualPlay');
         return;

@@ -251,7 +251,33 @@ var ScheduleComponent = {
       return true;
     },
     doNextGame(si) {
-      this.$refs['startGameModal'].show();
+      //this.$refs['startGameModal'].show();
+      if (si.homeTeam == this.team.team) {
+        this.opponent.team = si.awayTeam;
+        this.home = true;
+      } else { 
+        this.opponent.team = si.homeTeam;
+        this.home = false;
+      }
+      for (t of vue.cyConfig.teams) {
+        if (t.team == this.opponent.team) this.opponent.city=t.city;
+      }
+      var self = this;
+      let headers = {headers:{'X-Authorization':'TooManyMLs'}};
+      axios.get('/pss/api/getGameNumber.php?team='+this.opponent.team+'&year='+vue.year,headers)
+        .then(function (response) {
+          let d = response.data;
+          //console.log(d);
+          //console.log(d.gameNumber);
+          self.opponent.gameNumber = d.gameNumber;
+          //console.log(self.opponent);
+          self.$refs['startGameModal'].show();
+          vue.loadRoster(self.opponent.team);
+          vue.loadRotation(self.opponent.team);
+        })
+        .catch(function (error) {
+          console.error(error);
+        });
     },
     resumeGame(si,ha) {
       if (! this.rosterValid()) return false;

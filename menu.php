@@ -598,6 +598,49 @@
                   'missingPosition': missingPos,
                   'playerOutOfPosition': playerOop}
         },
+        getAvailable(lineup, rotation, roster) {
+          // TBD: Injured
+          // TBD: Tired
+          availableBatters = [];
+          for (b of roster.roster.batters) {
+            if (b.rosterItem.moves.length > 0 && b.rosterItem.moves[b.rosterItem.moves.length -1].move.moveType == 'To minors') continue;
+            if (b.rosterItem.moves.length > 0 && b.rosterItem.moves[b.rosterItem.moves.length -1].move.moveType == 'On DL') continue;
+            if (b.rosterItem.moves.length > 0 && b.rosterItem.moves[b.rosterItem.moves.length -1].move.moveType == 'Traded') continue;
+            if (b.rosterItem.moves.length > 0 && b.rosterItem.moves[b.rosterItem.moves.length -1].move.moveType == 'Traded for') continue;
+            let inLineup = false;
+            for (l of lineup) {
+              for (lu of l) {
+                if (lu.player.name == b.rosterItem.player.name) inLineup=true;
+              }
+            }
+            if (inLineup) continue;
+            availableBatters.push(b.rosterItem.player);
+          }
+          availablePitchers = [];
+          starters = [];
+          sr = [];
+          relievers = [];
+          for (p of roster.roster.pitchers) {
+            if (p.rosterItem.moves.length > 0 && p.rosterItem.moves[p.rosterItem.moves.length -1].move.moveType == 'To minors') continue;
+            if (p.rosterItem.moves.length > 0 && p.rosterItem.moves[p.rosterItem.moves.length -1].move.moveType == 'On DL') continue;
+            if (p.rosterItem.moves.length > 0 && p.rosterItem.moves[p.rosterItem.moves.length -1].move.moveType == 'Traded') continue;
+            if (p.rosterItem.moves.length > 0 && p.rosterItem.moves[p.rosterItem.moves.length -1].move.moveType == 'Traded for') continue;
+            used = false;
+            for (r of rotation) {
+              if (r.player.name == p.rosterItem.player.name) used = true;
+            }
+            if (used) continue;
+            s = p.rosterItem.player.strat.endurance.includes('S');
+            r = p.rosterItem.player.strat.endurance.includes('R');
+            if (s && r) sr.push(p.rosterItem.player);
+            else if (s) starters.push(p.rosterItem.player);
+            else relievers.push(p.rosterItem.player);
+          }
+          if (rotation.length == 0) availablePitchers = starters.concat(sr.concat(relievers));
+          else availablePitchers = relievers.concat(sr.concat(starters));
+          return {'availableBatters':availableBatters,
+                  'availablePitchers':availablePitchers}
+        },
       },
     });
 

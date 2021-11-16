@@ -237,9 +237,10 @@ var LineupComponent = {
       }
     },
     setAvailablePitchers() {
+      this.l_rotation = [];
       if (! this.side.rotation) return [];
       for (p of this.side.rotation) {
-        this.l_rotation.push({'name':p.name});
+        this.l_rotation.push({'name':p.player.name});
       }
       this.availablePitchers = [];
       starters = [];
@@ -252,7 +253,7 @@ var LineupComponent = {
         if (p.rosterItem.moves.length > 0 && p.rosterItem.moves[p.rosterItem.moves.length -1].move.moveType == 'Traded for') continue;
         used = false;
         for (r of this.side.rotation) {
-          if (r.name == p.rosterItem.player.name) used = true;
+          if (r.player.name == p.rosterItem.player.name) used = true;
         }
         if (used) continue;
         s = p.rosterItem.player.strat.endurance.includes('S');
@@ -303,16 +304,20 @@ var LineupComponent = {
     },
     onSubmitB() {
       for (let i=0; i<9; i++) {
-        if (this.selectedB[i] == '' && this.selectedpos[i] == '') continue;
+        if (this.selectedB[i] == '' && this.selectedPos[i] == '') continue;
         pm = this.selectedPos[i];
         if (pm == '1B') pm = 'B1';
         if (pm == '2B') pm = 'B2';
         if (pm == '3B') pm = 'B3';
-        if (this.side.lineup[i].length == 0 || this.side.lineup[i].player.name != this.selectedB[i]) {
-          this.side.lineup[i].push({'player':{'name':this.selectedB[i],'positions':[{'position':{'pos':pm}}]}});
+        l = this.side.lineup[i];
+        //console.log(this.side.lineup[i]);
+        //if (l.length > 0) console.log(l[l.length - 1].player.name);
+        //console.log(this.selectedB[i]);
+        if (l.length == 0 || l[l.length - 1].player.name != this.selectedB[i]) {
+          l.push({'player':{'name':this.selectedB[i],'positions':[{'position':{'pos':pm}}]}});
         } else {
-          if (this.side.lineup[i].player.positions[this.side.lineup[i].player.positions.length -1].position.pos != this.selectedpos[i]) {
-            this.side.lineup[i].player.positions.push({'position':{'pos':pm}});
+          if (l[l.length - 1].player.positions[l[l.length - 1].player.positions.length -1].position.pos != this.selectedPos[i]) {
+            l[l.length - 1].player.positions.push({'position':{'pos':pm}});
           }
         }
       }

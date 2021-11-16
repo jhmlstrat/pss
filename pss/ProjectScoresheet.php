@@ -287,6 +287,7 @@ class ProjectScoresheet
         $batter = $this->situation_->batter;
         $side = $this->situation_->side;
         $this->situation_->runs[$side] += substr_count($s, "-H");
+        error_log($s . ":" . $side . '-' . $this->situation_->inning . PHP_EOL,3,'error_log');
         $this->situation_->runsPerInning[$side][$this->situation_->inning] 
             += substr_count($s, "-H");
         if (substr_count($s, "3x") > 0) {
@@ -802,7 +803,7 @@ class ProjectScoresheet
     }
     public function sac($result, $third, $second, $first, $bat)
     {
-        $this->_result->during = $result + "/SAC";
+        $this->_result->during = $result . "/SAC";
         $this->_advance($third, $second, $first, false);
         $this->_batter($bat);
         $this->_saveResult();
@@ -828,10 +829,10 @@ class ProjectScoresheet
             $outs++;
         }
         if ($outs == 3) {
-            $this->_result->during += "/TP";
+            $this->_result->during .= "/TP";
         }
         if ($outs == 2) {
-            $this->_result->during += "/DP";
+            $this->_result->during .= "/DP";
         }
         if (($outs + $this->situation_->outs) < 3 && $third > 0 
             && $this->situation_->base(2)
@@ -943,7 +944,7 @@ class ProjectScoresheet
     public function cs($result, $third, $second, $first)
     {
         if ($this->_result->before != "") {
-            $this->_result->before += ",";
+            $this->_result->before .= ",";
         }
         $this->_advance($third, $second, $first, true);
         $this->_result->before .= "/CS" . $result;

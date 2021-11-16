@@ -43,13 +43,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'PUT') {
         for ($j=0; $j < count($side->lineup); $j++) {
             //error_log(print_r($li->getHitters($j),true));
             //error_log(print_r($side->lineup[$j],true));
-            if (count($li->getHitters($j)) != count($side->lineup[$j])) {
+            $gh = $li->getHitters($j);
+            //error_log(":" . $j . ":" . count($gh) . " - " . count($side->lineup[$j]));
+            if (count($gh) != count($side->lineup[$j])) {
                 //error_log('Add ' . $j);
                 $play = \ProjectScoresheet\Player::initial(
                     $side->lineup[$j][count($side->lineup[$j])-1]->player->name,
                     null
                 );
-                //error_log('Add ' . $j);
+                //error_log('Add ' . $i . ":" . $j . " - " . $play->toString() . " + " . $side->lineup[$j][count($side->lineup[$j])-1]->player->positions[0]->position->pos);
                 $g->battingOrder(
                     $i,
                     $j,
@@ -60,10 +62,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'PUT') {
                         )-1]->player->positions[0]->position->pos
                     )
                 );
-                //error_log('Add ' . $j);
+                //error_log('Add ' . $g->toString());
             } else {
-                $o = count($li->getHitters($j)) - 1;
+                $o = count($gh) - 1;
                 if ($o >= 0) {
+                  $hitter = $gh[$o];
+                  //error_log(print_r($hitter,true));
+                  $pc = count($hitter->positions);
+                  $pl = $side->lineup[$j][count($side->lineup[$j])-1]->player;
+                  //error_log(print_r($hitter->positions[count($hitter->positions)-1]->position,true));
+                  //error_log(print_r(\ProjectScoresheet\Position::position($pl->positions[count($pl->positions)-1]->position->pos),true));
+                  if ($hitter->positions[count($hitter->positions)-1]->position != \ProjectScoresheet\Position::position($pl->positions[count($pl->positions)-1]->position->pos)) {
+                    //error_log(print_r($hitter->name,true));
+                    $g->move($i, $j, \ProjectScoresheet\Position::position($pl->positions[count($pl->positions)-1]->position->pos));
+                  }
                 }
             }
         }

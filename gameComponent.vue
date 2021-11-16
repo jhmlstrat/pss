@@ -20,7 +20,10 @@ var GameComponent = {
       <hr/>
       <b-row no-gutters>
         <b-col cols='6'>
-          <situation-component v-bind:gameInfo="gameInfo"></situation-component>
+          <situation-component v-bind:gameInfo="gameInfo"
+                             v-bind:vRoster="team.team == gameInfo.visitor.name ? roster : oroster"
+                             v-bind:hRoster="team.team == gameInfo.visitor.name ? oRoster : roster">
+          </situation-component>
         </b-col>
         <b-col cols='6'>
           <line-score-component v-bind:gameInfo="gameInfo"></line-score-component>
@@ -32,7 +35,7 @@ var GameComponent = {
           <game-entry-component v-bind:gameInfo="gameInfo"></game-entry-component>
         </b-col>
       </b-row>
-      <b-row>
+      <b-row class='mt-5'>
         <b-col cols='12'>
           <defense-component v-bind:gameInfo="gameInfo" 
                              v-bind:vRoster="team.team == gameInfo.visitor.name ? roster : oroster"

@@ -99,29 +99,32 @@ class Situation
 
     public function toString()
     {
-        return '{"situation":{' .
-               '"outs":"' . $this->outs . '",' .
-               '"runsV":"' . $this->runs[Side::VISITOR] . '",' .
-               '"runsH":"' . $this->runs[Side::HOME] . '",' .
-               '"hitsV":"' . $this->hits[Side::VISITOR] . '",' .
-               '"hitsH":"' . $this->hits[Side::HOME] . '",' .
-               '"errorsV":"' . $this->errors[Side::VISITOR] . '",' .
-               '"errorsH":"' . $this->errors[Side::HOME] . '",' .
-               '"inning":"' . $this->inning . '",' .
-               '"side":"' . $this->side . '",' .
-               '"first":"' . ($this->runner[1] == null ? "" : 
-                   trim($this->runner[1]->name)) . '",' .
-               '"second":"' . ($this->runner[2] == null ? "" : 
-                   trim($this->runner[2]->name)) . '",' .
-               '"third":"' . ($this->runner[3] == null ? "" : 
-                   trim($this->runner[3]->name)) . '",' .
-               '"batter":"' . ($this->batter == null ? "" : 
-                   trim($this->batter->name)) . '",' .
-               '"pitcher":"' . ($this->pitcher == null ? "" : 
-                   trim($this->pitcher->name)) . '",' .
-               '"betweenInnings":' . ($this->betweenInnings ? "true" : 
-                   "false") . ',' .
-               '"gameOver":' . ($this->gameOver() ? "true" : "false") . '}}';
+        $rtn =  '{"situation":{';
+        $rtn .= '"outs":"' . $this->outs . '",';
+        $rtn .= '"inning":"' . $this->inning . '",';
+        $rtn .= '"side":"' . $this->side . '",';
+        $rtn .= '"first":"' . ($this->runner[1] == null ? "" : trim($this->runner[1]->name)) . '",';
+        $rtn .= '"second":"' . ($this->runner[2] == null ? "" : trim($this->runner[2]->name)) . '",';
+        $rtn .= '"third":"' . ($this->runner[3] == null ? "" : trim($this->runner[3]->name)) . '",';
+        $rtn .= '"batter":"' . ($this->batter == null ? "" : trim($this->batter->name)) . '",';
+        $rtn .= '"pitcher":"' . ($this->pitcher == null ? "" : trim($this->pitcher->name)) . '",';
+        $rtn .= '"betweenInnings":' . ($this->betweenInnings ? "true" : "false") . ',';
+        $rtn .= '"runs":["' . $this->runs[Side::VISITOR] . '","' . $this->runs[Side::HOME] . '"],';
+        $rtn .= '"hits":["' . $this->hits[Side::VISITOR] . '","' . $this->hits[Side::HOME] . '"],';
+        $rtn .= '"errors":["' . $this->errors[Side::VISITOR] . '","' . $this->errors[Side::HOME] . '"],';
+        $rtn .= '"runsPerInning":[[';
+        for ($i =0; $i < $this->inning; $i++) {
+            if ($i > 0) $rtn .= ',';
+            $rtn .= '"' .  $this->runsPerInning[0][$i+1] . '"';
+        }
+        $rtn .= '],[';
+        for ($i =0; $i < ($this->side == 0 ? $this->inning - 1 : $this->inning); $i++) {
+            if ($i > 0) $rtn .= ',';
+            $rtn .= '"' .  $this->runsPerInning[1][$i+1] . '"';
+        }
+        $rtn .= ']],';
+        $rtn .= '"gameOver":' . ($this->gameOver() ? "true" : "false") . '}}';
+        return $rtn;
     }
     public function json()
     {

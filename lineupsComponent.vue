@@ -127,6 +127,8 @@ var LineupsComponent = {
         vue.gameInfo.visitor.lineup = event;
       }
       var self = this;
+      //console.log(vue.year);
+      //console.log(vue.gameInfo);
       let headers = {headers:{'X-Authorization':'TooManyMLs'}};
       axios.put('/pss/api/updateLineup.php',{data: { 'year':vue.year,
                                                      'game':vue.gameInfo}}

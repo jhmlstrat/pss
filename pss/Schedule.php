@@ -400,7 +400,7 @@ class Schedule
                             && ! $inserted
                         ) {
                             $inserted = true;
-                            $series[count($series)-1]->seriesComplete_ = true;
+                            $series[count($series)-1]->seriesComplete_ = false;
                             $s->results_ = array_slice($series, 0);
                             $series = [];
                         }
