@@ -332,11 +332,13 @@ class Schedule
         }
         $psss = glob('../data/'. $year . '/*.pss');
         foreach ($psss as $pss) {
+            //error_log($pss.PHP_EOL,3,'error_log');
             $fn = str_replace('.pss', '', preg_replace('/.*\//', "", $pss));
             $a = substr($fn, 0, 3);
             $ag = intval(substr($fn, 3, 3));
             $h = substr($fn, 6, 3);
             $hg = intval(substr($fn, 9, 3));
+            //error_log($a.'('.$ag.')@'.$h.'('.$hg.')'.PHP_EOL,3,'error_log');
             $g = Game::getGameFromScoreSheet($year, $a, $ag, $h, $hg);
             $pssG[strtolower($a)][$ag-1] = $g;
             $pssG[strtolower($h)][$hg-1] = $g;
@@ -352,9 +354,11 @@ class Schedule
             $h='';
             $a='';
             $i=0;
+            ksort($pssG[$t]);
             foreach ($pssG[$t] as $g) {
                 $i++;
                 //error_log($g->toString().PHP_EOL,3,'error_log');
+                if (strtolower($g->team_[0]) != $t && strtolower($g->team_[1]) != $t) continue;
                 //error_log($g->team_[0].PHP_EOL,3,'error_log');
                 if (strtolower($g->team_[0]) == $t) {
                     $side = 'away';
@@ -379,16 +383,17 @@ class Schedule
                             $series = [];
                         }
                     }
-                    if (! $inserted) {
-                        error_log('Failed to insert series'.PHP_EOL, 3, 'error_log');
-                        error_log(print_r($series, true).PHP_EOL, 3, 'error_log');
-                    }
+                    //if (! $inserted) {
+                    //    error_log('Failed to insert series - '. count($series).PHP_EOL, 3, 'error_log');
+                        //error_log(print_r($series, true).PHP_EOL, 3, 'error_log');
+                    //}
                 }
                 $oside = $side;
                 $a = strtolower($g->team_[0]);
                 $h = strtolower($g->team_[1]);
                 array_push($series, $g);
                 //error_log(print_r($series,true).PHP_EOL,3,'error_log');
+                //error_log($a.'@'.$h.' - '.$oside.PHP_EOL,3,'error_log');
                 if ($i == count($pssG[$t])) {
                     $inserted = false;
                     foreach ($sched[$oside] as $s) {
@@ -400,19 +405,20 @@ class Schedule
                             && ! $inserted
                         ) {
                             $inserted = true;
-                            $series[count($series)-1]->seriesComplete_ = false;
+                            if ($s->games_ == count($series)) $series[count($series)-1]->seriesComplete_ = true;
                             $s->results_ = array_slice($series, 0);
+                            //error_log('Here: '.$s->toString().PHP_EOL,3,'error_log');
+                            //error_log('    : '.json_encode($series).PHP_EOL,3,'error_log');
                             $series = [];
+                            //error_log('    : '.json_encode($series).PHP_EOL,3,'error_log');
                         }
                     }
                     if (! $inserted) {
                         error_log(
                             'Failed to insert last series'.PHP_EOL, 3, 'error_log'
                         );
-                        error_log($a.PHP_EOL, 3, 'error_log');
-                        error_log($h.PHP_EOL, 3, 'error_log');
-                        error_log($series[0]->gameNumber_.PHP_EOL, 3, 'error_log');
-                        error_log(print_r($series, true).PHP_EOL, 3, 'error_log');
+                    //    error_log($series[0]->gameNumber_.PHP_EOL, 3, 'error_log');
+                    //    error_log(print_r($series, true).PHP_EOL, 3, 'error_log');
                     }
                 }
                 //error_log(print_r($sched[$side],true).PHP_EOL,3,'error_log');
@@ -440,27 +446,31 @@ class Schedule
                 $j=0; $j < count($this->_schedules[$team]['home'][$i]->results_);
                 $j++
             ) {
+                //error_log(print_r($this->_schedules[$team]['home'][$i]->results_,true).PHP_EOL,3,'error_log');
                 $gn = $this->_schedules[$team]['home'][$i]->results_[$j]
                     ->gameNumber_[1];
+                //error_log(print_r($gn,true).PHP_EOL,3,'error_log');
+
                 $found = false;
-                for ($k=0; (! $found) && ($k < count($resultsA)); $k++) {
-                    if ($resultsA[$k]->team_[0] == $team) {
-                        $cg=$resultsA[$k]->gameNumber_[0];
-                    } else {
-                        $cg=$resultsA[$k]->gameNumber_[1];
-                    }
-                    if ($cg > $gn) {
-                        array_splice(
-                            $resultsA, $k, 0, 
-                            [$this->_schedules[$team]['home'][$i]->results_[$j]]
-                        );
-                        $found = true;
-                    }
-                }
+                //for ($k=0; (! $found) && ($k < count($resultsA)); $k++) {
+                //    if ($resultsA[$k]->team_[0] == $team) {
+                //        $cg=$resultsA[$k]->gameNumber_[0];
+                //    } else {
+                //        $cg=$resultsA[$k]->gameNumber_[1];
+                //    }
+                //    if ($cg > $gn) {
+                //        array_splice(
+                //            $resultsA, $k, 0, 
+                //            [$this->_schedules[$team]['home'][$i]->results_[$j]]
+                //        );
+                //        $found = true;
+                //    }
+               // }
                 if (! $found) {
-                    array_push(
-                        $resultsA, $this->_schedules[$team]['home'][$i]->results_[$j]
-                    );
+                    $resultsA[$gn - 1] = $this->_schedules[$team]['home'][$i]->results_[$j];
+                    //array_push(
+                    //    $resultsA, $this->_schedules[$team]['home'][$i]->results_[$j]
+                    //);
                 }
             }
         }
@@ -485,24 +495,25 @@ class Schedule
                 $gn = $this->_schedules[$team]['away'][$i]
                     ->results_[$j]->gameNumber_[0];
                 $found = false;
-                for ($k=0; (! $found) && ($k < count($resultsA)); $k++) {
-                    if ($resultsA[$k]->team_[0] == $team) {
-                        $cg=$resultsA[$k]->gameNumber_[0];
-                    } else {
-                        $cg=$resultsA[$k]->gameNumber_[1];
-                    }
-                    if ($cg > $gn) {
-                        array_splice(
-                            $resultsA, $k, 0, 
-                            [$this->_schedules[$team]['away'][$i]->results_[$j]]
-                        );
-                        $found = true;
-                    }
-                }
+                //for ($k=0; (! $found) && ($k < count($resultsA)); $k++) {
+                //    if ($resultsA[$k]->team_[0] == $team) {
+                //        $cg=$resultsA[$k]->gameNumber_[0];
+                //    } else {
+                //        $cg=$resultsA[$k]->gameNumber_[1];
+                //    }
+                //    if ($cg > $gn) {
+                //        array_splice(
+                //            $resultsA, $k, 0, 
+                //            [$this->_schedules[$team]['away'][$i]->results_[$j]]
+                //        );
+                //        $found = true;
+                //    }
+               // }
                 if (! $found) {
-                    array_push(
-                        $resultsA, $this->_schedules[$team]['away'][$i]->results_[$j]
-                    );
+                    $resultsA[$gn - 1] = $this->_schedules[$team]['away'][$i]->results_[$j];
+                    //array_push(
+                    //    $resultsA, $this->_schedules[$team]['away'][$i]->results_[$j]
+                    //);
                 }
             }
         }
@@ -510,6 +521,8 @@ class Schedule
             $rtn .= ',' . $fall[$i]->toString();
         }
         $days = 0;
+        //error_log(print_r($resultsA,true).PHP_EOL,3,'error_log');
+        ksort($resultsA);
         for ($i=0; $i < count($resultsA); $i++) {
             if ($resultsA[$i]->day_) {
                 $days++;
@@ -522,6 +535,7 @@ class Schedule
                 $days = 0;
             }
         }
+        //error_log(print_r($resultsA,true).PHP_EOL,3,'error_log');
         $results = '[';
         foreach ($resultsA as $result) {
             if ($results != '[') {

@@ -668,6 +668,11 @@ class Rosters
         $roster = $this->getRoster($team);
         $roster->move($name, \Scoring\MoveType::fromString($type), $gameNumber);
     }
+    public function addInjury($team, $name, $gameNumber, $duration)
+    {
+        $roster = $this->getRoster($team);
+        $roster->addInjury($name, $gameNumber, $duration);
+    }
     public function getTeams()
     {
         $rtn = [];

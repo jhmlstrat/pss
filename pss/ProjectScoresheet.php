@@ -99,14 +99,24 @@ class ProjectScoresheet
         if ($v->results != null) {
             foreach ($v->results as $rslt) {
                 $r = Result::fromString(json_encode($rslt));
-                array_push($inst->results_[0], $r);
+                if ($r->during == "") {
+                  $inst->situation_->side = 0;
+                  $inst->_result = $r;
+                } else {
+                  array_push($inst->results_[0], $r);
+                }
             }
         }
         //error_log(print_r($inst->results_[0],true));
         if ($h->results != null) {
             foreach ($h->results as $rslt) {
                 $r = Result::fromString(json_encode($rslt));
-                array_push($inst->results_[1], $r);
+                if ($r->during == "") {
+                  $inst->situation_->side = 1;
+                  $inst->_result = $r;
+                } else {
+                  array_push($inst->results_[1], $r);
+                }
             }
         }
         //error_log(print_r($inst->results_[1],true));
@@ -130,6 +140,9 @@ class ProjectScoresheet
     }
     public function toString()
     {
+        $sit = $this->situation_;
+        $doneResult = ($this->_result->before == "") 
+            && ($this->_result->during == "") && ($this->_result->after == "");
         $rtn = '{';
         foreach (Side::sides() as $key => $side) {
             if ($side == Side::VISITOR) {
@@ -154,6 +167,9 @@ class ProjectScoresheet
                 }
                 //$rtn .= '"' . $this->results_[$side][$i]->toString() . '"';
                 $rtn .= $this->results_[$side][$i]->toString();
+            }
+            if (! $doneResult && $side == $sit->side) {
+                $rtn .= "," . $this->_result->toString();
             }
             $rtn .= ']';
             $rtn .= '}';
@@ -287,65 +303,72 @@ class ProjectScoresheet
         $batter = $this->situation_->batter;
         $side = $this->situation_->side;
         $this->situation_->runs[$side] += substr_count($s, "-H");
-        error_log($s . ":" . $side . '-' . $this->situation_->inning . PHP_EOL,3,'error_log');
+        //error_log("mR: " . $s . ":" . $side . '-' . $this->situation_->inning . PHP_EOL,3,'error_log');
         $this->situation_->runsPerInning[$side][$this->situation_->inning] 
             += substr_count($s, "-H");
-        if (substr_count($s, "3x") > 0) {
-            $this->situation_->runner[3] = null;
+        $ses = explode(",", $s);
+        foreach ($ses as $se) {
+            if (substr_count($se, "3x") > 0) {
+                $this->situation_->runner[3] = null;
+            }
+            if (substr_count($se, "3-H") > 0) {
+                $this->situation_->runner[3] = null;
+            }
+            if (substr_count($se, "2x") > 0) {
+                $this->situation_->runner[2] = null;
+            }
+            if (substr_count($se, "2-H") > 0) {
+                $this->situation_->runner[2] = null;
+            }
+            if (substr_count($se, "2-3") > 0) {
+                $this->situation_->runner[3] = $this->situation_->runner[2];
+                $this->situation_->runner[2] = null;
+            }
+            if (substr_count($se, "1x") > 0) {
+                $this->situation_->runner[1] = null;
+            }
+            if (substr_count($se, "1-H") > 0) {
+                $this->situation_->runner[1] = null;
+            }
+            if (substr_count($se, "1-3") > 0) {
+                $this->situation_->runner[3] = $this->situation_->runner[1];
+                $this->situation_->runner[1] = null;
+            }
+            if (substr_count($se, "1-2") > 0) {
+                $this->situation_->runner[2] = $this->situation_->runner[1];
+                $this->situation_->runner[1] = null;
+            }
+            if (substr_count($se, "B-3") > 0) {
+                $this->situation_->runner[3] = $batter;
+            }
+            if (substr_count($se, "B-2") > 0) {
+                $this->situation_->runner[2] = $batter;
+            }
+            if (substr_count($se, "B-1") > 0) {
+                $this->situation_->runner[1] = $batter;
+            }
         }
-        if (substr_count($s, "3-H") > 0) {
-            $this->situation_->runner[3] = null;
-        }
-        if (substr_count($s, "2x") > 0) {
-            $this->situation_->runner[2] = null;
-        }
-        if (substr_count($s, "2-H") > 0) {
-            $this->situation_->runner[2] = null;
-        }
-        if (substr_count($s, "2-3") > 0) {
-            $this->situation_->runner[3] = $this->situation_->runner[2];
-            $this->situation_->runner[2] = null;
-        }
-        if (substr_count($s, "1x") > 0) {
-            $this->situation_->runner[1] = null;
-        }
-        if (substr_count($s, "1-H") > 0) {
-            $this->situation_->runner[1] = null;
-        }
-        if (substr_count($s, "1-3") > 0) {
-            $this->situation_->runner[3] = $this->situation_->runner[1];
-            $this->situation_->runner[1] = null;
-        }
-        if (substr_count($s, "1-2") > 0) {
-            $this->situation_->runner[2] = $this->situation_->runner[1];
-            $this->situation_->runner[1] = null;
-        }
-        if (substr_count($s, "B-3") > 0) {
-            $this->situation_->runner[3] = $batter;
-        }
-        if (substr_count($s, "B-2") > 0) {
-            $this->situation_->runner[2] = $batter;
-        }
-        if (substr_count($s, "B-1") > 0) {
-            $this->situation_->runner[1] = $batter;
-        }
-        if ($this->debug_) {
-            print "3: " . ($this->situation_->runner[3] == null ? "empty" : 
-                $this->situation_->runner[3]->name) . ", 2: " .  
-                ($this->situation_->runner[2] == null ? "empty" : 
-                $this->situation_->runner[2]->name) . ", 1: ".  
-                ($this->situation_->runner[1] == null ? "empty" : 
-                $this->situation_->runner[1]->name) . "\n";
-        }
+        //if ($this->debug_) {
+        //    print "3.mr: " . ($this->situation_->runner[3] == null ? "empty" : 
+        //        $this->situation_->runner[3]->name) . ", 2: " .  
+        //        ($this->situation_->runner[2] == null ? "empty" : 
+        //        $this->situation_->runner[2]->name) . ", 1: ".  
+        //        ($this->situation_->runner[1] == null ? "empty" : 
+        //        $this->situation_->runner[1]->name) . "\n";
+        //}
     }
     private function _updateSituation()
     {
         if ($this->debug_) {
             print "updateSituation\n";
+            print "0: " . count($this->results_[0]) . " - " . count($this->results_[1]) . "\n";
         }
         $sit = $this->situation_;
         $doneResult = ($this->_result->before == "") 
             && ($this->_result->during == "") && ($this->_result->after == "");
+        if ($this->debug_) {
+            print $this->_result->toString() . "\n";
+        }
 
         $this->situation_ = new Situation();
         $outs=array(0,0);
@@ -355,7 +378,11 @@ class ProjectScoresheet
             $split = false;
             if (! $doneResult && $side == $sit->side) {
                 array_push($this->results_[$side], $this->_result);
+                if ($this->debug_) {
+                    print "Added " . $side . " - " . count($this->results_[$side]) . "\n";
+                }
             }
+            $this->situation_->inning = $inn[$side];
             for ($i=0; $i < count($this->results_[$side]); $i++) {
                 $rslt = $this->results_[$side][$i];
                 $this->situation_->side = $side;
@@ -380,16 +407,19 @@ class ProjectScoresheet
                         if (substr_compare($rslt->during, "S", 0) == 0) {
                             $this->situation_->hits[$side] ++;
                         }
+                        if (substr_compare($rslt->during, "S(bp)", 0) == 0) {
+                            $this->situation_->hits[$side] ++;
+                        }
                         if (substr_compare($rslt->during, "D", 0) == 0) {
                             $this->situation_->hits[$side] ++;
                         }
                         if (substr_compare($rslt->during, "T", 0) == 0) {
                             $this->situation_->hits[$side] ++;
                         }
-                        if (substr_compare($rslt->during, "HR", 0) == 0) {
+                        if (substr_compare($rslt->during, "HR", 0, 2) == 0) {
                             $this->situation_->hits[$side] ++;
                         }
-                        if (substr_compare($rslt->during, "E", 0) == 0) {
+                        if (preg_match('/.*E\d.*/',$rslt->during) === 1) {
                             $this->situation_->errors[$os] ++;
                         }
                     }
@@ -408,6 +438,7 @@ class ProjectScoresheet
                     $outs[$side] = 0;
                     $inn[$side] ++;
                     $this->situation_->switchSides();
+                    $this->situation_->inning = $inn[$side];
                     if ($side == 0) {
                         $r[3]=null;
                         $r[2]=null;
@@ -456,6 +487,13 @@ class ProjectScoresheet
         }
         if (! $this->situation_->gameOver()) {
             $tss = $this->situation_->side;
+            if ($this->debug_) {
+                print "4: " . count($this->results_[$tss]);
+                if (count($this->results_[$tss] > 0)) {
+                    print " - '" . $this->results_[$tss][count($this->results_[$tss])-1]->during . "'";
+                }
+                print "\n";
+            }
             if (count($this->results_[$tss]) > 0
                 && $this->results_[$tss][count($this->results_[$tss])-1]->during==""
             ) {
@@ -474,6 +512,7 @@ class ProjectScoresheet
         } else {
             $this->situation_->batter = "";
             $this->situation_->pitcher = "";
+            //if ($this->situation_->runs[0] > $this->situation_->runs[1]) $this->situation_->inning --;
         }
     }
     private function _saveResult()
@@ -658,7 +697,8 @@ class ProjectScoresheet
     public function di()
     {
         $this->_advance(0, 1, 1, true);
-        $this->_result->before .= "/DI";
+        if ($this->_result->before != "") $this->_result->before .= ";";
+        $this->_result->before .= "DI";
     }
     public function bb()
     {
@@ -835,7 +875,7 @@ class ProjectScoresheet
             $this->_result->during .= "/DP";
         }
         if (($outs + $this->situation_->outs) < 3 && $third > 0 
-            && $this->situation_->base(2)
+            && $this->situation_->base(3)
         ) {
             $this->_result->during .= "/SF";
         }
@@ -879,7 +919,8 @@ class ProjectScoresheet
     {
         //if ($this->_result->before != "") $this->_result->before .= ",";
         $this->_advance($third, $second, $first, true);
-        $this->_result->before .= "/PO-" . $result;
+        if ($this->_result->before != "") $this->_result->before .= ";";
+        $this->_result->before .= "PO-" . $result;
         if ($this->situation_->outs == 2) {
             $this->_saveResult();
         } else {
@@ -893,7 +934,8 @@ class ProjectScoresheet
     public function wp($third, $second, $first)
     {
         $this->_advance($third, $second, $first, true);
-        $this->_result->before .= "/WP";
+        if ($this->_result->before != "") $this->_result->before .= ";";
+        $this->_result->before .= "WP";
         $this->_updateSituation();
     }
     public function pb1()
@@ -903,7 +945,8 @@ class ProjectScoresheet
     public function pb($third, $second, $first)
     {
         $this->_advance($third, $second, $first, true);
-        $this->_result->before .= "/PB";
+        if ($this->_result->before != "") $this->_result->before .= ";";
+        $this->_result->before .= "PB";
         $this->_updateSituation();
     }
     public function pb3()
@@ -924,7 +967,8 @@ class ProjectScoresheet
     public function bk($third, $second, $first)
     {
         $this->_advance($third, $second, $first, true);
-        $this->_result->before .= "/BK";
+        if ($this->_result->before != "") $this->_result->before .= ";";
+        $this->_result->before .= "BK";
         $this->_updateSituation();
     }
     public function sb1()
@@ -934,7 +978,15 @@ class ProjectScoresheet
     public function sb($third, $second, $first)
     {
         $this->_advance($third, $second, $first, true);
-        $this->_result->before .= "/SB";
+        if ($this->_result->before != "") $this->_result->before .= ";";
+        $this->_result->before .= "SB";
+        $this->_updateSituation();
+    }
+    public function sbe($third, $second, $first)
+    {
+        $this->_advance($third, $second, $first, true);
+        if ($this->_result->before != "") $this->_result->before .= ";";
+        $this->_result->before .= "SB;E-2";
         $this->_updateSituation();
     }
     public function cs1($result)
@@ -947,7 +999,8 @@ class ProjectScoresheet
             $this->_result->before .= ",";
         }
         $this->_advance($third, $second, $first, true);
-        $this->_result->before .= "/CS" . $result;
+        if ($this->_result->before != "") $this->_result->before .= ";";
+        $this->_result->before .= "CS" . $result;
         if ($this->situation_->outs == 2) {
             $this->_saveResult();
         } else {

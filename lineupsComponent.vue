@@ -2,7 +2,6 @@ var LineupsComponent = {
   name: 'LineupsComponent',
   template: `
     <div class='container'>
-{{ currentComponent() }}
       <b-row>
         <b-col cols='2' class='text-center'>
           <b-button variant='link' size='lg' href='#' v-on:click='switchToMenu();'>
@@ -33,10 +32,10 @@ var LineupsComponent = {
         <b-col cols='12'>
           <b-tabs v-show="gameInfo != {}">
             <b-tab v-bind:title="gameInfo.visitor.name.toUpperCase()" v-bind:active="team.team == gameInfo.visitor.name">
-              <lineup-component v-bind:side="gameInfo.visitor" v-bind:oside="gameInfo.home" v-bind:roster="vRoster()" v-bind:oroster="hRoster()" v-bind:rotation="vRotation()" v-bind:orotation="hRotation()" v-on:rotationUpdate="rotationUpdate('away',$event)" v-on:lineupUpdate="lineupUpdate('away',$event)"></lineup-component>
+              <lineup-component v-bind:side="gameInfo.visitor" v-bind:oside="gameInfo.home" v-bind:roster="vRoster()" v-bind:oroster="hRoster()" v-bind:rotation="vRotation()" v-on:rotationUpdate="rotationUpdate('away',$event)" v-on:lineupUpdate="lineupUpdate('away',$event)"></lineup-component>
             </b-tab>
             <b-tab v-bind:title="gameInfo.home.name.toUpperCase()" v-bind:active="team.team == gameInfo.home.name">
-              <lineup-component v-bind:side="gameInfo.home" v-bind:oside="gameInfo.visitor" v-bind:roster="hRoster()" v-bind:oroster="vRoster()" v-bind:rotation="hRotation()" v-bind:orotation="vRotation()" v-on:rotationUpdate="rotationUpdate('home',$event)" v-on:lineupUpdate="lineupUpdate('home',$event)"></lineup-component>
+              <lineup-component v-bind:side="gameInfo.home" v-bind:oside="gameInfo.visitor" v-bind:roster="hRoster()" v-bind:oroster="vRoster()" v-bind:rotation="hRotation()" v-on:rotationUpdate="rotationUpdate('home',$event)" v-on:lineupUpdate="lineupUpdate('home',$event)"></lineup-component>
             </b-tab>
           </b-tabs>
         </b-col>
@@ -84,19 +83,21 @@ var LineupsComponent = {
       return city + ' ' + nickname + ' ( ' + gameNumber + ' )';
     },
     hRoster() {
-      if (this.team.team = vue.gameInfo.visitor.name) return vue.oRoster;
+      //console.log(this.team.team);
+      //console.log(vue.gameInfo.visitor.name);
+      if (this.team.team == vue.gameInfo.visitor.name) return vue.oRoster;
       return vue.roster;
     },
     hRotation() {
-      if (this.team.team = vue.gameInfo.visitor.name) return vue.oRotation;
+      if (this.team.team == vue.gameInfo.visitor.name) return vue.oRotation;
       return vue.rotation;
     },
     vRoster() {
-      if (this.team.team = vue.gameInfo.visitor.name) return vue.roster;
+      if (this.team.team == vue.gameInfo.visitor.name) return vue.roster;
       return vue.oRoster;
     },
     vRotation() {
-      if (this.team.team = vue.gameInfo.visitor.name) return vue.rotation;
+      if (this.team.team == vue.gameInfo.visitor.name) return vue.rotation;
       return vue.oRotation;
     },
     weather(g) {

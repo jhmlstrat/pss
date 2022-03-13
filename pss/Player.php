@@ -35,6 +35,7 @@ class Player
     public $wp;
     public $batting;
     public $age;
+    public $injured;
     public function __construct()
     {
         $this->name='';
@@ -85,6 +86,7 @@ class Player
         $this->wp=0;
         $this->batting='';
         $this->age = 99;
+        $this->injured = false;
     }
     public static function initial($name)
     {
@@ -157,6 +159,9 @@ class Player
             $inst->balk=intval($strat->balk);
             $inst->wp=intval($strat->wp);
             $inst->batting=$strat->batting;
+        }
+        if (property_exists($play->player, 'injured')) {
+            $inst->injured = true;
         }
         return $inst;
     }
@@ -240,6 +245,7 @@ class Player
             $rtn .= ',"batting":"' . $this->batting . '"';
             $rtn .= '}';
         }
+        if ($this->injured) $rtn .= ',"injured":true';
         $rtn .= '}}';
         return $rtn;
     }

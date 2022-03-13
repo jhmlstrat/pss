@@ -19,6 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'PUT') {
     //error_log(json_encode($data).PHP_EOL,3,'error_log');
 
     include_once '../pss/Game.php';
+    include_once '../pss/Rosters.php';
 
     $year = isset($data->year) ? $data->year : die();
     //error_log($year.PHP_EOL,3,'error_log');
@@ -42,11 +43,122 @@ if ($_SERVER['REQUEST_METHOD'] == 'PUT') {
     //error_log($infield.PHP_EOL,3,'error_log');
     $eBases = isset($data->eBases) ? $data->eBases : '0';
     //error_log($eBases.PHP_EOL,3,'error_log');
+    $injury = isset($data->injury) ? $data->injury : '-1';
+    //error_log($injury.PHP_EOL,3,'error_log');
+    $player = isset($data->player) ? $data->player : '#';
+    //error_log($player.PHP_EOL,3,'error_log');
+    $pitcher = isset($data->pitcher) ? $data->pitcher : false;
+    //error_log(($pitcher?"true":"false").PHP_EOL,3,'error_log');
     $g = \Scoring\Game::findGameforTeam($year, $team, $gn);
     //error_log($g->toString().PHP_EOL,3,'error_log');
     $sit = $g->situation_;
+    //error_log($sit->toString().PHP_EOL,3,'error_log');
 
-    if ($eBases != '0' and $play != 'E') {
+    if ($injury > -1) {
+      $rosters = new \Jhml\Rosters($year, false, false);
+      $pt = '';
+      if ($pitcher) {
+          if ($g->lineup_[0]->getCurrentPitcher()->$name == $player) {
+              $g->lineup_[0]->getCurrentPitcher()->injured = true;
+              $pt = $g->teamName_[0];
+          } else {
+              $g->lineup_[1]->getCurrentPitcher()->injured = true;
+              $pt = $g->teamName_[1];
+          }
+      } else {
+          $found = false;
+          //error_log($g->lineup_[0]->toString().PHP_EOL,3,'error_log');
+          for ($i = 0; $i < 2 && ! $found; $i ++) {
+              for ($j=0; $j < 9 && ! $found; $j ++) {
+                  //error_log($g->lineup_[$i]->getHitter($j)->toString().PHP_EOL,3,'error_log');
+                  if ($g->lineup_[$i]->getHitter($j)->name == $player) {
+                      $found = true;
+                      $g->lineup_[$i]->getHitter($j)->injured = true;
+                      $pt = $g->teamName_[$i];
+                      //error_log($g->teamName_[$i].PHP_EOL,3,'error_log');
+                  }
+              }
+          }
+      }
+      $rosters->addInjury($pt, $player, $gn, $injury);
+      //error_log($g->toString().PHP_EOL,3,'error_log');
+      $rosters->writeRosterFile();
+    }
+
+    if ($batter != '#' || $first != '#' || $second != '#' || $third != '#') {
+      if ($first > 0) $first = $first - 1; 
+      if ($second > 0) $second = $second - 2; else $second = $second + 1;
+      if ($third > 0) $third = $third - 3; else $third = $third + 2;
+      if ($play == 'gb') {
+        if ($fielder == '3') {
+          $g->gb('3', $third, $second, $first, $batter);
+        } else {
+          $g->gb($fielder + '-3', $third, $second, $first, $batter);
+        }
+      } else if ($play == 'fly') {
+        $g->fo($fielder, $third, $second, $first, $batter);
+      } else if ($play == 'lo') {
+        //error_log('g->fo:' . $third . '-'. $second . '-' . $first . '-' . $batter);
+        $g->fo($fielder, $third, $second, $first, $batter);
+      } else if ($play == 'S') {
+        $g->play('S', $third, $second, $first, $batter);
+      } else if ($play == 'D') {
+        $g->play('D', $third, $second, $first, $batter);
+      } else if ($play == 'BPHR-') {
+        $g->play($fielder.'(bp)', $third, $second, $first, $batter);
+      } else if ($play == 'SB') {
+        //error_log($g->toString().PHP_EOL, 3, 'error_log');
+        if ($eBases != '0') {
+          $g->sbe($third + $eBases, $second + $eBases, $first + $eBases);
+        } else {
+          $g->sb($third, $second, $first);
+        }
+        //error_log($g->toString().PHP_EOL, 3, 'error_log');
+      } else if ($play == 'CS') {
+        if ($first < 0) {
+          $g->cs('2-6', $third, $second, $first);
+        } else if ($second < 0) {
+          $g->cs('2-5', $third, $second, $first);
+        } else {
+          $g->cs('2-1', $third, $second, $first);
+        }
+      } else if ($play == 'PO') {
+        if ($first < 0) {
+          $g->po('1-3', $third, $second, $first);
+        } else if ($second < 0) {
+          $g->po('1-4', $third, $second, $first);
+        } else {
+          $g->po('1-5', $third, $second, $first);
+        }
+      } else {
+        error_log('Unexpected play with bases: '.$play.PHP_EOL, 3, 'error_log');
+      }
+    } else if ($eBases != '0' and $play != 'E') {
+        switch ($play) {
+        case 'S1':
+            $g->play('S;'.($eBases != '1' ? $eBases : '').'E'.$fielder, 1, 2, 1+$eBases, 1+$eBases);
+            break;
+        case 'S2':
+            $e = $eBases;
+            if ($eBases == 3) $e = 2;
+            $g->play('S;'.($eBases != '1' ? $eBases : '').'E'.$fielder, 1, 2, 1+$e, 1+$e);
+            break;
+        case 'D2':
+            $e = $eBases;
+            if ($eBases == 2) $e = 1;
+            $g->play('D;'.($eBases != '1' ? $eBases : '').'E'.$fielder, 1, 2, 3, 2+$e);
+            break;
+        case 'D3':
+            $e = $eBases;
+            if ($eBases == 2) $e = 1;
+            $g->play('D;'.($eBases != '1' ? $eBases : '').'E'.$fielder, 1, 2, 3, 2+$e);
+            break;
+        case 'T3':
+            $g->play('T;'.($eBases != '1' ? $eBases : '').'E'.$fielder, 1, 2, 3, 4);
+            break;
+        default:
+            error_log('Unexpected error play: '.$play.PHP_EOL, 3, 'error_log');
+        }
     } else {
         switch ($play) {
         case 'undo':
@@ -65,16 +177,28 @@ if ($_SERVER['REQUEST_METHOD'] == 'PUT') {
             $g->sb1();
             break;
         case 'CS':
-            $g->cs1();
+            if ($sit->runner[1] != null) {
+              $g->cs1('2-6');
+            } else if ($sit->runner[2] != null) {
+              $g->cs1('2-5');
+            } else {
+              $g->cs1('2-1');
+            }
             break;
         case 'PO':
-            $g->po1('1-3');
+            if ($sit->runner[1] != null) {
+              $g->po1('1-3');
+            } else if ($sit->runner[2] != null) {
+              $g->po1('1-4');
+            } else {
+              $g->po1('1-5');
+            }
             break;
         case 'DI':
             $g->di();
             break;
         case 'RP-S1':
-            if ($sit->first != '' and ($fielder == '3' or $fielder = '4')) {
+            if ($sit->runner[1] != null and ($fielder == '3' or $fielder = '4')) {
                 if ($sit->outs == 2) {
                     $g->s1rp3();
                 } else {
@@ -91,8 +215,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'PUT') {
             $g->d2rp();
             break;
         case 'RP-D3':
-            if ($sit->first != '' or $sit->second != '' 
-                or $sit->third != ''
+            if ($sit->runner[1] != null or $sit->runner[2] != null 
+                or $sit->runner[3] != null
             ) {
                 $g->play('D', 1, 2, 3, 2);
             } else {
@@ -103,7 +227,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'PUT') {
             $g->hr();
             break;
         case 'RP-G1':
-            if ($sit->first != '') {
+            if ($sit->runner[1] != null) {
                 if ($fielder == '3') {
                     $g->gb('3-6-1(DP)', 0, 0, -1, -1);
                 } elseif ($fielder == '4') {
@@ -128,11 +252,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'PUT') {
             $first=0;
             $second=0;
             $third=0;
-            if ($sit->first != '') {
+            if ($sit->runner[1] != null) {
                 $first=1;
-                if ($sit->second != '') {
+                if ($sit->runner[2] != null) {
                     $second=1;
-                    if ($sit->third != '') {
+                    if ($sit->runner[3] != null) {
                         $third=1;
                     }
                 }
@@ -153,7 +277,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'PUT') {
             if ($sit->outs == 2) {
                 $g->fo0($fielder);
             } else {
-                if ($sit->third != '') {
+                if ($sit->runner[3] != null) {
                     $g->fo($fielder.'-5', -1, 0, 0, -1);
                 } else {
                     $g->fo0($fielder);
@@ -164,11 +288,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'PUT') {
             if ($sit->outs == 2) {
                 $g->fo0($fielder);
             } else {
-                if ($sit->third != '') {
+                if ($sit->runner[3] != null) {
                     $g->fo($fielder.'-5', -1, 0, 0, -1);
-                } elseif ($sit->second != '') {
+                } elseif ($sit->runner[2] != null) {
                     $g->fo($fielder.'-6', 0, -1, 0, -1);
-                } elseif ($sit->first != '') {
+                } elseif ($sit->runner[1] != null) {
                     $g->fo($fielder.'-3', 0, 0, -1, -1);
                 } else {
                     $g->fo0($fielder);
@@ -176,8 +300,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'PUT') {
             }
             break;
         case 'RP-W/S':
-            if ($sit->first != '' or $sit->second != '' 
-                or $sit->third != ''
+            if ($sit->runner[1] != null or $sit->runner[2] != null 
+                or $sit->runner[3] != null
             ) {
                 $g->wp(1, 2, 2);
             } else {
@@ -185,8 +309,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'PUT') {
             }
             break;
         case 'RP-W/G':
-            if ($sit->first != '' or $sit->second != '' 
-                or $sit->third != ''
+            if ($sit->runner[1] != null or $sit->runner[2] != null 
+                or $sit->runner[3] != null
             ) {
                 $g->wp1();
             } else {
@@ -197,21 +321,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'PUT') {
             $g->ci();
             break;
         case 'RP-P/P':
-            if ($sit->first != '' or $sit->second != '' 
-                or $sit->third != ''
+            if ($sit->runner[1] != null or $sit->runner[2] != null 
+                or $sit->runner[3] != null
             ) {
                 $first=0;
                 $second=0;
                 $third=0;
-                if ($sit->second != '') {
-                    if ($sit->third == '') {
+                if ($sit->runner[2] != null) {
+                    if ($sit->runner[3] == null) {
                         $second = 1;
-                        if ($sit->first != '') {
+                        if ($sit->runner[1] != null) {
                             $first = 1;
                         }
                     }
                 } else {
-                    if ($sit->first != '') {
+                    if ($sit->runner[1] != null) {
                         $first = 1;
                     }
                 }
@@ -226,7 +350,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'PUT') {
             $g->s1();
             break;
         case 'RP-FO':
-            if ($sit->first != '') {
+            if ($sit->runner[1] != null) {
                 $g->po('2-3', 0, 0, -1);
             } else {
                 $g->fo0('2');
@@ -248,8 +372,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'PUT') {
                 $third=0;
             } else {
                 if ($infield == 'back') {
-                    if ($sit->first != '' and $sit->second == '' 
-                        and $sit->third == ''
+                    if ($sit->runner[1] != null and $sit->runner[2] == null 
+                        and $sit->runner[3] == null
                     ) {
                         if ($fielder == '3') {
                             $p = '3-6-1';
@@ -259,22 +383,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'PUT') {
                             $p = $fielder.'-4-3';
                         }
                         $first=-1;
-                    } elseif ($sit->first == '' and $sit->second != '' 
-                        and $sit->third == ''
+                    } elseif ($sit->runner[1] == null and $sit->runner[2] != null 
+                        and $sit->runner[3] == null
                     ) {
                         if ($fielder != '3' and $fielder != '4') {
                             $second = 0;
                         }
-                    } elseif ($sit->first == '' and $sit->second == '' 
-                        and $sit->third != ''
+                    } elseif ($sit->runner[1] == null and $sit->runner[2] == null 
+                        and $sit->runner[3] != null
                     ) {
                         if ($fielder == '3') {
                             $third = 0;
                         } elseif ($fielder != '4' and $fielder != '6') {
                             $third = 0;
                         }
-                    } elseif ($sit->first != '' and $sit->second != '' 
-                        and $sit->third == ''
+                    } elseif ($sit->runner[1] != null and $sit->runner[2] != null 
+                        and $sit->runner[3] == null
                     ) {
                         if ($fielder == '3') {
                             $p = '3-6-1';
@@ -284,8 +408,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'PUT') {
                             $p = $fielder.'-4-3';
                         }
                         $first=-1;
-                    } elseif ($sit->first != '' and $sit->second == '' 
-                        and $sit->third != ''
+                    } elseif ($sit->runner[1] != null and $sit->runner[2] == null 
+                        and $sit->runner[3] != null
                     ) {
                         if ($fielder == '3') {
                             $p = '3-6-1';
@@ -298,8 +422,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'PUT') {
                         if ($sit->outs == 1) {
                             $third = 0;
                         }
-                    } elseif ($sit->first == '' and $sit->second != '' 
-                        and $sit->third != ''
+                    } elseif ($sit->runner[1] == null and $sit->runner[2] != null 
+                        and $sit->runner[3] != null
                     ) {
                         if ($fielder == '3') {
                             $third = 0;
@@ -323,11 +447,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'PUT') {
                         }
                     }
                 } else {
-                    if ($sit->first == '' and $sit->second == '') {
+                    if ($sit->runner[1] == null and $sit->runner[2] == null) {
                         $third = 0;
-                    } elseif ($sit->first != '' and $sit->second == '') {
+                    } elseif ($sit->runner[1] != null and $sit->runner[2] == null) {
                         $third = 0;
-                    } elseif ($sit->first == '' and $sit->second != '') {
+                    } elseif ($sit->runner[1] == null and $sit->runner[2] != null) {
                         $third = 0;
                         $second = 0;
                     } else {
@@ -343,7 +467,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'PUT') {
             $g->gb($p, $third, $second, $first, $bat);
             break;
         case 'gbB':
-            error_log($situation_->toString().PHP_EOL,3,'error_log');
             if ($fielder == '3') {
                 $p='3';
             } else {
@@ -359,8 +482,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'PUT') {
                 $third=0;
             } else {
                 if ($infield == 'back') {
-                    if ($sit->first != '' and $sit->second == '' 
-                        and $sit->third == ''
+                    if ($sit->runner[1] != null and $sit->runner[2] == null 
+                        and $sit->runner[3] == null
                     ) {
                         if ($fielder == '3' or $fielder == '4') {
                             $p = $fielder.'-6';
@@ -369,22 +492,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'PUT') {
                         }
                         $first=-1;
                         $bat=1;
-                    } elseif ($sit->first == '' and $sit->second != '' 
-                        and $sit->third == ''
+                    } elseif ($sit->runner[1] == null and $sit->runner[2] != null 
+                        and $sit->runner[3] == null
                     ) {
                         if ($fielder != '3' and $fielder != '4') {
                             $second=0;
                         }
-                    } elseif ($sit->first == '' and $sit->second == '' 
-                        and $sit->third != ''
+                    } elseif ($sit->runner[1] == null and $sit->runner[2] == null 
+                        and $sit->runner[3] != null
                     ) {
                         if ($fielder == '3') {
                             $third = 0;
                         } elseif ($fielder != '4' and $fielder != '6') {
                             $third = 0;
                         }
-                    } elseif ($sit->first != '' and $sit->second != '' 
-                        and $sit->third == ''
+                    } elseif ($sit->runner[1] != null and $sit->runner[2] != null 
+                        and $sit->runner[3] == null
                     ) {
                         if ($fielder == '3' or $fielder == '4') {
                             $p = $fielder.'-6';
@@ -393,8 +516,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'PUT') {
                         }
                         $first=-1;
                         $bat=1;
-                    } elseif ($sit->first != '' and $sit->second == '' 
-                        and $sit->third != ''
+                    } elseif ($sit->runner[1] != null and $sit->runner[2] == null 
+                        and $sit->runner[3] != null
                     ) {
                         if ($fielder == '3' or $fielder == '4') {
                             $p = $fielder.'-6';
@@ -403,8 +526,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'PUT') {
                         }
                         $first=-1;
                         $bat=1;
-                    } elseif ($sit->first == '' and $sit->second != '' 
-                        and $sit->third != ''
+                    } elseif ($sit->runner[1] == null and $sit->runner[2] != null 
+                        and $sit->runner[3] != null
                     ) {
                         if ($fielder == '3') {
                             $third = 0;
@@ -413,8 +536,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'PUT') {
                             $third = 0;
                             $second = 0;
                         }
-                    } elseif ($sit->first != '' and $sit->second != ''
-                        and $sit->third != ''
+                    } elseif ($sit->runner[1] != null and $sit->runner[2] != null
+                        and $sit->runner[3] != null
                     ) {
                         if ($fielder == '3' or $fielder == '4') {
                             $p = $fielder.'-6';
@@ -452,11 +575,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'PUT') {
                 $third=0;
             } else {
                 if ($infield != 'back') {
-                    if ($sit->first == '' and $sit->second == '') {
+                    if ($sit->runner[1] == null and $sit->runner[2] == null) {
                         $third=0;
-                    } elseif ($sit->first != '' and $sit->second == '') {
+                    } elseif ($sit->runner[1] != null and $sit->runner[2] == null) {
                         $third=0;
-                    } elseif ($sit->first == '' and $sit->second != '') {
+                    } elseif ($sit->runner[1] == null and $sit->runner[2] != null) {
                         $third=0;
                         $second=0;
                     } else {
@@ -473,7 +596,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'PUT') {
             $g->gb($p, $third, $second, $first, $bat);
             break;
         case 'SAC':
-            $g->sac1();
+            if ($fielder == '3') {
+                $p='SAC(3-4)';
+            } else {
+                $p='SAC('.$fielder.'-3)';
+            }
+            $g->sac1($p);
             break;
         case 'flyA':
             if ($sit->outs == 2) {
@@ -483,7 +611,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'PUT') {
             }
             break;
         case 'flyB':
-            if ($sit->outs == 2 or $sit->third == '') {
+            if ($sit->outs == 2 or $sit->runner[3] == null) {
                 $g->fo0($fielder);
             } else {
                 $g->fo($fielder, 1, 0, 0, -1);
@@ -515,6 +643,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'PUT') {
             break;
         case 'S+':
             $g->play('S(plus)', 1, 2, 2, 1);
+            break;
+        case 'S#':
+            $g->play('S(hash)', 1, 2, 2, 1);
             break;
         case 'BPS+':
             $g->play('S(bp)', 1, 1, 1, 1);
@@ -560,51 +691,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'PUT') {
             error_log('Unexpected play: '.$play.PHP_EOL, 3, 'error_log');
         }
     }
-    //  for ($i = 0; $i < 2; $i++) {
-    //    if ($i == 0) $side = $game->visitor;
-    //    else $side = $game->home;
-    //error_log(json_encode($side).PHP_EOL,3,'error_log');
-    //    $li = $g->lineup_[$i];
-    //error_log($li->toString());
-    //    for ($j=0; $j < count($side->lineup); $j++) {
-    //error_log(print_r($li->getHitters($j),true));
-    //error_log(print_r($side->lineup[$j],true));
-    //      if (count($li->getHitters($j)) != count($side->lineup[$j])) {
-    //error_log('Add ' . $j);
-    //        $play = \ProjectScoresheet\Player::initial($side->lineup[$j][count($side->lineup[$j])-1]->player->name,null);
-    //error_log('Add ' . $j);
-    //        $g->battingOrder($i, $j, $play, \ProjectScoresheet\Position::position($side->lineup[$j][count($side->lineup[$j])-1]->player->positions[0]->position->pos));
-    //error_log('Add ' . $j);
-    //      } else {
-    //        $o = count($li->getHitters($j)) - 1;
-    //        if ($o >= 0) {
-    //        }
-    //      }
-    //    }
-    //error_log(count($li->getPitchers()));
-    //error_log(count($side->rotation));
-    //    if (count($li->getPitchers()) != count($side->rotation)) {
-    //error_log(json_encode($side->rotation[count($side->rotation)-1]));
-    //      $play = \ProjectScoresheet\Player::initial($side->rotation[count($side->rotation)-1]->player->name,null);
-    //      $g->pitcher($i,$play);
-    //    }
-    //  }
-    //$g->save();
+    //error_log($g->toString().PHP_EOL, 3, 'error_log');
     \Scoring\Game::save($year, json_decode($g->toString()));
     //error_log($g->toString());
     http_response_code(201);
+    
 }
 ?>
-
-//$year = isset($_GET['year']) ? $_GET['year'] : die();
-//if (isset($_GET['team'])) {
-  //$team = $_GET['team'];
-  //$game = isset($_GET['game']) ? $_GET['game'] : die();
-  //if ($g == null) {
-    //http_response_code(404);
-  //} else {
-    //http_response_code(200);
-    //print($g->toString());
-  //}
-//}
 

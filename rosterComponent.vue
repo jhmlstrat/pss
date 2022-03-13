@@ -41,10 +41,10 @@ var RosterComponent = {
                                group='roster' 
                                v-bind:key='player.player.name'>
               <b-row>
-                <b-col cols='9' md='10'>
+                <b-col cols='9' md='9'>
                   {{ player.player.name }}
                 </b-col>
-                <b-col cols='3' md='2'>
+                <b-col cols='3' md='3'>
                   <b-form-select v-model='selected[player.player.name]' 
                                  class='pl-0 pt-0 pb-0'
                                  v-bind:options='choices(player.player.name)' 
@@ -63,7 +63,18 @@ var RosterComponent = {
                                v-bind:variant="playerVariant(player.player)"
                                group='roster'
                                v-bind:key='"MIN:"+player.player.name'>
-              {{ player.player.name }}
+              <b-row>
+                <b-col cols='9' md='9'>
+                  {{ player.player.name }}
+                </b-col>
+                <b-col cols='3' md='3'>
+                  <b-form-select v-model='selected[player.player.name]' 
+                                 class='pl-0 pt-0 pb-0'
+                                 v-bind:options='choices(player.player.name)' 
+                                 v-on:change="move(player.player.name)">
+                  </b-form-select>
+                </b-col>
+              </b-row>
             </b-list-group-item>
           <h3 class='pt-3' v-if='mod_il.length == 0 || mod_il[0].player.name == "-"'><center>Injured List</center></h3>
           <h3 class='pt-3' v-else><center>Injured List ({{ mod_il.length }})</center></h3>
@@ -72,7 +83,17 @@ var RosterComponent = {
                                v-bind:variant="playerVariant(player.player)"
                                group='roster'
                                v-bind:key='"IL:"+player.player.name'>
-              {{ player.player.name }}
+              <b-row>
+                <b-col cols='9' md='9'>
+                  {{ player.player.name }}
+                </b-col>
+                <b-col cols='3' md='3'>
+                  <b-form-select v-model='selected[player.player.name]' 
+                                 class='pl-0 pt-0 pb-0'
+                                 v-bind:options='choices(player.player.name)' 
+                                 v-on:change="move(player.player.name)">
+                  </b-form-select>
+                </b-col>
             </b-list-group-item>
         </b-col>
       </b-row>
@@ -163,6 +184,7 @@ var RosterComponent = {
       let lm=vue.lastMove(ri);
       let gSeries=vue.seriesGame(vue.gameNumber);
       let mSeries=vue.seriesGame(lm.gameNumber);
+      //console.log(name + ': ' + ri + ' - ' + lm + ' - ' + gSeries);
       if (where.start != where.current) return false;
       if (lm.lastMove == 'Traded') return false;
       if (lm.lastMove == 'Traded for') return true;

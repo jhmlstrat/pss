@@ -21,7 +21,7 @@
     "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/fontawesome.min.css"
   />
   <link href="pss.css" rel="stylesheet">
-  <script src="https://unpkg.com/vue/dist/vue.js" type="text/javascript"></script>
+  <script src="https://unpkg.com/vue@2.6.14/dist/vue.js" type="text/javascript"></script>
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   <script src="https://unpkg.com/babel-polyfill/dist/polyfill.min.js"></script>
   <script src="https://unpkg.com/bootstrap-vue/dist/bootstrap-vue.js"></script>
@@ -52,6 +52,7 @@
   <script src="scheduleComponent.vue" type="text/javascript"></script>
   <script src="situationComponent.vue" type="text/javascript"></script>
   <script src="defenseComponent.vue" type="text/javascript"></script>
+  <script src="infoLineComponent.vue" type="text/javascript"></script>
   <script src="gameComponent.vue" type="text/javascript"></script>
 </head>
 
@@ -218,11 +219,15 @@
             self.loadingGameInfo = false;
             self.emitData();
             //console.log(self.gameInfo); 
-            if (self.gameInfo.situation.situation.betweenInnings) {
+            if (self.gameInfo.situation.situation.betweenInnings && ! self.gameInfo.situation.situation.gameOver) {
               v = self.lineupValid(self.gameInfo.visitor.lineup);
               h = self.lineupValid(self.gameInfo.home.lineup);
-              if (v.valid && h.valid) self.currentComponent = "gameComponent";
-              else self.currentComponent = "lineupsComponent";
+              if ((v.valid && self.gameInfo.situation.situation.side == 1 && !h.missingPlayer) ||
+                  (h.valid && self.gameInfo.situation.situation.side == 0 && !v.missingPlayer)) {
+                self.currentComponent = "gameComponent";
+              } else {
+                self.currentComponent = "lineupsComponent";
+              }
             } else {
               self.currentComponent = "gameComponent";
             }
@@ -536,6 +541,7 @@
         },
         lineupValid(lineup) {
           let pos=[false,false,false,false,false,false,false,false,false];
+          injuredPlayer = false;
           dupePlayer = false;
           dupePos = false;
           missingPlayer = false;
@@ -548,6 +554,9 @@
               continue;
             }
             pl = lineup[i][lineup[i].length-1].player;
+            if ('injured' in pl) {
+              if (pl.injured) injuredPlayer = true;
+            }
             b = pl.name;
             if (pl.positions.length == 0) p = '';
             else p = pl.positions[pl.positions.length - 1].position.pos;
@@ -578,6 +587,7 @@
                 }
               }
             }
+            pc = -1;
             if (p == 'P' || p == 'DH') { pc = 0; }
             if (p == 'C') { pc = 1; }
             if (p == '1B') { pc = 2; }
@@ -587,26 +597,29 @@
             if (p == 'LF') { pc = 6; }
             if (p == 'CF') { pc = 7; }
             if (p == 'RF') { pc = 8; }
-            if (pos[pc]) { dupePos = true; }
+            if (pc < 0) pc = -1;
+            else if (pos[pc]) { dupePos = true; }
             else { pos[pc] = true; }
           }
           for (p of pos) if (! p) missingPos = true;
           return {'valid': ! (dupePlayer || dupePos || missingPlayer || missingPos),
+                  'injuredPlayer': injuredPlayer,
                   'duplicatePlayer': dupePlayer,
                   'duplicatePosition': dupePos,
                   'missingPlayer': missingPlayer,
                   'missingPosition': missingPos,
                   'playerOutOfPosition': playerOop}
         },
-        getAvailable(lineup, rotation, roster) {
+        getAvailable(lineup, rotation, gRoster, roster) {
           // TBD: Injured
           // TBD: Tired
           availableBatters = [];
           for (b of roster.roster.batters) {
-            if (b.rosterItem.moves.length > 0 && b.rosterItem.moves[b.rosterItem.moves.length -1].move.moveType == 'To minors') continue;
-            if (b.rosterItem.moves.length > 0 && b.rosterItem.moves[b.rosterItem.moves.length -1].move.moveType == 'On DL') continue;
-            if (b.rosterItem.moves.length > 0 && b.rosterItem.moves[b.rosterItem.moves.length -1].move.moveType == 'Traded') continue;
-            if (b.rosterItem.moves.length > 0 && b.rosterItem.moves[b.rosterItem.moves.length -1].move.moveType == 'Traded for') continue;
+            found = false;
+            for (i=0; i<gRoster.length; i++) {
+              if (gRoster[i] == b.rosterItem.player.name) found = true;
+            }
+            if (!found) continue;
             let inLineup = false;
             for (l of lineup) {
               for (lu of l) {
@@ -621,10 +634,11 @@
           sr = [];
           relievers = [];
           for (p of roster.roster.pitchers) {
-            if (p.rosterItem.moves.length > 0 && p.rosterItem.moves[p.rosterItem.moves.length -1].move.moveType == 'To minors') continue;
-            if (p.rosterItem.moves.length > 0 && p.rosterItem.moves[p.rosterItem.moves.length -1].move.moveType == 'On DL') continue;
-            if (p.rosterItem.moves.length > 0 && p.rosterItem.moves[p.rosterItem.moves.length -1].move.moveType == 'Traded') continue;
-            if (p.rosterItem.moves.length > 0 && p.rosterItem.moves[p.rosterItem.moves.length -1].move.moveType == 'Traded for') continue;
+            found = false;
+            for (i=0; i<gRoster.length; i++) {
+              if (gRoster[i] == p.rosterItem.player.name) found = true;
+            }
+            if (!found) continue;
             used = false;
             for (r of rotation) {
               if (r.player.name == p.rosterItem.player.name) used = true;

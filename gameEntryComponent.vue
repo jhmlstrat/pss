@@ -57,7 +57,7 @@ var GameEntryComponent = {
         </b-col>
         <b-col cols="1" class="text-right">
           <b-button variant="link" href="#" v-on:click="doRarePlay()" v-show="! plus">RP</b-button>
-          <b-button variant="link" href="#" v-on:click="showInjury()" v-show="plus">Injury</b-button>
+          <b-button variant="link" href="#" v-on:click="doPlay('Injury')" v-show="plus">Injury</b-button>
         </b-col>
         <b-col cols="1" class="text-right">
           <b-button variant="link" href="#" v-on:click="doPlus()" v-show="! plus">+</b-button>
@@ -142,9 +142,9 @@ var GameEntryComponent = {
           <b-button v-b-tooltip.hover title="Infield popup no one takes charge of, drops for a Single*" variant="link" href="#" v-on:click="doPlay('RP-PO')" v-if="rarePlay">Rare PO</b-button> 
           <b-button variant="link" href="#" v-on:click="doPlay('PO')" v-else>PO</b-button> 
         </b-col>
-          <b-button v-b-tooltip.hover title="With runner on first, catcher picks him off. No runner on first - fan interference" variant="link" href="#" v-on:click="doPlay('RP-FO')" v-if="rarePlay">Rare FO</b-button> 
-          <b-button variant="link" href="#" v-on:click="doPlay('FO')" v-else>PO</b-button> 
         <b-col cols="1" class="text-right">
+          <b-button v-b-tooltip.hover title="With runner on first, catcher picks him off. No runner on first - fan interference" variant="link" href="#" v-on:click="doPlay('RP-FO')" v-if="rarePlay">Rare FO</b-button> 
+          <b-button variant="link" href="#" v-on:click="doPlay('FO')" v-else>FO</b-button> 
         </b-col>
         <b-col cols="1" class="text-right">
         </b-col>
@@ -178,6 +178,7 @@ var GameEntryComponent = {
           <b-button variant="link" href="#" v-on:click="doPlay('S**')" v-show="occupied(1) || occupied(2) || occupied(3)">S**</b-button> 
           <b-button variant="link" href="#" v-on:click="doPlay('S-dot')">S-dot</b-button> 
           <b-button variant="link" href="#" v-on:click="doPlay('S+')">S-plus</b-button> 
+          <b-button variant="link" href="#" v-on:click="doPlay('S#')">S-hash</b-button> 
           <b-button variant="link" href="#" v-on:click="doPlay('S!')" v-show="occupied(1) || occupied(2) || occupied(3)">S!</b-button> 
           <b-button variant="link" href="#" v-on:click="doPlay('BPS+')">BPS+</b-button> 
           <b-button variant="link" href="#" v-on:click="fielder='6';showInfield('BPS-')">BPS-</b-button>
@@ -237,28 +238,28 @@ var GameEntryComponent = {
               Batter: {{ gameInfo.situation.situation.batter }}
             </b-col>
             <b-col cols="1">
-              <b-form-radio v-model="expected[0]" name="batter-running-radios" value="-1" v-show="showUnusualSpot(0,-1)"></b-form-radio>
+              <b-form-radio v-model="expected[0]" name="batter-running-radios-b" value="-1" v-show="showUnusualSpot(0,-1)"></b-form-radio>
             </b-col>
             <b-col cols="1">
-              <b-form-radio v-model="expected[0]" name="batter-running-radios" value="1" v-show="showUnusualSpot(0,1)"></b-form-radio>
+              <b-form-radio v-model="expected[0]" name="batter-running-radios-b" value="1" v-show="showUnusualSpot(0,1)"></b-form-radio>
             </b-col>
             <b-col cols="1">
-              <b-form-radio v-model="expected[0]" name="batter-running-radios" value="-2" v-show="showUnusualSpot(0,-2)"></b-form-radio>
+              <b-form-radio v-model="expected[0]" name="batter-running-radios-b" value="-2" v-show="showUnusualSpot(0,-2)"></b-form-radio>
             </b-col>
             <b-col cols="1">
-              <b-form-radio v-model="expected[0]" name="batter-running-radios" value="2" v-show="showUnusualSpot(0,2)"></b-form-radio>
+              <b-form-radio v-model="expected[0]" name="batter-running-radios-b" value="2" v-show="showUnusualSpot(0,2)"></b-form-radio>
             </b-col>
             <b-col cols="1">
-              <b-form-radio v-model="expected[0]" name="batter-running-radios" value="-3" v-show="showUnusualSpot(0,-3)"></b-form-radio>
+              <b-form-radio v-model="expected[0]" name="batter-running-radios-b" value="-3" v-show="showUnusualSpot(0,-3)"></b-form-radio>
             </b-col>
             <b-col cols="1">
-              <b-form-radio v-model="expected[0]" name="batter-running-radios" value="3" v-show="showUnusualSpot(0,3)"></b-form-radio>
+              <b-form-radio v-model="expected[0]" name="batter-running-radios-b" value="3" v-show="showUnusualSpot(0,3)"></b-form-radio>
             </b-col>
             <b-col cols="1">
-              <b-form-radio v-model="expected[0]" name="batter-running-radios" value="-4" v-show="showUnusualSpot(0,-4)"></b-form-radio>
+              <b-form-radio v-model="expected[0]" name="batter-running-radios-b" value="-4" v-show="showUnusualSpot(0,-4)"></b-form-radio>
             </b-col>
             <b-col cols="1">
-              <b-form-radio v-model="expected[0]" name="batter-running-radios" value="4" v-show="showUnusualSpot(0,4)"></b-form-radio>
+              <b-form-radio v-model="expected[0]" name="batter-running-radios-b" value="4" v-show="showUnusualSpot(0,4)"></b-form-radio>
             </b-col>
           </b-row>
           <b-row v-show="occupied(1)">
@@ -266,28 +267,28 @@ var GameEntryComponent = {
               First: {{ gameInfo.situation.situation.first }}
             </b-col>
             <b-col cols="1">
-              <b-form-radio v-model="expected[1]" name="batter-running-radios" value="-1" v-show="showUnusualSpot(1,-1)"></b-form-radio>
+              <b-form-radio v-model="expected[1]" name="batter-running-radios-1" value="-1" v-show="showUnusualSpot(1,-1)"></b-form-radio>
             </b-col>
             <b-col cols="1">
-              <b-form-radio v-model="expected[1]" name="batter-running-radios" value="1" v-show="showUnusualSpot(1,1)"></b-form-radio>
+              <b-form-radio v-model="expected[1]" name="batter-running-radios-1" value="1" v-show="showUnusualSpot(1,1)"></b-form-radio>
             </b-col>
             <b-col cols="1">
-              <b-form-radio v-model="expected[1]" name="batter-running-radios" value="-2" v-show="showUnusualSpot(1,-2)"></b-form-radio>
+              <b-form-radio v-model="expected[1]" name="batter-running-radios-1" value="-2" v-show="showUnusualSpot(1,-2)"></b-form-radio>
             </b-col>
             <b-col cols="1">
-              <b-form-radio v-model="expected[1]" name="batter-running-radios" value="2" v-show="showUnusualSpot(1,2)"></b-form-radio>
+              <b-form-radio v-model="expected[1]" name="batter-running-radios-1" value="2" v-show="showUnusualSpot(1,2)"></b-form-radio>
             </b-col>
             <b-col cols="1">
-              <b-form-radio v-model="expected[1]" name="batter-running-radios" value="-3" v-show="showUnusualSpot(1,-3)"></b-form-radio>
+              <b-form-radio v-model="expected[1]" name="batter-running-radios-1" value="-3" v-show="showUnusualSpot(1,-3)"></b-form-radio>
             </b-col>
             <b-col cols="1">
-              <b-form-radio v-model="expected[1]" name="batter-running-radios" value="3" v-show="showUnusualSpot(1,3)"></b-form-radio>
+              <b-form-radio v-model="expected[1]" name="batter-running-radios-1" value="3" v-show="showUnusualSpot(1,3)"></b-form-radio>
             </b-col>
             <b-col cols="1">
-              <b-form-radio v-model="expected[1]" name="batter-running-radios" value="-4" v-show="showUnusualSpot(1,-4)"></b-form-radio>
+              <b-form-radio v-model="expected[1]" name="batter-running-radios-1" value="-4" v-show="showUnusualSpot(1,-4)"></b-form-radio>
             </b-col>
             <b-col cols="1">
-              <b-form-radio v-model="expected[1]" name="batter-running-radios" value="4" v-show="showUnusualSpot(1,4)"></b-form-radio>
+              <b-form-radio v-model="expected[1]" name="batter-running-radios-1" value="4" v-show="showUnusualSpot(1,4)"></b-form-radio>
             </b-col>
           </b-row>
           <b-row v-show="occupied(2)">
@@ -299,22 +300,22 @@ var GameEntryComponent = {
             <b-col cols="1">
             </b-col>
             <b-col cols="1">
-              <b-form-radio v-model="expected[2]" name="batter-running-radios" value="-2" v-show="showUnusualSpot(2,-2)"></b-form-radio>
+              <b-form-radio v-model="expected[2]" name="batter-running-radios-2" value="-2" v-show="showUnusualSpot(2,-2)"></b-form-radio>
             </b-col>
             <b-col cols="1">
-              <b-form-radio v-model="expected[2]" name="batter-running-radios" value="2" v-show="showUnusualSpot(2,2)"></b-form-radio>
+              <b-form-radio v-model="expected[2]" name="batter-running-radios-2" value="2" v-show="showUnusualSpot(2,2)"></b-form-radio>
             </b-col>
             <b-col cols="1">
-              <b-form-radio v-model="expected[2]" name="batter-running-radios" value="-3" v-show="showUnusualSpot(2,-3)"></b-form-radio>
+              <b-form-radio v-model="expected[2]" name="batter-running-radios-2" value="-3" v-show="showUnusualSpot(2,-3)"></b-form-radio>
             </b-col>
             <b-col cols="1">
-              <b-form-radio v-model="expected[2]" name="batter-running-radios" value="3" v-show="showUnusualSpot(2,3)"></b-form-radio>
+              <b-form-radio v-model="expected[2]" name="batter-running-radios-2" value="3" v-show="showUnusualSpot(2,3)"></b-form-radio>
             </b-col>
             <b-col cols="1">
-              <b-form-radio v-model="expected[2]" name="batter-running-radios" value="-4" v-show="showUnusualSpot(2,-4)"></b-form-radio>
+              <b-form-radio v-model="expected[2]" name="batter-running-radios-2" value="-4" v-show="showUnusualSpot(2,-4)"></b-form-radio>
             </b-col>
             <b-col cols="1">
-              <b-form-radio v-model="expected[2]" name="batter-running-radios" value="4" v-show="showUnusualSpot(2,4)"></b-form-radio>
+              <b-form-radio v-model="expected[2]" name="batter-running-radios-2" value="4" v-show="showUnusualSpot(2,4)"></b-form-radio>
             </b-col>
           </b-row>
           <b-row v-show="occupied(3)">
@@ -330,18 +331,22 @@ var GameEntryComponent = {
             <b-col cols="1">
             </b-col>
             <b-col cols="1">
-              <b-form-radio v-model="expected[3]" name="batter-running-radios" value="-3" v-show="showUnusualSpot(3,-3)"></b-form-radio>
+              <b-form-radio v-model="expected[3]" name="batter-running-radios-3" value="-3" v-show="showUnusualSpot(3,-3)"></b-form-radio>
             </b-col>
             <b-col cols="1">
-              <b-form-radio v-model="expected[3]" name="batter-running-radios" value="3" v-show="showUnusualSpot(3,3)"></b-form-radio>
+              <b-form-radio v-model="expected[3]" name="batter-running-radios-3" value="3" v-show="showUnusualSpot(3,3)"></b-form-radio>
             </b-col>
             <b-col cols="1">
-              <b-form-radio v-model="expected[3]" name="batter-running-radios" value="-4" v-show="showUnusualSpot(3,-4)"></b-form-radio>
+              <b-form-radio v-model="expected[3]" name="batter-running-radios-3" value="-4" v-show="showUnusualSpot(3,-4)"></b-form-radio>
             </b-col>
             <b-col cols="1">
-              <b-form-radio v-model="expected[3]" name="batter-running-radios" value="4" v-show="showUnusualSpot(3,4)"></b-form-radio>
+              <b-form-radio v-model="expected[3]" name="batter-running-radios-3" value="4" v-show="showUnusualSpot(3,4)"></b-form-radio>
             </b-col>
           </b-row>
+          <hr class="pl-0 pr-0 w-100">
+          <b-button size="sm" class="float-right" variant="success" @click="handleUnusualPlay()">
+            OK
+          </b-button>
         </template>
       </b-modal>
       <b-modal id="outfield-position" ref="modal" size="md" title="Outfield Positioning" hide-header-close hide-footer>
@@ -377,7 +382,7 @@ var GameEntryComponent = {
               </b-form-group>
             </b-col>
             <b-col cols="6">
-              <b-form-group id="in-back" label="Infield?" v-show="occupied(3)"> 
+              <b-form-group id="in-back" label="Infield?" v-show="occupied(3) && gameInfo.situation.situation.outs != 2"> 
                 <b-form-radio v-model="infield" name="infield-position-radios" class="pl-5" value="back">Back</b-form-radio>
                 <b-form-radio v-model="infield" name="infield-position-radios" class="pl-5" value="in">In</b-form-radio>
               </b-form-group>
@@ -391,6 +396,7 @@ var GameEntryComponent = {
       </b-modal>
       <b-modal id="errors" ref="modal" size="md" :title="plus ? tmpPlay+' + Error' : 'Error'" hide-header-close hide-footer>
         <template #default="{ ok }">
+          {{tmpPlay}}
           <b-row>
             <b-col cols="6">
               <b-form-group id="error-positions" label="Fielder?">
@@ -421,7 +427,45 @@ var GameEntryComponent = {
         </template>
       </b-modal>
       <b-modal id="injury" ref="modal" size="md" title="Injury" hide-header-close hide-footer>
-TBD
+        <template #default="{ ok }">
+          <b-row>
+            <b-col cols="12">
+              <span class="h3 text-center">Not all iron players are detected automatically</span>
+            </b-col>
+          </b-row>
+          <hr class="pl-0 pr-0 w-100">
+TBD {{ isIron() }} {{ injuryPitcher }} {{ isDH() }}
+          <b-row>
+            <b-col cols="6">
+              <b-form-group id="injury-duration" label="Duration?"> 
+                <b-form-radio v-model="injuryDuration" name="injury-duration" class="pl-5" value="-1"> 1- 2  No injury</b-form-radio>
+                <b-form-radio v-model="injuryDuration" name="injury-duration" class="pl-5" value="0"> 3- 4  Remainder of game</b-form-radio>
+                <b-form-radio v-model="injuryDuration" name="injury-duration" class="pl-5" value="1"> 5- 8  1 day</b-form-radio>
+                <b-form-radio v-model="injuryDuration" name="injury-duration" class="pl-5" value="2" v-show="isIron() && ! injuryPitcher"> 9-20  2 days</b-form-radio>
+                <b-form-radio v-model="injuryDuration" name="injury-duration" class="pl-5" value="2" v-show="(isIron() && injuryPitcher) || (! isIron())"> 9-13  2 days</b-form-radio>
+                <b-form-radio v-model="injuryDuration" name="injury-duration" class="pl-5" value="3" v-show="(isIron() && injuryPitcher) || (! isIron())">14     3 days</b-form-radio>
+                <b-form-radio v-model="injuryDuration" name="injury-duration" class="pl-5" value="4" v-show="(isIron() && injuryPitcher)">15-20  4 days</b-form-radio>
+                <b-form-radio v-model="injuryDuration" name="injury-duration" class="pl-5" value="4" v-show="! isIron()">15-16  4 days</b-form-radio>
+                <b-form-radio v-model="injuryDuration" name="injury-duration" class="pl-5" value="5" v-show="! isIron()">17     5 days</b-form-radio>
+                <b-form-radio v-model="injuryDuration" name="injury-duration" class="pl-5" value="6" v-show="! isIron()">18     6 days</b-form-radio>
+                <b-form-radio v-model="injuryDuration" name="injury-duration" class="pl-5" value="7" v-show="! isIron()">19     7 days</b-form-radio>
+                <b-form-radio v-model="injuryDuration" name="injury-duration" class="pl-5" value="9" v-show="! isIron()">20     9 days</b-form-radio>
+              </b-form-group>
+            </b-col>
+            <b-col cols="6" v-show="isDH()">
+              <b-form-group id="injury-pitcher" label="Player injured?"> 
+                <b-form-radio v-model="injuryPitcher" name="injury-pitcher" class="pl-5" value="false">Batter</b-form-radio>
+                <b-form-radio v-model="injuryPitcher" name="injury-pitcher" class="pl-5" value="true">Pitcher</b-form-radio>
+              </b-form-group>
+            </b-col>
+            <b-col cols="6" v-show="!isDH()">
+            </b-col>
+          </b-row>
+          <hr class="pl-0 pr-0 w-100">
+          <b-button size="sm" class="float-right" variant="success" @click="handleInjury()">
+            OK
+          </b-button>
+        </template>
       </b-modal>
 <!--
     {{ gameInfo }}   
@@ -439,6 +483,10 @@ TBD
       tmpPlay: '',
       eBases: 0,
       expected: [0,0,0,0],
+      injuryDuration: -1,
+      injuryPlayer: "",
+      injuryPitcher: false,
+      currentBatter: "",
     }
   },
   watch: {
@@ -452,10 +500,6 @@ TBD
     },
     doPlay(play) {
       //console.log(play);
-      addBat=0;
-      addFirst=0;
-      addSecond=0;
-      addThird=0;
       after='';
       injury = false;
       error = false;
@@ -466,50 +510,52 @@ TBD
       }
       sit = this.gameInfo.situation.situation;
       //console.log(sit);
+      //console.log(play);
+      //console.log(this.other);
       if (this.plus) {
         if (play == 'E' || this.other == 'E') {
           if (play == 'E') play == this.other;
           error = true;
         } else if (play == 'Injury' || this.other == 'Injury') {
-          if (this.other == 'Injury') this.other == play;
+          if (play == 'Injury') play = this.other;
+          //console.log(play);
           injury = true;
           this.plus = false;
+          this.currentBatter = this.gameInfo.situation.situation.batter;
         } else {
           console.error('Data entry - + with 2 nonsense choices');
           this.plus = false;
+          this.other = "";
           return; //HUH?
         }
         this.plus = false;
       }
       if (play == 'SB') {
-//SB!?
         baseCount = 0;
-        if (this.occupied(1)) { addFirst ++; baseCount++; }
-        if (this.occupied(2)) { addSecond ++; baseCount++; }
-        if (this.occupied(3)) { addThird ++; baseCount++; }
+        if (this.occupied(1)) { baseCount++; }
+        if (this.occupied(2)) { baseCount++; }
+        if (this.occupied(3)) { baseCount++; }
         if (baseCount == 1) needModal = false;
         else needModal = true;
       } else if (play == 'CS') {
-//CS!?
         baseCount = 0;
-        if (this.occupied(1)) { addFirst --; baseCount++; }
-        if (this.occupied(2)) { addSecond --; baseCount++; }
-        if (this.occupied(3)) { addThird --; baseCount++; }
+        if (this.occupied(1)) { baseCount++; }
+        if (this.occupied(2)) { baseCount++; }
+        if (this.occupied(3)) { baseCount++; }
         if (baseCount == 1) needModal = false;
         else needModal = true;
       } else if (play == 'PO') {
-//PO!?
         baseCount = 0;
-        if (this.occupied(1)) { addFirst --; baseCount++; }
-        if (this.occupied(2)) { addSecond --; baseCount++; }
-        if (this.occupied(3)) { addThird --; baseCount++; }
+        if (this.occupied(1)) { baseCount++; }
+        if (this.occupied(2)) { baseCount++; }
+        if (this.occupied(3)) { baseCount++; }
         if (baseCount == 1) needModal = false;
         else needModal = true;
       } else if (play == 'DI') {
         baseCount = 0;
-        if (this.occupied(1)) { addFirst ++; baseCount++; }
-        if (this.occupied(2)) { addSecond ++; baseCount++; }
-        if (this.occupied(3)) { addThird ++; baseCount++; }
+        if (this.occupied(1)) { baseCount++; }
+        if (this.occupied(2)) { baseCount++; }
+        if (this.occupied(3)) { baseCount++; }
       } else if (play == 'gb!') {
         if ((this.empty(1) && this.empty(2) && this.empty(3)) ||  // empty
             (sit.outs == 2)) { 
@@ -559,31 +605,36 @@ TBD
           needModal = true;     // ?? RF (2-3?) ??
         }
       }
-      //console.log(play + " - " + addThird + " - " + addSecond + " - " + addFirst + " - " + addBat);
       if (needModal) {
         this.tmpPlay = play;
         this.showUnusualPlay();
+      } else if (injury) {
+        this.tmpPlay = play;
+        this.showInjury();
       } else {
-        var self = this;
-        let headers = {headers:{'X-Authorization':'TooManyMLs'}};
-        axios.put('/pss/api/updateGame.php',{data: {'year':vue.year,'team':vue.team.team,'game':vue.game,'play':play,'fielder':self.fielder,'infield':self.infield,'eBases':self.eBases}},headers)
-        .then(function (response) {
-          //console.log(response);
-          vue.loadGameInfo();
-          if (injury) {
-            showInjury();
-          }
-        })
-        .catch(function (error) {
-          console.error(error);
-        });
-        this.rarePlay = false;
-        this.plus = false;
-        this.infield = 'back';
-        this.eBases = 0;
-        this.tmpPlay = '';
-        this.other = '';
+        this.sendPlay(play);
       }
+    },
+    sendPlay(play) {
+      var self = this;
+      let headers = {headers:{'X-Authorization':'TooManyMLs'}};
+      axios.put('/pss/api/updateGame.php',{data: {'year':vue.year,'team':vue.team.team,'game':vue.game,'play':play,'fielder':self.fielder,'infield':self.infield,'eBases':self.eBases,'injury':self.injuryDuration,'player':self.injuryPlayer,'pitcher':self.injuryPitcher}},headers)
+      .then(function (response) {
+        //console.log(response);
+        vue.loadGameInfo();
+      })
+      .catch(function (error) {
+        console.error(error);
+      });
+      this.rarePlay = false;
+      this.plus = false;
+      this.infield = 'back';
+      this.eBases = 0;
+      this.tmpPlay = '';
+      this.other = '';
+      this.injuryDuration = -1;
+      this.injuryPlayer = "";
+      this.injuryPitcher = false;
     },
     doPlus() {
       this.plus = true;
@@ -616,14 +667,14 @@ TBD
       } else {
         if (! this.plus) this.tmpPlay='E';
         else this.tmpPlay = this.other;
-        if (this.tmpPlay == 'S2') this.fielder=6;
+        if (this.tmpPlay == 'S1' || this.tmpPlay == 'S2') this.fielder=6;
         if (this.tmpPlay == 'D2' || this.tmpPlay == 'D3' || this.tmpPlay == 'T3' || this.tmpPlay == 'F1' || this.tmpPlay == 'F2' || this.tmpPlay == 'F3') this.fielder = 8;
         this.$bvModal.show('errors');
       }
     },
     handleE() {
       this.$bvModal.hide('errors');
-      this.doPlay(this.tmpPlay);
+      this.sendPlay(this.tmpPlay);
     },
     showUnusualPlay() {
       this.expected[0] = 0;
@@ -696,12 +747,36 @@ TBD
       } else if (this.tmpPlay == 'SB') {
         // Multiple baserunners
         this.expected[0] = 0;
+        if (this.occupied(1) && this.occupied(3)) {
+          this.expected[1] = 2;
+          this.expected[3] = 3;
+        } else {
+          if (this.occupied(1)) this.expected[1] = 2;
+          if (this.occupied(2)) this.expected[1] = 3;
+          if (this.occupied(3)) this.expected[1] = 4;
+        }
       } else if (this.tmpPlay == 'CS') {
         // Multiple baserunners
         this.expected[0] = 0;
+        if (this.occupied(1) && this.occupied(3)) {
+          this.expected[1] = -2;
+          this.expected[3] = 3;
+        } else {
+          if (this.occupied(1)) this.expected[1] = -2;
+          if (this.occupied(2)) this.expected[1] = -3;
+          if (this.occupied(3)) this.expected[1] = -4;
+        }
       } else if (this.tmpPlay == 'PO') {
         // Multiple baserunners
         this.expected[0] = 0;
+        if (this.occupied(1) && this.occupied(3)) {
+          this.expected[1] = -1;
+          this.expected[3] = 3;
+        } else {
+          if (this.occupied(1)) this.expected[1] = -1;
+          if (this.occupied(2)) this.expected[1] = -2;
+          if (this.occupied(3)) this.expected[1] = -3;
+        }
       } else {
         console.error ('Should NOT get here - showUnusualPlay');
         return;
@@ -709,57 +784,52 @@ TBD
       this.$bvModal.show('unusual-play');
     },
     handleUnusualPlay() {
-      this.expected[0] = 0;
-      this.expected[1] = 0;
-      this.expected[2] = 0;
-      this.expected[3] = 0;
-      if (this.tmpPlay == 'gb!') {
-//TBD
-        // All except empty
-        // Assume tried for lead runner and didn't get them
-      
-      } else if (this.tmpPlay == 'fly!') {
-//TBD
-        // runner on 2nd and/or 3rd
-        // If fielder == 9, assume run scores and runner on 2nd advancesadvances
-        // Assume lead runner out
-      } else if (this.tmpPlay == 'lo!') {
-//TBD
-        // All except empty
-        // Assume lomax and DP
-      } else if (this.tmpPlay == 'S!') {
-//TBD
-        // All except empty or 3rd only
-      } else if (this.tmpPlay == 'D!') {
-//TBD
-        // Runner on 1st
-      } else if (this.tmpPlay == 'BPHR-!') {
-//TBD
-        // runner on 2nd
-      } else {
-        console.error ('Should NOT get here - handleUnusualPlay');
-        return;
-      }
       this.$bvModal.hide('unusual-play');
-//TBD
+      var self = this;
+      self.tmpPlay = self.tmpPlay.replace('!','');
+      let headers = {headers:{'X-Authorization':'TooManyMLs'}};
+      axios.put('/pss/api/updateGame.php',{data: {'year':vue.year,'team':vue.team.team,'game':vue.game,'play':self.tmpPlay,'fielder':self.fielder,'eBases':self.eBases,'injury':self.injuryDuration,'player':self.injuryPlayer,'pitcher':self.injuryPitcher,'batter':self.expected[0],'first':self.expected[1],'second':self.expected[2],'third':self.expected[3]}},headers)
+      .then(function (response) {
+        //console.log(response);
+        vue.loadGameInfo();
+      })
+      .catch(function (error) {
+        console.error(error);
+      });
       this.rarePlay = false;
       this.plus = false;
       this.infield = 'back';
       this.eBases = 0;
       this.tmpPlay = '';
       this.other = '';
+      this.injuryDuration = -1;
+      this.injuryPlayer = "";
+      this.injuryPitcher = false;
     },
     showInjury() {
-      if (this.other == '') {
-        this.$bvModal.show('injury');
-      } else {
-        doPlay('Injury');
-      }
+      this.injuryDuration = -1;
+      this.injuryPlayer = "";
+      this.injuryPitcher = false;
+      this.$bvModal.show('injury');
     },
     handleInjury() {
       this.$bvModal.hide('injury');
-//TBD
-      if (this.other != '') doPlay(this.other);
+      if (this.injuryDuration == -1) return;
+      player = '';
+      if (this.injuryPitcher) this.injuryPlayer = this.gameInfo.situation.situation.pitcher;
+      else this.injuryPlayer = this.currentBatter;
+      //console.log(player);
+      // var self = this;
+      // let headers = {headers:{'X-Authorization':'TooManyMLs'}};
+      // axios.put('/pss/api/handleInjury.php',{data: {'year':vue.year,'team':vue.team.team,'game':vue.game,'player':player,'duration':this.injuryDuration,'pitcher':this.injuryPitcher}},headers)
+      // .then(function (response) {
+        //console.log(response);
+        // vue.loadGameInfo();
+      // })
+      // .catch(function (error) {
+        // console.error(error);
+      // });
+      this.sendPlay(this.tmpPlay);
     },
     showUnusualSpot(row, value) {
       if (this.tmpPlay == 'gb!') {
@@ -831,6 +901,36 @@ TBD
         } else {
           if (value == 4) return true;
         }
+      } else if (this.tmpPlay == 'SB') {
+        if (row == 0) {
+          return false;
+        } else if (row == 1) {
+          if (value == 1 || value == 2) return true;
+        } else if (row == 2) {
+          if (value == 2 || value == 3) return true;
+        } else {
+          if (value == 3 || value == 4) return true;
+        }
+      } else if (this.tmpPlay == 'CS') {
+        if (row == 0) {
+          return false;
+        } else if (row == 1) {
+          if (value == 1 || value == -2 || value == 2) return true;
+        } else if (row == 2) {
+          if (value == 2 || value == -3 || value == 3) return true;
+        } else {
+          if (value == 3 || value == -4 || value == 4) return true;
+        }
+      } else if (this.tmpPlay == 'PO') {
+        if (row == 0) {
+          return false;
+        } else if (row == 1) {
+          if (value == -1 || value == 1) return true;
+        } else if (row == 2) {
+          if (value == -2 || value == 2) return true;
+        } else {
+          if (value == -3 || value == 3) return true;
+        }
       }
       return false;
     },
@@ -841,5 +941,41 @@ TBD
       return false;
     },
     empty(base) { return ! this.occupied(base); },
+    isDH() {
+      if (this.gameInfo.situation.situation.side == 0) {
+        for (let i=0; i < this.gameInfo.visitor.lineup.length; i++) {
+          ll = this.gameInfo.visitor.lineup[i].length - 1;
+          if (this.gameInfo.visitor.lineup[i][ll].player.name == this.gameInfo.situation.situation.batter) {
+            pl = this.gameInfo.visitor.lineup[i][ll].player.positions.length - 1;
+            if (this.gameInfo.visitor.lineup[i][ll].player.positions[pl].pos == 'DH') return true;
+            i = this.gameInfo.visitor.lineup.length;
+          }
+        }
+      } else {
+        for (let i=0; i < this.gameInfo.home.lineup.length; i++) {
+          ll = this.gameInfo.home.lineup[i].length - 1;
+          if (this.gameInfo.home.lineup[i][ll].player.name == this.gameInfo.situation.situation.batter) {
+            pl = this.gameInfo.home.lineup[i][ll].player.positions.length - 1;
+            if (this.gameInfo.home.lineup[i][ll].player.positions[pl].pos == 'DH') return true;
+            i = this.gameInfo.home.lineup.length;
+          }
+        }
+      }
+      return false;
+    },
+    isIron(pitcher) {
+      //TBD
+      if (pitcher) {
+        if (this.gameInfo.situation.situation.side == 0) {
+        } else {
+        }
+      } else {
+        if (this.gameInfo.situation.situation.side == 0) {
+        } else {
+        }
+      }
+      return false;
+    }
+      
   },
 };

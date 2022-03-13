@@ -16,12 +16,14 @@ var SituationComponent = {
         <b-col cols="2" class="text-center border border-dark border-top-0 border-bottom-0">
           <b-row no-gutters>
             <b-col cols="12" class="border-bottom border-dark mt-2 pb-1">
-            {{ gameInfo.situation.situation.side == 0 ? 'Top' : 'Bot' }} {{ gameInfo.situation.situation.inning }}
+              <span v-if="! gameInfo.situation.situation.gameOver">{{ gameInfo.situation.situation.side == 0 ? 'Top' : 'Bot' }} {{ gameInfo.situation.situation.inning }}</span>
+              <span v-else>&nbsp</span>
             </b-col>
           </b-row>
           <b-row no-gutters>
             <b-col cols="12" class="border-top border-dark pt-2">
-            Outs: {{ gameInfo.situation.situation.outs }}
+              <span v-if="! gameInfo.situation.situation.gameOver">Outs: {{ gameInfo.situation.situation.outs }}</span>
+              <span v-else>&nbsp</span>
             </b-col>
           </b-row>
         </b-col>
@@ -45,17 +47,17 @@ var SituationComponent = {
             </b-col>
             <b-col cols="3" class="text-right">
               <b-icon icon="square" rotate="45" font-scale="1.0" v-if="gameInfo.situation.situation.first == ''"></b-icon>
-              <b-icon icon="square-fill" rotate="45" font-scale="1.0" v-b-tooltip.hover v-bind:title="runnerInfo(gameInfo.situation.situation.first)" v-on:click="doPinchRunner(1)" v-else></b-icon>
+              <b-icon icon="square-fill" rotate="45" font-scale="1.0" v-bind:variant="checkInjury('first')" v-b-tooltip.hover v-bind:title="runnerInfo(gameInfo.situation.situation.first)" v-on:click="doPinchRunner(1)" v-else></b-icon>
             </b-col>
           </b-row>
         </b-col>
         <b-col cols="5" class="border border-dark border-top-0 border-bottom-0">
-              <b-button class="pr-0 pl-0 mr-0 ml-0 text-left" variant="link" href="#" v-on:click="doReliever()" style="padding: .375rem 0rem">
+              <b-button class="pr-0 pl-0 mr-0 ml-0 text-left" v-bind:variant="checkInjury('pitcher')" href="#" v-on:click="doReliever()" style="padding: .375rem 0rem">
 Pitch: {{ gameInfo.situation.situation.pitcher.substring(0,15) }}
               </b-button>
           <b-row no-gutters style="background-color: white;">
             <b-col cols="12" class="border-top border-dark text-left">
-              <b-button class="pr-0 pl-0 pt-0 pb-0" variant="link" href="#" v-on:click="doPinchHitter()" style="padding: .375rem 0rem">
+              <b-button class="pr-0 pl-0 pt-0 pb-0" v-bind:variant="checkInjury('batter')" href="#" v-on:click="doPinchHitter()" style="padding: .375rem 0rem">
 Bat: {{ gameInfo.situation.situation.batter.substring(0,15) }}
               </b-button>
             </b-col>
@@ -161,7 +163,7 @@ Bat: {{ gameInfo.situation.situation.batter.substring(0,15) }}
           p = r.roster.batters[i].rosterItem.player;
         }
       }
-      console.log(p);
+      //console.log(p);
       if (p != null) {
         if (p.strat.caught == '') {
           return runner + ' - ' + p.strat.lead + ' (' + p.strat.first + '-' + p.strat.second + ') R: ' + p.strat.running; 
@@ -182,9 +184,9 @@ Bat: {{ gameInfo.situation.situation.batter.substring(0,15) }}
     doPinchHitter() {
       // TBD: Pinch hitting pitcher
       if (this.gameInfo.situation.situation.side == 0) {
-        available = vue.getAvailable(this.gameInfo.visitor.lineup, this.gameInfo.visitor.rotation, this.vRoster)
+        available = vue.getAvailable(this.gameInfo.visitor.lineup, this.gameInfo.visitor.rotation, this.gameInfo.visitor.roster, this.vRoster)
       } else {
-        available = vue.getAvailable(this.gameInfo.home.lineup, this.gameInfo.home.rotation, this.hRoster)
+        available = vue.getAvailable(this.gameInfo.home.lineup, this.gameInfo.home.rotation, this.gameInfo.home.roster, this.hRoster)
       }
       //console.log(available);
       this.available_hitters = [];
@@ -198,9 +200,9 @@ Bat: {{ gameInfo.situation.situation.batter.substring(0,15) }}
       // TBD: Pinch running pitcher
       //console.log('doPinchRunner - ' + base);
       if (this.gameInfo.situation.situation.side == 0) {
-        available = vue.getAvailable(this.gameInfo.visitor.lineup, this.gameInfo.visitor.rotation, this.vRoster)
+        available = vue.getAvailable(this.gameInfo.visitor.lineup, this.gameInfo.visitor.rotation, this.gameInfo.visitor.roster, this.vRoster)
       } else {
-        available = vue.getAvailable(this.gameInfo.home.lineup, this.gameInfo.home.rotation, this.hRoster)
+        available = vue.getAvailable(this.gameInfo.home.lineup, this.gameInfo.home.rotation, this.gameInfo.home.roster, this.hRoster)
       }
       //console.log(available);
       this.available_hitters = [];
@@ -214,9 +216,9 @@ Bat: {{ gameInfo.situation.situation.batter.substring(0,15) }}
     doReliever() {
       // TBD: Batting pitching
       if (this.gameInfo.situation.situation.side == 0) {
-        available = vue.getAvailable(this.gameInfo.home.lineup, this.gameInfo.home.rotation, this.hRoster)
+        available = vue.getAvailable(this.gameInfo.home.lineup, this.gameInfo.home.rotation, this.gameInfo.home.roster, this.hRoster)
       } else {
-        available = vue.getAvailable(this.gameInfo.visitor.lineup, this.gameInfo.visitor.rotation, this.vRoster)
+        available = vue.getAvailable(this.gameInfo.visitor.lineup, this.gameInfo.visitor.rotation, this.gameInfo.visitor.roster, this.vRoster)
       }
       //console.log(available);
       this.available_pitchers = [];
@@ -229,16 +231,68 @@ Bat: {{ gameInfo.situation.situation.batter.substring(0,15) }}
     handlePinchHitter() {
       this.$bvModal.hide('pinch-hitter-modal');
       if (this.selected_hitter == '') return;
-      //console.log(this.gameInfo);
-      //console.log(this.selected_hitter);
-//TBD
+      if (this.gameInfo.situation.situation.side == 0) {
+        for (let i=0; i < this.vRoster.roster.batters.length; i++) {
+          if (this.vRoster.roster.batters[i].rosterItem.player.name == this.selected_hitter) {
+            this.gameInfo.visitor.lineup[this.gameInfo.visitor.results.length%9].push({'player':{'name':this.selected_hitter,'positions':[{'position':{'pos':'PH'}}]}});
+            i = this.vRoster.roster.batters.length;
+          }
+        }
+      } else {
+        for (let i=0; i < this.hRoster.roster.batters.length; i++) {
+          if (this.hRoster.roster.batters[i].rosterItem.player.name == this.selected_hitter) {
+            this.gameInfo.home.lineup[this.gameInfo.home.results.length%9].push({'player':{'name':this.selected_hitter,'positions':[{'position':{'pos':'PH'}}]}});
+            i = this.hRoster.roster.batters.length;
+          }
+        }
+      }
+      var self = this;
+      let headers = {headers:{'X-Authorization':'TooManyMLs'}};
+      axios.put('/pss/api/updateLineup.php',{data: { 'year':vue.year,
+                                                     'game':this.gameInfo}}
+                ,headers)
+        .then(function (response) {
+          vue.loadGameInfo();
+        })
+        .catch(function (error) {
+          console.error(error);
+      });
     },
     handlePinchRunner() {
       this.$bvModal.hide('pinch-runner-modal');
+      pinch = '';
+      if (this.base == 3) pinch = this.gameInfo.situation.situation.third;
+      if (this.base == 2) pinch = this.gameInfo.situation.situation.second;
+      if (this.base == 1) pinch = this.gameInfo.situation.situation.first;
       if (this.selected_runner == '') return;
-      //console.log(this.selected_base);
-      //console.log(this.selected_runner);
-//TBD
+      if (this.gameInfo.situation.situation.side == 0) {
+        for (let i=0; i < this.gameInfo.visitor.lineup.length; i++) {
+          ll = this.gameInfo.visitor.lineup[i].length - 1;
+          if (this.gameInfo.visitor.lineup[i][ll].player.name == pinch) {
+            this.gameInfo.visitor.lineup[i].push({'player':{'name':this.selected_runner,'positions':[{'position':{'pos':'PR'}}]}});
+            i = this.gameInfo.visitor.lineup.length;
+          }
+        }
+      } else {
+        for (let i=0; i < this.gameInfo.home.lineup.length; i++) {
+          ll = this.gameInfo.home.lineup[i].length - 1;
+          if (this.gameInfo.home.lineup[i][ll].player.name == pinch) {
+            this.gameInfo.home.lineup[i].push({'player':{'name':this.selected_runner,'positions':[{'position':{'pos':'PR'}}]}});
+            i = this.gameInfo.home.lineup.length;
+          }
+        }
+      }
+      var self = this;
+      let headers = {headers:{'X-Authorization':'TooManyMLs'}};
+      axios.put('/pss/api/updateLineup.php',{data: { 'year':vue.year,
+                                                     'game':this.gameInfo}}
+                ,headers)
+        .then(function (response) {
+          vue.loadGameInfo();
+        })
+        .catch(function (error) {
+          console.error(error);
+      });
     },
     handleReliever() {
       this.$bvModal.hide('relief-modal');
@@ -271,6 +325,68 @@ Bat: {{ gameInfo.situation.situation.batter.substring(0,15) }}
           console.error(error);
       });
     },
+    checkInjury(spot) {
+      if (spot == 'first') {
+        if (this.gameInfo.situation.situation.side == 0) {
+          for (let i=0; i < this.gameInfo.visitor.lineup.length; i++) {
+            ll = this.gameInfo.visitor.lineup[i].length - 1;
+            if (this.gameInfo.visitor.lineup[i][ll].player.name == this.gameInfo.situation.situation.first) {
+              if ("injured" in this.gameInfo.visitor.lineup[i][ll].player) {
+                if (this.gameInfo.visitor.lineup[i][ll].player.injured) return 'danger';
+              }
+              i = this.gameInfo.visitor.lineup.length;
+            }
+          }
+        } else {
+          for (let i=0; i < this.gameInfo.home.lineup.length; i++) {
+            ll = this.gameInfo.home.lineup[i].length - 1;
+            if (this.gameInfo.home.lineup[i][ll].player.name == this.gameInfo.situation.situation.first) {
+              if ("injured" in this.gameInfo.home.lineup[i][ll].player) {
+                if (this.gameInfo.home.lineup[i][ll].player.injured) return 'danger';
+              }
+              i = this.gameInfo.home.lineup.length;
+            }
+          }
+        }
+        return 'dark';
+      } else if (spot == 'pitcher') {
+        if (this.gameInfo.situation.situation.side == 0) {
+          pl = this.gameInfo.home.rotation.length - 1;
+          if ("injured" in this.gameInfo.home.rotation[pl].player) {
+            if (this.gameInfo.home.rotation[pl].player.injured) return 'danger';
+          }
+        } else {
+          pl = this.gameInfo.visitor.rotation.length - 1;
+          if ("injured" in this.gameInfo.visitor.rotation[pl].player) {
+            if (this.gameInfo.visitor.rotation[pl].player.injured) return 'danger';
+          }
+        }
+        return 'link';
+      } else {
+        if (this.gameInfo.situation.situation.side == 0) {
+          for (let i=0; i < this.gameInfo.visitor.lineup.length; i++) {
+            ll = this.gameInfo.visitor.lineup[i].length - 1;
+            if (this.gameInfo.visitor.lineup[i][ll].player.name == this.gameInfo.situation.situation.batter) {
+              if ("injured" in this.gameInfo.visitor.lineup[i][ll].player) {
+                if (this.gameInfo.visitor.lineup[i][ll].player.injured) return 'danger';
+              }
+              i = this.gameInfo.visitor.lineup.length;
+            }
+          }
+        } else {
+          for (let i=0; i < this.gameInfo.home.lineup.length; i++) {
+            ll = this.gameInfo.home.lineup[i].length - 1;
+            if (this.gameInfo.home.lineup[i][ll].player.name == this.gameInfo.situation.situation.batter) {
+              if ("injured" in this.gameInfo.home.lineup[i][ll].player) {
+                if (this.gameInfo.home.lineup[i][ll].player.injured) return 'danger';
+              }
+              i = this.gameInfo.home.lineup.length;
+            }
+          }
+        }
+        return 'link';
+      }
+    }
   },
 };
 

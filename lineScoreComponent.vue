@@ -57,6 +57,7 @@ var LineScoreComponent = {
       lineScore.push({team: this.gameInfo.home.name.toUpperCase(), separatorBegin: '', separatorEnd: '', runs: sit.runs[1], hits: sit.hits[1], errors: sit.errors[1]});
       inning = sit.inning;
       if (inning < 9) inning = 9;
+      if (inning > 9 && typeof sit.runsPerInning[0][inning-1] == 'undefined') inning --;
       fields = [ { key: 'team', label: '' }, { key: 'separatorBegin', label: ''} ]; 
       for (let i=(inning-9); i<inning; i++) {
         if ((i != (inning - 9)) && (i%3 == 0)) {

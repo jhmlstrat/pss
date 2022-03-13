@@ -27,3 +27,4 @@ if (isset($_GET['year'])) {
 
 $schedule = new \Scoring\Schedule($year);
 print($schedule->getSchedule($team));
+//error_log($schedule->getSchedule($team).PHP_EOL,3,'error_log');

@@ -26,7 +26,7 @@ class Result
         if (property_exists($js->result, "after")) {
             $inst->after = $js->result->after;
         } else {
-            if (property_exists($js->result, "during")) {
+            if (property_exists($js->result, "during") && $js->result->during != "") {
                 $inst->after = 'Bx';
             }
         }

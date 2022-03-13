@@ -2,7 +2,6 @@ var ScheduleComponent = {
   name: 'ScheduleComponent',
   template: `
     <div class='container'>
-{{ currentComponent() }}
       <b-row>
         <b-col cols='2' class='text-center'>
           <b-button variant='link' size='lg' href='#' v-on:click='switchToMenu();'>
@@ -30,25 +29,41 @@ var ScheduleComponent = {
       <b-row v-for="n in spring" class='pb-1' v-bind:key='"S"+n'>
         <b-col cols='6'>
           <!-- {{ schedule.home[n-1] }} -->
-          <span class='text-monospace pl-5 w-100'>
-            <span v-html="teamName(schedule.home[n-1].scheduleItem.awayTeam)" class="text-monospace"></span>
-            ({{ schedule.home[n-1].scheduleItem.numberOfGames }})
-            <span v-html="results(schedule.home[n-1].scheduleItem,'h')"></span>
-            <b-button variant='primary' size='sm' href='#' v-on:click="doStartSeries(schedule.home[n-1].scheduleItem)" v-show="startSeries(schedule.home[n-1].scheduleItem,'h')" v-bind:disable="fetching">Start Series</b-button>
-            <b-button variant='primary' size='sm' href='#' v-on:click="doNextGame(schedule.home[n-1].scheduleItem)" v-show="nextGame(schedule.home[n-1].scheduleItem,'h')">Next Game</b-button>
-            <b-button variant='primary' size='sm' href='#' v-on:click="doResumeGame(schedule.home[n-1].scheduleItem)" v-show="resumeGame(schedule.home[n-1].scheduleItem,'h')">Resume Game</b-button>
-          </span>
+          <b-row>
+            <b-col cols='3'>
+              <span class="text-monospace">{{ teamName(schedule.home[n-1].scheduleItem.awayTeam) }}</span>
+            </b-col>
+            <b-col cols='1'>
+              <span class="text-monospace">({{ schedule.home[n-1].scheduleItem.numberOfGames }})</span>
+            </b-col>
+            <b-col cols='2'>
+              <span class="text-monospace">{{ results(schedule.home[n-1].scheduleItem,'h') }}</span>
+            </b-col>
+            <b-col cols='6'>
+              <b-button variant='primary' size='sm' href='#' v-on:click="doStartSeries(schedule.home[n-1].scheduleItem)" v-show="startSeries(schedule.home[n-1].scheduleItem,'h')" v-bind:disable="fetching">Start Series</b-button>
+              <b-button variant='primary' size='sm' href='#' v-on:click="doNextGame(schedule.home[n-1].scheduleItem)" v-show="nextGame(schedule.home[n-1].scheduleItem,'h')">Next Game</b-button>
+              <b-button variant='primary' size='sm' href='#' v-on:click="doResumeGame(schedule.home[n-1].scheduleItem)" v-show="resumeGame(schedule.home[n-1].scheduleItem,'h')">Resume Game</b-button>
+            </b-col>
+          </b-row>
         </b-col>
         <b-col cols='6'>
           <!-- {{ schedule.away[n-1] }} -->
-          <span class='text-monospace pl-5'>
-            <span v-html="teamName(schedule.away[n-1].scheduleItem.homeTeam)"></span>
-            ({{ schedule.away[n-1].scheduleItem.numberOfGames }})
-            <span v-html="results(schedule.away[n-1].scheduleItem,'a')"></span>
-            <b-button variant='primary' size='sm' href='#' v-on:click="doStartSeries(schedule.away[n-1].scheduleItem)" v-show="startSeries(schedule.away[n-1].scheduleItem,'a')">Start Series</b-button>
-            <b-button variant='primary' size='sm' href='#' v-on:click="doNextGame(schedule.away[n-1].scheduleItem)" v-show="nextGame(schedule.away[n-1].scheduleItem,'a')">Next Game</b-button>
-            <b-button variant='primary' size='sm' href='#' v-on:click="doResumeGame(schedule.away[n-1].scheduleItem)" v-show="resumeGame(schedule.away[n-1].scheduleItem,'a')">Resume Game</b-button>
-          </span>
+          <b-row>
+            <b-col cols='3'>
+              <span class="text-monospace">{{ teamName(schedule.away[n-1].scheduleItem.homeTeam) }}</span>
+            </b-col>
+            <b-col cols='1'>
+              <span class="text-monospace">({{ schedule.away[n-1].scheduleItem.numberOfGames }})</span>
+            </b-col>
+            <b-col cols='2'>
+              <span class="text-monospace">{{ results(schedule.away[n-1].scheduleItem,'a') }}</span>
+            </b-col>
+            <b-col cols='6'>
+              <b-button variant='primary' size='sm' href='#' v-on:click="doStartSeries(schedule.away[n-1].scheduleItem)" v-show="startSeries(schedule.away[n-1].scheduleItem,'h')" v-bind:disable="fetching">Start Series</b-button>
+              <b-button variant='primary' size='sm' href='#' v-on:click="doNextGame(schedule.away[n-1].scheduleItem)" v-show="nextGame(schedule.away[n-1].scheduleItem,'h')">Next Game</b-button>
+              <b-button variant='primary' size='sm' href='#' v-on:click="doResumeGame(schedule.away[n-1].scheduleItem)" v-show="resumeGame(schedule.away[n-1].scheduleItem,'h')">Resume Game</b-button>
+            </b-col>
+          </b-row>
         </b-col>
       </b-row>
       <b-row class='pt-3 pb-3'>
@@ -59,25 +74,41 @@ var ScheduleComponent = {
       <b-row v-for="n in fall" class='pb-1' v-bind:key='"F"+n'>
         <b-col cols='6'>
           <!-- {{ schedule.home[spring+n-1] }} -->
-          <span class='text-monospace pl-5'>
-            <span v-html="teamName(schedule.home[spring+n-1].scheduleItem.awayTeam)"></span>
-            ({{ schedule.home[spring+n-1].scheduleItem.numberOfGames }})
-            <span v-html="results(schedule.home[spring+n-1].scheduleItem,'h')"></span>
-            <b-button variant='primary' size='sm' href='#' v-on:click="doStartSeries(schedule.home[n-1].scheduleItem)" v-show="startSeries(schedule.home[spring+n-1].scheduleItem,'h')">Start Series</b-button>
-            <b-button variant='primary' size='sm' href='#' v-on:click="doNextGame(schedule.home[n-1].scheduleItem)" v-show="nextGame(schedule.home[spring+n-1].scheduleItem,'h')">Next Game</b-button>
-            <b-button variant='primary' size='sm' href='#' v-on:click="doResumeGame(schedule.home[n-1].scheduleItem)" v-show="resumeGame(schedule.home[spring+n-1].scheduleItem,'h')">Resume Game</b-button>
-          </span>
+          <b-row>
+            <b-col cols='3'>
+              <span class="text-monospace">{{ teamName(schedule.home[spring+n-1].scheduleItem.awayTeam) }}</span>
+            </b-col>
+            <b-col cols='1'>
+              <span class="text-monospace">({{ schedule.home[spring+n-1].scheduleItem.numberOfGames }})</span>
+            </b-col>
+            <b-col cols='2'>
+              <span class="text-monospace">{{ results(schedule.home[spring+n-1].scheduleItem,'h') }}</span>
+            </b-col>
+            <b-col cols='6'>
+              <b-button variant='primary' size='sm' href='#' v-on:click="doStartSeries(schedule.home[spring+n-1].scheduleItem)" v-show="startSeries(schedule.home[spring+n-1].scheduleItem,'h')" v-bind:disable="fetching">Start Series</b-button>
+              <b-button variant='primary' size='sm' href='#' v-on:click="doNextGame(schedule.home[spring+n-1].scheduleItem)" v-show="nextGame(schedule.home[spring+n-1].scheduleItem,'h')">Next Game</b-button>
+              <b-button variant='primary' size='sm' href='#' v-on:click="doResumeGame(schedule.home[spring+n-1].scheduleItem)" v-show="resumeGame(schedule.home[spring+n-1].scheduleItem,'h')">Resume Game</b-button>
+            </b-col>
+          </b-row>
         </b-col>
         <b-col cols='6'>
           <!-- {{ schedule.away[spring+n-1] }} -->
-          <span class='text-monospace pl-5'>
-            <span v-html="teamName(schedule.away[spring+n-1].scheduleItem.homeTeam)"></span>
-            ({{ schedule.away[spring+n-1].scheduleItem.numberOfGames }})
-            <span v-html="results(schedule.away[spring+n-1].scheduleItem,'a')"></span>
-            <b-button variant='primary' size='sm' href='#' v-on:click="doStartSeries(schedule.home[n-1].scheduleItem)" v-show="startSeries(schedule.away[spring+n-1].scheduleItem,'a')">Start Series</b-button>
-            <b-button variant='primary' size='sm' href='#' v-on:click="doNextGame(schedule.home[n-1].scheduleItem)" v-show="nextGame(schedule.away[spring+n-1].scheduleItem,'a')">Next Game</b-button>
-            <b-button variant='primary' size='sm' href='#' v-on:click="doResumeGame(schedule.home[n-1].scheduleItem)" v-show="resumeGame(schedule.away[spring+n-1].scheduleItem,'a')">Resume Game</b-button>
-          </span>
+          <b-row>
+            <b-col cols='3'>
+              <span class="text-monospace">{{ teamName(schedule.away[spring+n-1].scheduleItem.homeTeam) }}</span>
+            </b-col>
+            <b-col cols='1'>
+              <span class="text-monospace">({{ schedule.away[spring+n-1].scheduleItem.numberOfGames }})</span>
+            </b-col>
+            <b-col cols='2'>
+              <span class="text-monospace">{{ results(schedule.away[spring+n-1].scheduleItem,'a') }}</span>
+            </b-col>
+            <b-col cols='6'>
+              <b-button variant='primary' size='sm' href='#' v-on:click="doStartSeries(schedule.away[spring+n-1].scheduleItem)" v-show="startSeries(schedule.away[spring+n-1].scheduleItem,'h')" v-bind:disable="fetching">Start Series</b-button>
+              <b-button variant='primary' size='sm' href='#' v-on:click="doNextGame(schedule.away[spring+n-1].scheduleItem)" v-show="nextGame(schedule.away[spring+n-1].scheduleItem,'h')">Next Game</b-button>
+              <b-button variant='primary' size='sm' href='#' v-on:click="doResumeGame(schedule.away[spring+n-1].scheduleItem)" v-show="resumeGame(schedule.away[spring+n-1].scheduleItem,'h')">Resume Game</b-button>
+            </b-col>
+          </b-row>
         </b-col>
       </b-row>
       <!-- {{ schedule }} -->
@@ -122,6 +153,11 @@ var ScheduleComponent = {
           </b-col>
         </b-row>
       </b-modal>
+<!--
+{{ gameInfo() }}
+<hr>
+{{ schedule }}
+-->
     </div>
   `,
   data() {
@@ -167,6 +203,7 @@ var ScheduleComponent = {
   methods: {
     currentComponent() { if (vue == undefined) return ''; return vue.currentComponent; },
     rosterValid() { if (vue == undefined) return false; return vue.rosterValid(); },
+    gameInfo() { if (vue == undefined) return {}; return vue.gameInfo; },
     year() { if (vue == undefined) return ''; return vue.year; },
     switchToMenu() {
       vue.currentComponent='menuComponent';
@@ -178,12 +215,21 @@ var ScheduleComponent = {
         //console.log(t);
         if (t.team == team) rtn=t.city;
       }
-      for (let i=rtn.length; i < 16; i++) rtn += "&nbsp;";
+      //for (let i=rtn.length; i < 16; i++) rtn += "&nbsp;";
       return rtn;
     },
     results(si,ha) {
-      rtn = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-      return rtn;
+      if (si.results.length == 0) return '';
+      wins = 0;
+      losses = 0;
+      for (r of si.results) {
+        if (! r.final) continue;
+        if ((r.away.runs > r.home.runs && ha == 'a') ||
+            (r.away.runs < r.home.runs && ha == 'h')) wins += 1;
+        else losses += 1;
+      }
+      if (wins == 0 && losses == 0) return '';
+      return '( ' + wins + ' - ' + losses + ' )';
     },
     startSeries(si,ha) {
       if (! this.rosterValid()) return false;

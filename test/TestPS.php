@@ -141,6 +141,7 @@ class TestPS
                 $rtn = false;
             } elseif ($batter->name !== $sit->batter->name) {
                 print "Error " . $number . ".21\n";
+                print $batter->name . " - " . $sit->batter->name . "\n";
                 $rtn = false;
             }
         }
@@ -1421,19 +1422,34 @@ TestPS::checkSituation(
     null, $play[Side::VISITOR][7], null, false, 117, 
     $play[Side::VISITOR][8], $play[Side::HOME][13]
 );
+//Add SB for testing purposes
+//$ps->debugOn();
+$ps->sb1();
+TestPS::checkSituation(
+    $ps, 9, Side::VISITOR, 1, 4, 6, 8, 10, 0, 0, 
+    $play[Side::VISITOR][7], null, null, false, 118, 
+    $play[Side::VISITOR][8], $play[Side::HOME][13]
+);
+$ps->undo();
+TestPS::checkSituation(
+    $ps, 9, Side::VISITOR, 1, 4, 6, 8, 10, 0, 0, 
+    null, $play[Side::VISITOR][7], null, false, 119, 
+    $play[Side::VISITOR][8], $play[Side::HOME][13]
+);
+
 $ps->fo0('4');
 TestPS::checkSituation(
     $ps, 9, Side::VISITOR, 2, 4, 6, 8, 10, 0, 0, 
-    null, $play[Side::VISITOR][7], null, false, 118, 
+    null, $play[Side::VISITOR][7], null, false, 120, 
     $play[Side::VISITOR][0], $play[Side::HOME][13]
 );
 $ps->wp1();
 TestPS::checkSituation(
     $ps, 9, Side::VISITOR, 2, 4, 6, 8, 10, 0, 0, 
-    $play[Side::VISITOR][7], null, null, false, 119, 
+    $play[Side::VISITOR][7], null, null, false, 121, 
     $play[Side::VISITOR][0], $play[Side::HOME][13]
 );
-TestPS::checkAssert(! $ps->getSituation()->gameOver(), 120);
+TestPS::checkAssert(! $ps->getSituation()->gameOver(), 122);
 //$ps->debugOn();
 $ps->fo0('8');
 TestPS::checkSituation(
@@ -1444,9 +1460,9 @@ try {
     $g1 = $ps->toString();
     $ps = ProjectScoresheet::fromString($g1);
     $g2 = $ps->toString();
-    TestPS::checkAssert($g1 == $g2, 122);
+    TestPS::checkAssert($g1 == $g2, 123);
 } catch (\Exception $ex) {
-    print('Should not get here 123: ' . $ex->getMessage() . "\n");
+    print('Should not get here 124: ' . $ex->getMessage() . "\n");
     for ($i=0; $i < min(strlen($g1), strlen($g2)); $i++) {
         if ($g1[$i] != $g2[$i]) {
             print $i . "<br/>";

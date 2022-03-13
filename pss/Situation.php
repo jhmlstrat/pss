@@ -87,6 +87,8 @@ class Situation
         if ($this->inning >= 9 && $this->side == Side::HOME 
             && $this->runs[Side::HOME] > $this->runs[Side::VISITOR]
         ) {
+            if ($this->inning == 9 && $this->runsPerInning[Side::HOME][9] == 0)
+               $this->runsPerInning[Side::HOME][9] = 'X';
             return true;
         }
         if ($this->inning > 9 && $this->betweenInnings && $this->side==Side::VISITOR 
@@ -114,6 +116,7 @@ class Situation
         $rtn .= '"errors":["' . $this->errors[Side::VISITOR] . '","' . $this->errors[Side::HOME] . '"],';
         $rtn .= '"runsPerInning":[[';
         for ($i =0; $i < $this->inning; $i++) {
+            if ($this->gameOver() && $this->side == 0 && $i == $this->inning-1 && $this->runs[Side::VISITOR] > $this->runs[Side::HOME]) continue;
             if ($i > 0) $rtn .= ',';
             $rtn .= '"' .  $this->runsPerInning[0][$i+1] . '"';
         }

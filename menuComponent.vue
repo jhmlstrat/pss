@@ -133,7 +133,7 @@ var MenuComponent = {
       if (! vue.rosterValid()) return false;
       if (vue.gameInProgress === true) return false;
       if (vue.betweenSeries === false) return false;
-console.log(vue.schedule);
+      //console.log(vue.schedule);
       return true;
     },
     nextGame() {

@@ -120,6 +120,18 @@ class Roster
             }
         }
     }
+    public function addInjury($name, $game, $duration) {
+        for ($i=0; $i < count($this->batters); $i++) {
+            if ($this->batters[$i]->player->name == $name) {
+                $this->batters[$i]->addInjury($game, $duration);
+            }
+        }
+        for ($i=0; $i < count($this->pitchers); $i++) {
+            if ($this->pitchers[$i]->player->name == $name) {
+                $this->pitchers[$i]->addInjury($game, $duration);
+            }
+        }
+    }
     public static function fromString($str)
     {
         $inst = new self();

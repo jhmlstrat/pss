@@ -221,6 +221,13 @@ class RosterItem
         }
         return $rtn;
     }
+    public function addInjury($gameNo, $duration)
+    {
+        $injury = new Injury();
+        $injury->gameNumber = $gameNo;
+        $injury->duration = $duration;
+        array_push($this->injuries, $injury);
+    }
     public function isInjured($gameNo, $restAfter = [])
     {
         $rtn = false;

@@ -17,6 +17,7 @@ if (isset($_GET['team'])) {
     $game = isset($_GET['game']) ? $_GET['game'] : die();
     $g = \Scoring\Game::findGameforTeam($year, $team, $game);
     if ($g == null) {
+        error_log("Game retrieval failure".PHP_EOL, 3, 'error_log');
         http_response_code(404);
     } else {
         http_response_code(200);

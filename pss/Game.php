@@ -190,9 +190,13 @@ class Game
         $rosters = new \Jhml\Rosters($year, false, false);
         $ar = $rosters->getRoster($away);
         foreach ($ar->batters as $batter) {
-            $tmt = count($batter->moves) == 0 ? 0 : 
-                $batter->moves[count($batter->moves)-1]->moveType;
-            if (count($batter->moves) == 0 
+            $tmt = NULL;
+            foreach ($batter->moves as $move) {
+                 if ($move->gameNumber <= $agame) {
+                     $tmt = $move->moveType;
+                 }
+            }
+            if (is_null($tmt)
                 || $tmt == \Scoring\MoveType::TO_MAJORS 
                 || $tmt == \Scoring\MoveType::OFF_DL
             ) {
@@ -200,9 +204,13 @@ class Game
             }
         }
         foreach ($ar->pitchers as $pitcher) {
-            $tmt = count($pitcher->moves) == 0 ? 0 : 
-                $pitcher->moves[count($pitcher->moves)-1]->moveType;
-            if (count($pitcher->moves) == 0 
+            $tmt = NULL;
+            foreach ($pitcher->moves as $move) {
+                 if ($move->gameNumber <= $agame) {
+                     $tmt = $move->moveType;
+                 }
+            }
+            if (is_null($tmt)
                 || $tmt == \Scoring\MoveType::TO_MAJORS 
                 || $tmt == \Scoring\MoveType::OFF_DL
             ) {
@@ -211,9 +219,13 @@ class Game
         }
         $hr = $rosters->getRoster($home);
         foreach ($hr->batters as $batter) {
-            $tmt = count($batter->moves) == 0 ? 0 : 
-                $batter->moves[count($batter->moves)-1]->moveType;
-            if (count($batter->moves) == 0 
+            $tmt = NULL;
+            foreach ($batter->moves as $move) {
+                 if ($move->gameNumber <= $hgame) {
+                     $tmt = $move->moveType;
+                 }
+            }
+            if (is_null($tmt)
                 || $tmt == \Scoring\MoveType::TO_MAJORS 
                 || $tmt == \Scoring\MoveType::OFF_DL
             ) {
@@ -221,9 +233,13 @@ class Game
             }
         }
         foreach ($hr->pitchers as $pitcher) {
-            $tmt = count($pitcher->moves) == 0 ? 0 : 
-                $pitcher->moves[count($pitcher->moves)-1]->moveType;
-            if (count($pitcher->moves) == 0 
+            $tmt = NULL;
+            foreach ($pitcher->moves as $move) {
+                 if ($move->gameNumber <= $hgame) {
+                     $tmt = $move->moveType;
+                 }
+            }
+            if (is_null($tmt)
                 || $tmt == \Scoring\MoveType::TO_MAJORS 
                 || $tmt == \Scoring\MoveType::OFF_DL
             ) {
@@ -267,7 +283,7 @@ class Game
     {
         $g = Game::getGameFromScoreSheet(
             $year, $game->visitor->name, $game->visitor->gameNumber, 
-            $game->home->name, $game->visitor->gameNumber
+            $game->home->name, $game->home->gameNumber
         );
         $inst = \ProjectScoresheet\ProjectScoresheet::fromString(json_encode($game));
         file_put_contents($g->_scoreSheetName(), $inst->toString());

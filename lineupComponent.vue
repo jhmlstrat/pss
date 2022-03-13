@@ -2,13 +2,16 @@ var LineupComponent = {
   name: 'LineupComponent',
   template: `
     <div class='container'>
-      <b-tabs>
-        <b-tab title="Lineup">
 <!--
 {{ side }}
+<hr>
 {{roster}}
+<hr>
 {{rotation}}
+<hr>
 -->
+      <b-tabs>
+        <b-tab title="Lineup">
           <b-row class='mt-3'>
             <b-col cols='6'>
               <b-row>
@@ -29,7 +32,12 @@ var LineupComponent = {
 -->
                   <b-row v-for="(bat, iindex) in l_lineup[index]" v-bind:key="iindex">
                     <b-col cols="6">
-                      {{bat.name}}
+                      <span class="text-danger" v-if="bat.injured">
+                        {{bat.name}}
+                      </span>
+                      <span v-else>
+                        {{bat.name}}
+                      </span>
                     </b-col>
                     <b-col cols="2">
                       {{bat.positions}}
@@ -107,16 +115,17 @@ var LineupComponent = {
               </b-table>
             </b-col>
           </b-row>
-<!--
-{{oside}}
-{{oroster}}
-{{orotation}}
--->
         </b-tab>
+<!--
+<hr>
+{{oside}}
+<hr>
+{{oroster}}
+-->
       </b-tabs>
     </div>
   `,
-  props: ['side','oside','roster','oroster','rotation','orotation'],
+  props: ['side','oside','roster','oroster','rotation'],
   data: function() {
     return {
       availableBatters: [],
@@ -171,6 +180,10 @@ var LineupComponent = {
       this.setAvailableBatters();
       this.setAvailablePitchers();
     },
+    roster() {
+      this.setAvailableBatters();
+      this.setAvailablePitchers();
+    },
   },
   mounted() {
     this.setAvailableBatters();
@@ -184,7 +197,7 @@ var LineupComponent = {
         b = this.selectedB[i];
         if (b != '') {
           change = true;
-          a = {'player':{'name':b,'positions':[]}};
+          a = {'player':{'name':b,'positions':[],'injured':false}};
           if (this.selectedPos[i] != '') a.player.positions.push({'position':{'pos':this.selectedPos[i]}});
           l[i].push(a);
         }
@@ -193,6 +206,9 @@ var LineupComponent = {
       if (lv.playerOutOfPosition) this.warnString = 'Player out of position';
       else this.warnString = '';
       errorString = '';
+      if (lv.injuredPlayer) {
+        errorString += 'Injured players assigned';
+      }
       if (lv.duplicatePlayer) {
         errorString += 'Duplicate players assigned';
       }
@@ -212,29 +228,18 @@ var LineupComponent = {
       return change && lv.valid;
     },
     setAvailableBatters() {
-      this.availableBatters = [];
-      this.batterSelections=[{'value':'','text':''}];
       for (i=0; i<this.side.lineup.length;i++) {
         this.l_lineup[i] = [];
         for (lu of this.side.lineup[i]) {
-          this.l_lineup[i].push({'name':lu.player.name,'positions':this.formatInGamePositions(lu.player.positions)});
+          injured = false;
+          if ('injured' in lu.player) injured = lu.player.injured;  
+          this.l_lineup[i].push({'name':lu.player.name,'positions':this.formatInGamePositions(lu.player.positions),'injured':injured});
         }
       }
-      for (b of this.roster.roster.batters) {
-        if (b.rosterItem.moves.length > 0 && b.rosterItem.moves[b.rosterItem.moves.length -1].move.moveType == 'To minors') continue;
-        if (b.rosterItem.moves.length > 0 && b.rosterItem.moves[b.rosterItem.moves.length -1].move.moveType == 'On DL') continue;
-        if (b.rosterItem.moves.length > 0 && b.rosterItem.moves[b.rosterItem.moves.length -1].move.moveType == 'Traded') continue;
-        if (b.rosterItem.moves.length > 0 && b.rosterItem.moves[b.rosterItem.moves.length -1].move.moveType == 'Traded for') continue;
-        let inLineup = false;
-        for (l of this.side.lineup) {
-          for (lu of l) {
-            if (lu.player.name == b.rosterItem.player.name) inLineup=true;
-          }
-        }
-        if (inLineup) continue;
-        this.availableBatters.push(b.rosterItem.player);
-        this.batterSelections.push({'value':b.rosterItem.player.name,'text':b.rosterItem.player.name});
-      }
+      available = vue.getAvailable(this.side.lineup, this.side.rotation, this.side.roster, this.roster)
+      this.availableBatters = available.availableBatters
+      this.batterSelections=[{'value':'','text':''}];
+      for (b of this.availableBatters) { this.batterSelections.push({'value':b.name,'text':b.name}); }
     },
     setAvailablePitchers() {
       this.l_rotation = [];
@@ -242,31 +247,21 @@ var LineupComponent = {
       for (p of this.side.rotation) {
         this.l_rotation.push({'name':p.player.name});
       }
+      available = vue.getAvailable(this.side.lineup, this.side.rotation, this.side.roster, this.roster)
       this.availablePitchers = [];
       starters = [];
       sr = [];
       relievers = [];
-      for (p of this.roster.roster.pitchers) {
-        if (p.rosterItem.moves.length > 0 && p.rosterItem.moves[p.rosterItem.moves.length -1].move.moveType == 'To minors') continue;
-        if (p.rosterItem.moves.length > 0 && p.rosterItem.moves[p.rosterItem.moves.length -1].move.moveType == 'On DL') continue;
-        if (p.rosterItem.moves.length > 0 && p.rosterItem.moves[p.rosterItem.moves.length -1].move.moveType == 'Traded') continue;
-        if (p.rosterItem.moves.length > 0 && p.rosterItem.moves[p.rosterItem.moves.length -1].move.moveType == 'Traded for') continue;
-        used = false;
-        for (r of this.side.rotation) {
-          if (r.player.name == p.rosterItem.player.name) used = true;
-        }
-        if (used) continue;
-        s = p.rosterItem.player.strat.endurance.includes('S');
-        r = p.rosterItem.player.strat.endurance.includes('R');
-        p.rosterItem.player.tired = false;
-        p.rosterItem.player.injured = false;
-        if (s && r) sr.push(p.rosterItem.player);
-        else if (s) starters.push(p.rosterItem.player);
-        else relievers.push(p.rosterItem.player);
+      for (p of available.availablePitchers) {
+        s = p.strat.endurance.includes('S');
+        r = p.strat.endurance.includes('R');
+        if (s && r) sr.push(p);
+        else if (s) starters.push(p);
+        else relievers.push(p);
       }
       if (this.side.rotation.length == 0) this.availablePitchers = starters.concat(sr.concat(relievers));
       else this.availablePitchers = relievers.concat(sr.concat(starters));
-      this.pitcherSelections = [];
+      this.pitcherSelections = [{'value':'','text':''}];
       for (p of this.availablePitchers) {
         if (this.side.rotation.length == 0 && this.rotation.rotation.rotation[parseInt(this.side.gameNumber) - 1].pitcher == p.name) this.selectedP = p.name;
         this.pitcherSelections.push({'value':p.name,'text':p.name});
