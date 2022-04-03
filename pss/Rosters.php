@@ -717,5 +717,14 @@ class Rosters
     {
         return json_decode($this->toString());
     }
+    public function writeOldRosterFiles() {
+        foreach ($this->rosters as $r) {
+            $fsrf = fopen (
+		    '../data/' . $this->year . '/ros' . strtolower($r->team) . '.txt', 'w'
+            );
+	    fwrite($fsrf, $r->statRosterFile());
+	    floce($fsrf);
+	}
+    |
 }
 ?>
