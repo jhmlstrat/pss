@@ -186,16 +186,21 @@ class Roster
         usort($this->pitchers, array("\Scoring\RosterItem","cmp"));
         $b=0;
         $p=0;
-        while ($b < count($this->batters) || $p < count($this->pitchers) {
+        while ($b < count($this->batters) || $p < count($this->pitchers)) {
             if ($p >= count($this->pitchers) || ($b < count($this->batters) && $this->batters[$b]->player->name < $this->pitchers[$p]->player->name)) {
-                $rtn .= $this->batters[$b]->player->name . '~B~' . $this->batters[$b]->player->ab . '~' . $this->batters[$b]->startGame . '~' . $this->batters[$b]->endGame . "\n";
+                $rtn .= $this->batters[$b]->player->name . '~B~' . $this->batters[$b]->player->ab . '~';
+                $rtn .= ($this->batters[$b]->startGame<1?1:$this->batters[$b]->startGame) . '~';
+                $rtn .= ($this->batters[$b]->endGame>102?102:$this->batters[$b]->endGame) . "\n";
                 $b++;
             } else {
-                $rtn .= $this->pitchers[$p]->player->name . '~B~' . $this->pitchers[$p]->player->ip . '~' . $this->pitchers[$p]->startGame . '~' . $this->pitchers[$p]->endGame . "\n";
+                $rtn .= $this->pitchers[$p]->player->name . '~P~' . $this->pitchers[$p]->player->ip . '~';
+                $rtn .= ($this->pitchers[$p]->startGame<1?1:$this->pitchers[$p]->startGame) . '~';
+                $rtn .= ($this->pitchers[$p]->endGame>102?102:$this->pitchers[$p]->endGame) . "\n";
                 $p++;
             }
-    }
-    $rtn .= "PITCHERS~B~600~1~102\nBATTERS~P~200~1~102";
+        }
+        $rtn .= "PITCHERS~B~600~1~102\nBATTERS~P~200~1~102";
+        return $rtn;
     }
 }
 ?>

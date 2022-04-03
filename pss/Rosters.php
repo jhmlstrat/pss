@@ -722,9 +722,9 @@ class Rosters
             $fsrf = fopen (
 		    '../data/' . $this->year . '/ros' . strtolower($r->team) . '.txt', 'w'
             );
-	    fwrite($fsrf, $r->statRosterFile());
-	    floce($fsrf);
+	    fwrite($fsrf, $r->statsRosterFile());
+	    fclose($fsrf);
 	}
-    |
+    }
 }
 ?>
