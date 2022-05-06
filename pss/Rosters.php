@@ -719,6 +719,7 @@ class Rosters
     }
     public function writeOldRosterFiles() {
         foreach ($this->rosters as $r) {
+            if (strtolower($r->team) == "fre") continue;
             $fsrf = fopen (
 		    '../data/' . $this->year . '/ros' . strtolower($r->team) . '.txt', 'w'
             );

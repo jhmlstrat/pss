@@ -818,17 +818,6 @@ TBD {{ isIron() }} {{ injuryPitcher }} {{ isDH() }}
       player = '';
       if (this.injuryPitcher) this.injuryPlayer = this.gameInfo.situation.situation.pitcher;
       else this.injuryPlayer = this.currentBatter;
-      //console.log(player);
-      // var self = this;
-      // let headers = {headers:{'X-Authorization':'TooManyMLs'}};
-      // axios.put('/pss/api/handleInjury.php',{data: {'year':vue.year,'team':vue.team.team,'game':vue.game,'player':player,'duration':this.injuryDuration,'pitcher':this.injuryPitcher}},headers)
-      // .then(function (response) {
-        //console.log(response);
-        // vue.loadGameInfo();
-      // })
-      // .catch(function (error) {
-        // console.error(error);
-      // });
       this.sendPlay(this.tmpPlay);
     },
     showUnusualSpot(row, value) {

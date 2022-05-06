@@ -199,7 +199,7 @@ class Roster
                 $p++;
             }
         }
-        $rtn .= "PITCHERS~B~600~1~102\nBATTERS~P~200~1~102";
+        $rtn .= "PITCHERS~B~600~1~102\nBATTERS~P~200~1~102\n";
         return $rtn;
     }
 }
