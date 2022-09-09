@@ -147,6 +147,7 @@ class Game
         $this->errors_[1] = $sit->errors[1];
         $this->innings_ = $sit->inning;
         $this->final_ = $sit->gameOver();
+        $this->seriesComplete_ = $sit->seriesComplete;
         $config = [];
         $json = file_get_contents("../data/config.json");
         $confs = json_decode($json, true);
