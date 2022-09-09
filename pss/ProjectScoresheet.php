@@ -134,7 +134,8 @@ class ProjectScoresheet
         }
         //$inst->debugOn();
         //error_log(print_r($inst->situation_,true));
-        $inst->_updateSituation();
+	$inst->_updateSituation();
+	$inst->situation_->seriesComplete = $json->situation->seriesComplete;
         //error_log(print_r($inst->situation_,true));
         return $inst;
     }
@@ -404,16 +405,17 @@ class ProjectScoresheet
                     $split = false;
                     $outs[$side] += substr_count($rslt->during, "x");
                     if (strlen($rslt->during) != 0) {
-                        if (substr_compare($rslt->during, "S", 0) == 0) {
+                        if (substr_compare($rslt->during, "S", 0) == 0 ||
+                            substr_compare($rslt->during, "S(", 0, 2) == 0 ||
+                            substr_compare($rslt->during, "S;", 0, 2) == 0) {
                             $this->situation_->hits[$side] ++;
                         }
-                        if (substr_compare($rslt->during, "S(bp)", 0) == 0) {
+			if (substr_compare($rslt->during, "D", 0) == 0 ||
+			    substr_compare($rslt->during, "D;", 0, 2) == 0) {
                             $this->situation_->hits[$side] ++;
                         }
-                        if (substr_compare($rslt->during, "D", 0) == 0) {
-                            $this->situation_->hits[$side] ++;
-                        }
-                        if (substr_compare($rslt->during, "T", 0) == 0) {
+			if (substr_compare($rslt->during, "T", 0) == 0 ||
+			    substr_compare($rslt->during, "T;", 0, 2) == 0) {
                             $this->situation_->hits[$side] ++;
                         }
                         if (substr_compare($rslt->during, "HR", 0, 2) == 0) {
@@ -573,7 +575,7 @@ class ProjectScoresheet
                 if ($bases[$i-1] != 0) {
                     if ($before) {
                         if ($this->_result->before != "") {
-                            $this->_result->before .= ",";
+                            $this->_result->before .= ";";
                         }
                     } else {
                         if ($this->_result->after != "") {
@@ -625,7 +627,7 @@ class ProjectScoresheet
     {
         if ($before) {
             if ($this->_result->before != "") {
-                $this->_result->before .= ",";
+                $this->_result->before .= ";";
             }
         } else {
             if ($this->_result->after != "") {
@@ -697,7 +699,7 @@ class ProjectScoresheet
     public function di()
     {
         $this->_advance(0, 1, 1, true);
-        if ($this->_result->before != "") $this->_result->before .= ";";
+        if ($this->_result->before != "") $this->_result->before .= "/";
         $this->_result->before .= "DI";
     }
     public function bb()
@@ -901,7 +903,7 @@ class ProjectScoresheet
     {
         if ($before) {
             if ($this->_result->before != "") {
-                $this->_result->before .= ",";
+                $this->_result->before .= ";";
             }
             $this->_result->before = $result;
         } else {
@@ -917,9 +919,9 @@ class ProjectScoresheet
     }
     public function po($result, $third, $second, $first)
     {
-        //if ($this->_result->before != "") $this->_result->before .= ",";
+        //if ($this->_result->before != "") $this->_result->before .= ";";
         $this->_advance($third, $second, $first, true);
-        if ($this->_result->before != "") $this->_result->before .= ";";
+        if ($this->_result->before != "") $this->_result->before .= "/";
         $this->_result->before .= "PO-" . $result;
         if ($this->situation_->outs == 2) {
             $this->_saveResult();
@@ -934,7 +936,7 @@ class ProjectScoresheet
     public function wp($third, $second, $first)
     {
         $this->_advance($third, $second, $first, true);
-        if ($this->_result->before != "") $this->_result->before .= ";";
+        if ($this->_result->before != "") $this->_result->before .= "/";
         $this->_result->before .= "WP";
         $this->_updateSituation();
     }
@@ -945,7 +947,7 @@ class ProjectScoresheet
     public function pb($third, $second, $first)
     {
         $this->_advance($third, $second, $first, true);
-        if ($this->_result->before != "") $this->_result->before .= ";";
+        if ($this->_result->before != "") $this->_result->before .= "/";
         $this->_result->before .= "PB";
         $this->_updateSituation();
     }
@@ -967,7 +969,7 @@ class ProjectScoresheet
     public function bk($third, $second, $first)
     {
         $this->_advance($third, $second, $first, true);
-        if ($this->_result->before != "") $this->_result->before .= ";";
+        if ($this->_result->before != "") $this->_result->before .= "/";
         $this->_result->before .= "BK";
         $this->_updateSituation();
     }
@@ -978,14 +980,14 @@ class ProjectScoresheet
     public function sb($third, $second, $first)
     {
         $this->_advance($third, $second, $first, true);
-        if ($this->_result->before != "") $this->_result->before .= ";";
+        if ($this->_result->before != "") $this->_result->before .= "/";
         $this->_result->before .= "SB";
         $this->_updateSituation();
     }
     public function sbe($third, $second, $first)
     {
         $this->_advance($third, $second, $first, true);
-        if ($this->_result->before != "") $this->_result->before .= ";";
+        if ($this->_result->before != "") $this->_result->before .= "/";
         $this->_result->before .= "SB;E-2";
         $this->_updateSituation();
     }
@@ -996,10 +998,10 @@ class ProjectScoresheet
     public function cs($result, $third, $second, $first)
     {
         if ($this->_result->before != "") {
-            $this->_result->before .= ",";
+            $this->_result->before .= ";";
         }
         $this->_advance($third, $second, $first, true);
-        if ($this->_result->before != "") $this->_result->before .= ";";
+        if ($this->_result->before != "") $this->_result->before .= "/";
         $this->_result->before .= "CS" . $result;
         if ($this->situation_->outs == 2) {
             $this->_saveResult();
