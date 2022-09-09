@@ -49,6 +49,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'PUT') {
     //error_log($player.PHP_EOL,3,'error_log');
     $pitcher = isset($data->pitcher) ? $data->pitcher : false;
     //error_log(($pitcher?"true":"false").PHP_EOL,3,'error_log');
+    $seriesComplete = isset($data->seriesComplete) ? $data->seriesComplete : false;
+    //error_log(($seriesComplete?"true":"false").PHP_EOL,3,'error_log');
     $g = \Scoring\Game::findGameforTeam($year, $team, $gn);
     //error_log($g->toString().PHP_EOL,3,'error_log');
     $sit = $g->situation_;
@@ -85,7 +87,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'PUT') {
       $rosters->writeRosterFile();
     }
 
-    if ($batter != '#' || $first != '#' || $second != '#' || $third != '#') {
+    if ($seriesComplete) {
+       $g->situation_->seriesComplete = $seriesComplete;  
+    } else if ($batter != '#' || $first != '#' || $second != '#' || $third != '#') {
       if ($first > 0) $first = $first - 1; 
       if ($second > 0) $second = $second - 2; else $second = $second + 1;
       if ($third > 0) $third = $third - 3; else $third = $third + 2;
