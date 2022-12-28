@@ -152,10 +152,10 @@ class Game
         );
         $this->_ssLoaded_ = true;
         if (isset($this->_ss_->away->rotation) and count($this->_ss_->away->rotation) != 0) {
-            $this->starter_[0] = $this->_ss_->away->rotation[0];
+            $this->starter_[0] = $this->_ss_->away->rotation[0]->name;
         }
         if (isset($this->_ss_->home->rotation) and count($this->_ss_->home->rotation) != 0) {
-            $this->starter_[1] = $this->_ss_->home->rotation[0];
+            $this->starter_[1] = $this->_ss_->home->rotation[0]->name;
         }
         if ($this->_ss_->date_ != "") {
             $this->date_ = $this->_ss_->date_;
@@ -170,8 +170,8 @@ class Game
         $this->innings_ = $sit->inning;
         $this->final_ = $sit->gameOver();
         $this->seriesComplete_ = $sit->seriesComplete;
-        $this->starter_[0] = $this->_ss_->lineup_[0]->getPitchers()[0];
-        $this->starter_[1] = $this->_ss_->lineup_[1]->getPitchers()[0];
+        $this->starter_[0] = $this->_ss_->lineup_[0]->getPitchers()[0]->name;
+        $this->starter_[1] = $this->_ss_->lineup_[1]->getPitchers()[0]->name;
         $config = [];
         $json = file_get_contents("../data/config.json");
         $confs = json_decode($json, true);
