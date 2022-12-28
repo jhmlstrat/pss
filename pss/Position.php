@@ -97,5 +97,9 @@ class Position
         print "Position::positionString - bad parameter ${pos}\n";
         exit -1;
     }
+    public function getWhen()
+    {
+	return $this->_when;
+    }
 }
 ?>

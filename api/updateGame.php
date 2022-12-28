@@ -601,9 +601,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'PUT') {
             break;
         case 'SAC':
             if ($fielder == '3') {
-                $p='SAC(3-4)';
+                $p='3-4';
             } else {
-                $p='SAC('.$fielder.'-3)';
+                $p=$fielder.'-3';
             }
             $g->sac1($p);
             break;
