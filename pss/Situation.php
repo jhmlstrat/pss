@@ -19,6 +19,7 @@ class Situation
     public $pitcher;
     public $runner;
     public $betweenInnings;
+    public $seriesComplete;
 
     public function __construct()
     {
@@ -37,6 +38,7 @@ class Situation
         $this->pitcher=null;
         $this->runner=array(1=>null,2=>null,3=>null);
         $this->betweenInnings=true;
+        $this->seriesComplete=false;
     }
 
     public function switchSides()
@@ -126,6 +128,7 @@ class Situation
             $rtn .= '"' .  $this->runsPerInning[1][$i+1] . '"';
         }
         $rtn .= ']],';
+        $rtn .= '"seriesComplete":' . ($this->seriesComplete ? "true" : "false") . ',';
         $rtn .= '"gameOver":' . ($this->gameOver() ? "true" : "false") . '}}';
         return $rtn;
     }
