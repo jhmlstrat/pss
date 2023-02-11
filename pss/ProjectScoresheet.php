@@ -394,7 +394,9 @@ class ProjectScoresheet
                     $outs[$side] += substr_count($rslt->before, "x");
                     $this->situation_->errors[$os] 
                         += substr_count($rslt->before, "E");
-                    $this->_moveRunners($rslt->before);
+                    foreach (explode(";",$rslt->before) as $b4) {
+                        $this->_moveRunners($b4);
+                    }
                     if ($side == 0) {
                         $r[3]=$this->situation_->runner[3];
                         $r[2]=$this->situation_->runner[2];
@@ -570,12 +572,16 @@ class ProjectScoresheet
     private function _advance($third, $second, $first, $before)
     {
         $bases = array($first, $second, $third);
+        $first = true;
         for ($i=3; $i>0; $i--) {
             if ($this->situation_->base($i)) {
                 if ($bases[$i-1] != 0) {
                     if ($before) {
                         if ($this->_result->before != "") {
-                            $this->_result->before .= ";";
+                            if ($first) {
+                                $this->_result->before .= ";";
+                                $first = false;
+                            } else $this->_result->before .= ",";
                         }
                     } else {
                         if ($this->_result->after != "") {
