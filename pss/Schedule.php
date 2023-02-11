@@ -12,19 +12,15 @@ class Schedule
 
     private $_schedules = [];
 
-    private function _addSI($t, $oppF, $numH, $numA)
+    private function _addSI($t, $oppF, $numH, $numA, $s)
     {
         $h = 'home';
         $a = 'away';
-        $s = \Scoring\Seasons::SPRING;
         $opp = '';
         foreach ($this->_config['teams'] as $key => $team) {
             if ($team['franchise'] == $oppF) {
                 $opp = $team['team'];
             }
-        }
-        if (($numH == 3 && $numA == 0) || ($numA == 3 && $numH == 0)) {
-            $s = \Scoring\Seasons::FALL;
         }
         if ($numH == 7) {
             array_push(
@@ -70,265 +66,269 @@ class Schedule
                 $this->_config = $conf;
             }
         }
-        $w = [];
+        # print(count($this->_config['teams']) . "\n");
         $pssG = [];
-        foreach ($this->_config['teams'] as $key => $team) {
-            $w[$team['franchise']] = 0;
-            $pssG[$team['franchise']] = [];
-        }
-        $yearLess = $year - 1;
-        $results = file_get_contents("../../" . $yearLess . "/misc/rec_team.html");
-        $entries = explode("\n", $results);
-        $first = -1;
-        for ($i = 0; $i < count($entries); $i++) {
-            if (substr($entries[$i], 0, 8) == '--------') {
-                $first = $i;
-                $i = count($entries);
+        if (count($this->_config['teams']) == 15) {
+            $w = [];
+            foreach ($this->_config['teams'] as $key => $team) {
+                $w[$team['franchise']] = 0;
+                $pssG[$team['franchise']] = [];
             }
-        }
-        $first --;
-        if ($first < 0) {
-            print "Error reading results<br/>";
-            return;
-        }
-        //print_r("<pre>" . $entries[$first] . "</pre><br/>");
-        $columns = preg_replace('/<[^>]*> */', '', $entries[$first]);
-        $columns = preg_replace('/ [ \t]*/', ' ', $columns);
-        $pieces = explode(" ", $columns);
-        if (count($pieces) != count($w)) {
-            print "Mismatched number of teams<br/>";
-            return;
-        }
-        $foundCount = 0;
-        $lines = [];
-        $offset = [];
-        for (
-            $i = $first+1; 
-            $i < count($entries) 
-            && $foundCount < count($this->_config['teams']);
-            $i++
-        ) {
-            $line = preg_replace('/<[^>]*> */', '', $entries[$i]);
-            $line = preg_replace('/^ [ \t]*/', ' ', $line);
-            $line = preg_replace('/\./', '', $line);
-            if (strlen($line) <2) {
-                continue;
-            }
-            if (substr($line, 0, 8) == '--------') {
-                continue;
-            }
-            if ($entries[$i] == $entries[$first]) {
-                continue;
-            }
-            $found = false;
-            for ($j=0; $j < count($this->_config['teams']); $j++) {
-                $city = $previous['teams'][$j]['city'] . ' ' . 
-                    $previous['teams'][$j]['team_name'];
-                if (substr($line, 0, strlen($city)) == $city) {
-                    $found = true;
-                    $foundCount ++;
-                    $line = preg_replace('/'.$city.' */', '', $line);
-                    $line = preg_replace(
-                        '/(\d)[ \t]*-[ \t]*(\d)/', '$1+$2', $line
-                    );
-                    $line = preg_replace('/[ \t][ \t]*/', ' ', $line);
-                    $line = preg_replace('/[ \t]*$/', '', $line);
-                    $lines[$previous['teams'][$j]['franchise']] = $line;
-                    $against = explode(' ', $line);
-                    for ($k=0; $k < count($against)-1; $k++) {
-                        if (substr($against[$k], 0, 2) == '--') {
-                            $offset[$previous['teams'][$j]['franchise']] = $k;
-                        } else {
-                            $ws = explode('+', $against[$k]);
-                            $w[$previous['teams'][$j]['franchise']] += 
-                                intval($ws[0]);
-                        }
-                    }
+            $yearLess = $year - 1;
+            $results = file_get_contents("../../" . $yearLess . "/misc/rec_team.html");
+            $entries = explode("\n", $results);
+            $first = -1;
+            for ($i = 0; $i < count($entries); $i++) {
+                if (substr($entries[$i], 0, 8) == '--------') {
+                    $first = $i;
+                    $i = count($entries);
                 }
             }
-            if (! $found) {
-                print "-" . $line . "- " . $foundCount . "<br/>";
+            $first --;
+            if ($first < 0) {
+                print "Error reading results<br/>";
                 return;
             }
-        }
-        //print_r($w);
-        $div = [];
-        foreach ($this->_config['teams'] as $team) {
-            if (! array_key_exists($team['division'], $div)) {
-                $div[$team['division']] = [$team];
-            } else {
-                $added = false;
-                for ($i=0; $i < count($div[$team['division']]); $i++) {
-                    $fr = $div[$team['division']][$i]['franchise'];
-                    if ($w[$team['franchise']] > $w[$fr]) {
-                        array_splice($div[$team['division']], $i, 0, [$team]);
-                        $j = $i;
-                        $added = true;
-                        $i = count($div[$team['division']]);
-                    }
-                    if ($i < count($div[$team['division']]) ) {
-                        $fr = $div[$team['division']][$i]['franchise'];
-                        if ($w[$team['franchise']] == $w[$fr]) {
-                            $wls = explode(' ', $lines[$team['franchise']]);
-                            $wl = explode(
-                                '+', 
-                                $wls[$offset[$fr]]
-                            );
-                            if ($wl[0] > $wl[1]) {
-                                array_splice(
-                                    $div[$team['division']], $i, 0, [$team]
-                                );
-                                $added = true;
-                                $i = count($div[$team['division']]);
-                            }
-                        }
-                    }
-                }
-                if (! $added) {
-                    array_push($div[$team['division']], $team);
-                }
+            //print_r("<pre>" . $entries[$first] . "</pre><br/>");
+            $columns = preg_replace('/<[^>]*> */', '', $entries[$first]);
+            $columns = preg_replace('/ [ \t]*/', ' ', $columns);
+            $pieces = explode(" ", $columns);
+            if (count($pieces) != count($w)) {
+                print "Mismatched number of teams<br/>";
+                return;
             }
-        }
-        //print_r($div);
-        //print "<br/>";
-        $mult = 1;
-        if ($year % 2 == 0) {
-            $mult = -1;
-        }
-        $base = [];
-        $divs = ['AMML','CBML','RCML'];
-        $base[$divs[0]] = [4,14,2,9,6];
-        $base[$divs[1]] = [10,11,12,7,5];
-        $base[$divs[2]] = [13,8,1,3,15];
-        if ($year >= 2019) {
-            $divs = ['CBML','RCML','AMML'];
-            $base[$divs[0]] = [12,6,15,7,5];
-            $base[$divs[1]] = [10,8,9,11,2];
-            $base[$divs[2]] = [4,1,13,14,3];
-        }
-        $f = \Scoring\Seasons::FALL;
-        foreach ($this->_config['teams'] as $key => $team) {
-            $div_off = -1;
-            $team_off = -1;
-            $base_off = -1;
-            $t = $team['team'];
-            $tdiv = $team['division'];
-            for ($i=0; $i <count($divs); $i++) {
-                if ($divs[$i] == $tdiv) {
-                    $div_off = $i;
-                }
-            }
-            $c = count($div[$tdiv]);
-            for ($i=0; $i < $c; $i++) {
-                if ($div[$tdiv][$i]['franchise'] == $team['franchise']) {
-                    $team_off = $i;
-                }
-                if ($base[$tdiv][$i] == $team['franchise']) {
-                    $base_off = $i;
-                }
-            }
-
-            $this->_schedules[$t] = [];
-            $this->_schedules[$t]['home'] = [];
-            $this->_schedules[$t]['away'] = [];
-            $this->_addSI($t, $base[$tdiv][($base_off - $mult + $c)%$c], 7, 3);
-            $this->_addSI($t, $base[$tdiv][($base_off - $mult + $c)%$c], 0, 3);
-            $this->_addSI(
-                $t, $base[$tdiv][($base_off - $mult - $mult + $c)%$c], 7, 3
-            );
-            $this->_addSI(
-                $t, $base[$tdiv][($base_off - $mult - $mult + $c)%$c], 0, 3
-            );
-            $this->_addSI($t, $base[$tdiv][($base_off + $mult + $c)%$c], 3, 7);
-            $this->_addSI($t, $base[$tdiv][($base_off + $mult + $c)%$c], 3, 0);
-            $this->_addSI(
-                $t, $base[$tdiv][($base_off + $mult + $mult + $c)%$c], 3, 7
-            );
-            $this->_addSI(
-                $t, $base[$tdiv][($base_off + $mult + $mult + $c)%$c], 3, 0
-            );
-            for ($i=0; $i <count($divs); $i++) {
-                if ($i == $div_off) {
+            $foundCount = 0;
+            $lines = [];
+            $offset = [];
+            for (
+                $i = $first+1; 
+                $i < count($entries) 
+                && $foundCount < count($this->_config['teams']);
+                $i++
+            ) {
+                $line = preg_replace('/<[^>]*> */', '', $entries[$i]);
+                $line = preg_replace('/^ [ \t]*/', ' ', $line);
+                $line = preg_replace('/\./', '', $line);
+                if (strlen($line) <2) {
                     continue;
                 }
-                for ($j=0; $j < $c; $j++) {
-                    if ($j != $team_off) {
-                        if ($i == ($div_off - $mult + count($divs))%count($divs)) {
-                            $this->_addSI(
-                                $t, $div[$divs[$i]][$j]['franchise'], 3, 2
-                            );
-                        } else {
-                            $this->_addSI(
-                                $t, $div[$divs[$i]][$j]['franchise'], 2, 3
-                            );
-                        }
-                    }
+                if (substr($line, 0, 8) == '--------') {
+                    continue;
                 }
-            }
-            $c = count($divs);
-            $this->_addSI(
-                $t, $div[$divs[($div_off - $mult + $c)%$c]][$team_off]['franchise'],
-                0, 2
-            );
-            $this->_addSI(
-                $t, $div[$divs[($div_off - $mult + $c)%$c]][$team_off]['franchise'],
-                3, 0
-            );
-            $this->_addSI(
-                $t, $div[$divs[($div_off + $mult + $c)%$c]][$team_off]['franchise'],
-                2, 0
-            );
-            $this->_addSI(
-                $t, $div[$divs[($div_off + $mult + $c)%$c]][$team_off]['franchise'],
-                0, 3
-            );
-            $series = [];
-            $count = 0;
-            if ($rf->games[$t]) {
-                foreach ($rf->games[$t] as $gm) {
-                    //var_dump($this->_schedules[$t]);
-                    //var_dump($gm);
-                    $count ++;
-                    if ($count == count($rf->games[$t])) {
-                        array_push($series, $gm);
-                    }
-                    if ($count == count($rf->games[$t]) || count($series) == 4 
-                        || (count($series) > 0 
-                        && ($series[0]->team_[0] != $gm->team_[0] 
-                        || $series[0]->team_[1] != $gm->team_[1]))
-                    ) {
-                        if ($series[0]->team_[0] == $t) {
-                            $side = "away";
-                            $oside = "home_";
-                            $off = 1;
-                        } else {
-                            $side="home";
-                            $oside = "away_";
-                            $off = 0;
-                        }
-                        $added=false;
-                        foreach ($this->_schedules[$t][$side] as $sg) {
-                            if ($series[0]->team_[$off] == $sg->$oside 
-                                && count($series) == $sg->games_ 
-                                && count($sg->results_) == 0 && ! $added
-                            ) {
-                                foreach ($series as $gmm) {
-                                    array_push($sg->results_, $gmm);
-                                }
-                                $added=true;
+                if ($entries[$i] == $entries[$first]) {
+                    continue;
+                }
+                $found = false;
+                for ($j=0; $j < count($this->_config['teams']); $j++) {
+                    $city = $previous['teams'][$j]['city'] . ' ' . 
+                        $previous['teams'][$j]['team_name'];
+                    if (substr($line, 0, strlen($city)) == $city) {
+                        $found = true;
+                        $foundCount ++;
+                        $line = preg_replace('/'.$city.' */', '', $line);
+                        $line = preg_replace(
+                            '/(\d)[ \t]*-[ \t]*(\d)/', '$1+$2', $line
+                        );
+                        $line = preg_replace('/[ \t][ \t]*/', ' ', $line);
+                        $line = preg_replace('/[ \t]*$/', '', $line);
+                        $lines[$previous['teams'][$j]['franchise']] = $line;
+                        $against = explode(' ', $line);
+                        for ($k=0; $k < count($against)-1; $k++) {
+                            if (substr($against[$k], 0, 2) == '--') {
+                                $offset[$previous['teams'][$j]['franchise']] = $k;
+                            } else {
+                                $ws = explode('+', $against[$k]);
+                                $w[$previous['teams'][$j]['franchise']] += 
+                                    intval($ws[0]);
                             }
                         }
-                        //if (! $added) {
-                        //var_dump($series);
-                        //print "Shouldn't get here " . $series[0]->team_[0] . 
-                        //    " at " .  $series[0]->team_[1] . 
-                        //    "(" . $t . ") for " . count($series) . "\n";
-                        //}
-                        $series = [];
                     }
-                    array_push($series, $gm);
+                }
+                if (! $found) {
+                    print "-" . $line . "- " . $foundCount . "<br/>";
+                    return;
                 }
             }
+            //print_r($w);
+            $div = [];
+            foreach ($this->_config['teams'] as $team) {
+                if (! array_key_exists($team['division'], $div)) {
+                    $div[$team['division']] = [$team];
+                } else {
+                    $added = false;
+                    for ($i=0; $i < count($div[$team['division']]); $i++) {
+                        $fr = $div[$team['division']][$i]['franchise'];
+                        if ($w[$team['franchise']] > $w[$fr]) {
+                            array_splice($div[$team['division']], $i, 0, [$team]);
+                            $j = $i;
+                            $added = true;
+                            $i = count($div[$team['division']]);
+                        }
+                        if ($i < count($div[$team['division']]) ) {
+                            $fr = $div[$team['division']][$i]['franchise'];
+                            if ($w[$team['franchise']] == $w[$fr]) {
+                                $wls = explode(' ', $lines[$team['franchise']]);
+                                $wl = explode(
+                                    '+', 
+                                    $wls[$offset[$fr]]
+                                );
+                                if ($wl[0] > $wl[1]) {
+                                    array_splice(
+                                        $div[$team['division']], $i, 0, [$team]
+                                    );
+                                    $added = true;
+                                    $i = count($div[$team['division']]);
+                                }
+                            }
+                        }
+                    }
+                    if (! $added) {
+                        array_push($div[$team['division']], $team);
+                    }
+                }
+            }
+            //print_r($div);
+            //print "<br/>";
+            $mult = 1;
+            if ($year % 2 == 0) {
+                $mult = -1;
+            }
+            $base = [];
+            $divs = ['AMML','CBML','RCML'];
+            $base[$divs[0]] = [4,14,2,9,6];
+            $base[$divs[1]] = [10,11,12,7,5];
+            $base[$divs[2]] = [13,8,1,3,15];
+            if ($year >= 2019) {
+                $divs = ['CBML','RCML','AMML'];
+                $base[$divs[0]] = [12,6,15,7,5];
+                $base[$divs[1]] = [10,8,9,11,2];
+                $base[$divs[2]] = [4,1,13,14,3];
+            }
+            foreach ($this->_config['teams'] as $key => $team) {
+                $div_off = -1;
+                $team_off = -1;
+                $base_off = -1;
+                $t = $team['team'];
+                $tdiv = $team['division'];
+                for ($i=0; $i <count($divs); $i++) {
+                    if ($divs[$i] == $tdiv) {
+                        $div_off = $i;
+                    }
+                }
+                $c = count($div[$tdiv]);
+                for ($i=0; $i < $c; $i++) {
+                    if ($div[$tdiv][$i]['franchise'] == $team['franchise']) {
+                        $team_off = $i;
+                    }
+                    if ($base[$tdiv][$i] == $team['franchise']) {
+                        $base_off = $i;
+                    }
+                }
+    
+                $this->_schedules[$t] = [];
+                $this->_schedules[$t]['home'] = [];
+                $this->_schedules[$t]['away'] = [];
+                $this->_addSI($t, $base[$tdiv][($base_off - $mult + $c)%$c], 7, 3, \Scoring\Seasons::SPRING);
+                $this->_addSI($t, $base[$tdiv][($base_off - $mult + $c)%$c], 0, 3, \Scoring\Seasons::FALL);
+                $this->_addSI(
+                    $t, $base[$tdiv][($base_off - $mult - $mult + $c)%$c], 7, 3, \Scoring\Seasons::SPRING
+                );
+                $this->_addSI(
+                    $t, $base[$tdiv][($base_off - $mult - $mult + $c)%$c], 0, 3, \Scoring\Seasons::FALL
+                );
+                $this->_addSI($t, $base[$tdiv][($base_off + $mult + $c)%$c], 3, 7, \Scoring\Seasons::SPRING);
+                $this->_addSI($t, $base[$tdiv][($base_off + $mult + $c)%$c], 3, 0, \Scoring\Seasons::FALL);
+                $this->_addSI(
+                    $t, $base[$tdiv][($base_off + $mult + $mult + $c)%$c], 3, 7, \Scoring\Seasons::SPRING
+                );
+                $this->_addSI(
+                    $t, $base[$tdiv][($base_off + $mult + $mult + $c)%$c], 3, 0, \Scoring\Seasons::FALL
+                );
+                for ($i=0; $i <count($divs); $i++) {
+                    if ($i == $div_off) {
+                        continue;
+                    }
+                    for ($j=0; $j < $c; $j++) {
+                        if ($j != $team_off) {
+                            if ($i == ($div_off - $mult + count($divs))%count($divs)) {
+                                $this->_addSI(
+                                    $t, $div[$divs[$i]][$j]['franchise'], 3, 2, \Scoring\Seasons::SPRING
+                                );
+                            } else {
+                                $this->_addSI(
+                                    $t, $div[$divs[$i]][$j]['franchise'], 2, 3, \Scoring\Seasons::SPRING
+                                );
+                            }
+                        }
+                    }
+                }
+                $c = count($divs);
+                $this->_addSI(
+                    $t, $div[$divs[($div_off - $mult + $c)%$c]][$team_off]['franchise'],
+                    0, 2, \Scoring\Seasons::SPRING
+                );
+                $this->_addSI(
+                    $t, $div[$divs[($div_off - $mult + $c)%$c]][$team_off]['franchise'],
+                    3, 0, \Scoring\Seasons::FALL
+                );
+                $this->_addSI(
+                    $t, $div[$divs[($div_off + $mult + $c)%$c]][$team_off]['franchise'],
+                    2, 0, \Scoring\Seasons::SPRING
+                );
+                $this->_addSI(
+                    $t, $div[$divs[($div_off + $mult + $c)%$c]][$team_off]['franchise'],
+                    0, 3, \Scoring\Seasons::FALL
+                );
+                $series = [];
+                $count = 0;
+                if ($rf->games[$t]) {
+                    foreach ($rf->games[$t] as $gm) {
+                        //var_dump($this->_schedules[$t]);
+                        //var_dump($gm);
+                        $count ++;
+                        if ($count == count($rf->games[$t])) {
+                            array_push($series, $gm);
+                        }
+                        if ($count == count($rf->games[$t]) || count($series) == 4 
+                            || (count($series) > 0 
+                            && ($series[0]->team_[0] != $gm->team_[0] 
+                            || $series[0]->team_[1] != $gm->team_[1]))
+                        ) {
+                            if ($series[0]->team_[0] == $t) {
+                                $side = "away";
+                                $oside = "home_";
+                                $off = 1;
+                            } else {
+                                $side="home";
+                                $oside = "away_";
+                                $off = 0;
+                            }
+                            $added=false;
+                            foreach ($this->_schedules[$t][$side] as $sg) {
+                                if ($series[0]->team_[$off] == $sg->$oside 
+                                    && count($series) == $sg->games_ 
+                                    && count($sg->results_) == 0 && ! $added
+                                ) {
+                                    foreach ($series as $gmm) {
+                                        array_push($sg->results_, $gmm);
+                                    }
+                                    $added=true;
+                                }
+                            }
+                            //if (! $added) {
+                            //var_dump($series);
+                            //print "Shouldn't get here " . $series[0]->team_[0] . 
+                            //    " at " .  $series[0]->team_[1] . 
+                            //    "(" . $t . ") for " . count($series) . "\n";
+                            //}
+                            $series = [];
+                        }
+                        array_push($series, $gm);
+                    }
+                }
+            }
+        } else {
+            print("Do 14\n");
         }
         $psss = glob('../data/'. $year . '/*.pss');
         foreach ($psss as $pss) {
@@ -367,6 +367,9 @@ class Schedule
                     $side = 'home';
                     $oside = 'away';
                 }
+
+// TBD - Needs to be based on seriesCompleted - which needs to be fixed/added
+
                 if (($a != strtolower($g->team_[0]) || $h != $g->team_[1]
                     || count($series) == 4) && (count($series) != 0)
                 ) {
@@ -414,9 +417,7 @@ class Schedule
                         }
                     }
                     if (! $inserted) {
-                        error_log(
-                            'Failed to insert last series'.PHP_EOL, 3, 'error_log'
-                        );
+                        error_log('Failed to insert last series'.PHP_EOL, 3, 'error_log');
                     //    error_log($series[0]->gameNumber_.PHP_EOL, 3, 'error_log');
                     //    error_log(print_r($series, true).PHP_EOL, 3, 'error_log');
                     }
@@ -521,10 +522,10 @@ class Schedule
             $rtn .= ',' . $fall[$i]->toString();
         }
         $days = 0;
-        //error_log(print_r($resultsA,true).PHP_EOL,3,'error_log');
+        // error_log(print_r($resultsA,true).PHP_EOL,3,'error_log');
         ksort($resultsA);
         for ($i=0; $i < count($resultsA); $i++) {
-            if ($resultsA[$i]->day_) {
+            if ($resultsA[$i]->seriesComplete_) {
                 $days++;
             }
             if ($days == 3) {
@@ -535,7 +536,7 @@ class Schedule
                 $days = 0;
             }
         }
-        //error_log(print_r($resultsA,true).PHP_EOL,3,'error_log');
+        // error_log(print_r($resultsA,true).PHP_EOL,3,'error_log');
         $results = '[';
         foreach ($resultsA as $result) {
             if ($results != '[') {
