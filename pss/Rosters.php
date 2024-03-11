@@ -10,7 +10,7 @@ class Rosters
     public $year;
     public $rosters = [];
 
-    private $_baseURL = "http://www.jhmlstrat.org/";
+    private $_baseURL = "https://www.jhmlstrat.org/";
     private $_AgesFile = "/AGES.txt";
     private $_NewRosterFile = "/Rosters.json";
     private $_OldRosterFile = "/LEAGUE.JHML";
@@ -165,8 +165,10 @@ class Rosters
                     }
                     $this->rosters[$batter->team]->addBatter($batter);
                 }
-                while (($line = fgets($rf)) !== false) {
-                    $pitcher = \Scoring\RosterItem::fromRosterFileString($line);
+		while (($line = fgets($rf)) !== false) {
+			// print $line . "\n";
+			$pitcher = \Scoring\RosterItem::fromRosterFileString($line);
+			// var_dump($pitcher);
                     $this->rosters[$pitcher->team]->addPitcher($pitcher);
                 }
                 fclose($rf);
@@ -188,17 +190,19 @@ class Rosters
         }
         $addI = 0;
         $add = 0;
-        if ($this->year >= 2020) {
+        if (intval($this->year) >= 2020) {
             $add ++;
-            $addI = $addI + 2;
+            $addI = $addI + 1;
         }
         $hf = fopen($this->_StratHittersFile, 'r');
-        $count = 0;
+	$count = 0;
+	if ($this->year == 2021) $min = 37;
+	else $min = 100;
         while (($line = fgets($hf)) !== false) {
             if ($count > 0) {
                 $pieces = explode("\t", $line);
-                //foreach ($pieces as $value) { print $value . "\n"; }
-                if ($pieces[$addI+2] < 100) {
+		// foreach ($pieces as $value) { print $value . "\n"; }
+                if ($pieces[$addI+2] < $min) {
                     continue;
                 }
                 $rindices = [];
@@ -207,7 +211,8 @@ class Rosters
                 $name = str_replace("+", "", $name);
                 $name = str_replace("*", "", $name);
                 $name = str_replace(",", ", ", $name);
-                $name = str_replace(".", "", $name);
+		$name = str_replace(".", "", $name);
+		// print $name . "\n";
                 foreach ($this->rosters as $team => $roster) {
                     for ($j = 0; $j < count($roster->batters); $j++) {
                         $test = str_replace(
@@ -396,11 +401,13 @@ class Rosters
         }
         $pf = fopen($this->_StratPitchersFile, 'r');
         $count = 0;
+	if ($this->year == 2021) $min = 11;
+	else $min = 30;
         while (($line = fgets($pf)) !== false) {
             if ($count > 0) {
                 $pieces = explode("\t", $line);
                 //foreach ($pieces as $value) { print $value . "\n"; }
-                if ($pieces[$add+2] < 30) {
+                if ($pieces[$add+2] < $min) {
                     continue;
                 }
                 $rindices = [];
