@@ -84,7 +84,7 @@ class Position
                 return $i;
             }
         }
-        print "Position::position - bad parameter -${positionString}-\n";
+        print "Position::position - bad parameter -{$positionString}-\n";
         exit -1;
     }
     public static function positionString($pos)
@@ -94,7 +94,7 @@ class Position
                 return $p;
             }
         }
-        print "Position::positionString - bad parameter ${pos}\n";
+        print "Position::positionString - bad parameter {$pos}\n";
         exit -1;
     }
     public function getWhen()

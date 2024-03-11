@@ -2,8 +2,9 @@
 
 require_once "../pss/Rosters.php";
 
-$r2019 = new \Jhml\Rosters(2019);
+$r2023 = new \Jhml\Rosters(2023);
 
-$r2019->writeOldRosterFiles();
+$r2023->writeOldRosterFiles();
+$r2023->writeRosterFile();
 
 ?>
