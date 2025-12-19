@@ -158,6 +158,7 @@ var GameComponent = {
         }
         //Pitcher injured (replace via situation)
         pl = this.gameInfo.visitor.rotation.length - 1;
+        // console.log(this.gameInfo);
         if ("injured" in this.gameInfo.visitor.rotation[pl].player) {
           if (this.gameInfo.visitor.rotation[pl].player.injured) return true;
         }

@@ -4,6 +4,7 @@ var RosterComponent = {
   template: `
     <div class='container'>
 {{ currentComponent() }}
+{{ roster }}
       <b-row>
         <b-col cols='2' class='text-center'>
           <b-button variant='link' size='lg' href='#' v-on:click='switchToMenu();'>
@@ -18,7 +19,7 @@ var RosterComponent = {
           </b-button>
         </b-col>
       </b-row>
-      <h1><center>{{ year() }} {{ team.team_name }} before game {{game }}</center></h1>
+      <h1><center>{{ year() }} {{ team.team_name }} before game {{game }} (day {{ day }})</center></h1>
       <b-row>
         <b-col cols='12' class='text-right'>
           <b-button v-show='team.team_name != "guest"'
@@ -39,6 +40,7 @@ var RosterComponent = {
                                class='roster-list'
                                v-bind:variant="playerVariant(player.player)"
                                group='roster' 
+                               v-bind:title="playerTitle(player.player)"
                                v-bind:key='player.player.name'>
               <b-row>
                 <b-col cols='9' md='9'>
@@ -94,6 +96,7 @@ var RosterComponent = {
                                  v-on:change="move(player.player.name)">
                   </b-form-select>
                 </b-col>
+              </b-row>
             </b-list-group-item>
         </b-col>
       </b-row>
@@ -107,7 +110,7 @@ var RosterComponent = {
   `,
   data() {
     return {
-      game: 1,
+      //game: 13,
       team: {"team_name":""},
       teamname: 't',
       mod_majors: [],
@@ -139,10 +142,15 @@ var RosterComponent = {
       }
     }, 
   },
+  computed: {
+    day() {return vue.day;},
+    game() {return vue.game;},
+    roster() {return vue.roster;},
+  },
   mounted() {
     eBus.$on('teamUpdated',(t) => { this.team = t;});
     eBus.$on('rosterUpdated',(r) => { this.rosterUpdated();})
-    eBus.$on('gameUpdated',(g) => { this.game=g;})
+    // eBus.$on('gameUpdated',(g) => { this.game=g;})
     if (this.teamname == 't' && vue != undefined) vue.emitData();
   },
   methods: {
@@ -188,10 +196,10 @@ var RosterComponent = {
       if (where.start != where.current) return false;
       if (lm.lastMove == 'Traded') return false;
       if (lm.lastMove == 'Traded for') return true;
-      if (mSeries == 0 && lm.lastMove != 'To DL') return true;
-      if (vue.gameNumber > 83 && lm.lastMove != 'To DL') return true;
-      if (gSeries - mSeries >= 3 && lm.lastMove != 'To DL') return true
-      if (vue.gameNumber - lm.gameNumber >= vue.il_length && lm.lastMove == 'To DL') return true;
+      if (mSeries == 0 && lm.lastMove != 'On DL') return true;
+      if (vue.gameNumber > 83 && lm.lastMove != 'On DL') return true;
+      if (gSeries - mSeries >= 3 && lm.lastMove != 'On DL') return true
+      if (vue.gameNumber - lm.gameNumber >= vue.il_length && lm.lastMove == 'On DL') return true;
       if (vue.il != this.mod_il) return true;
         //case "Fm minors":  return 0;
         //case "To minors":  return 1;
@@ -212,7 +220,7 @@ var RosterComponent = {
       if (where.start == where.current) {
         if (where.start == 'majors') {
           if (this.canMove(name)) rtn.push({ value: 'minors', text: 'To Minors'});
-          if (this.isInjured(name)) rtn.push({ value: 'il', text: 'To IL'})
+          if (this.isInjured(name)) rtn.push({ value: 'il', text: 'On DL'})
         } else if (where.start == 'minors' ) {
           if (this.canMove(name)) rtn.push({ value: 'majors', text: 'To Majors'});
         } else {
@@ -317,7 +325,7 @@ var RosterComponent = {
           }
         }
         if (! found) this.mod_il.push(ri);
-        m='To DL';
+        m='On DL';
       }
       this.selected[name] = null;
       this.moves.push({'name':name,'moveType':m});
@@ -357,11 +365,16 @@ var RosterComponent = {
       if (p.name == '-') return 'light';
       let ri=this.getRI(p.name);
       let lm=vue.lastMove(ri);
-      if (lm.lastMove == 'To DL' && !(this.canMove(p.name))) return 'dark';
+      if (lm.lastMove == 'On DL' && !(this.canMove(p.name))) return 'dark';
       if (this.isInjured(p.name)) return 'danger';
       if (p.strat.ab == 0) return 'info';
       return 'secondary';
-    }
+    },
+    playerTitle(p) {
+      rtn = '';
+      if (this.isInjured(p.name)) return 'danger';
+      return rtn;
+    },
   },
 };
 

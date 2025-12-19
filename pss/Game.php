@@ -147,6 +147,7 @@ class Game
         if (! $this->hasScoreSheet()) {
             return;
         }
+        //print($this->_scoreSheetName() . "\n");
         $this->_ss_ = \ProjectScoresheet\ProjectScoresheet::fromString(
             file_get_contents($this->_scoreSheetName())
         );
@@ -510,12 +511,13 @@ class Game
     }
     private function handleRunners(&$runners, $movement, $cb, $cp, &$outs, $error, $advancedOnError, &$errorsThisInning) {
         $this->print_runners($cb, $cp, $runners, $outs);
-        // print($movement . "\n");
-        // print_r($cb);
-        // print_r($cp);
+        //print($movement . "\n");
+        //print($cb->name . " vs " . $cp->name . "\n");
+        //print_r($cb);
+        //print_r($cp);
         foreach (explode(",",$movement) as $move) {
-            // print("-- " . $move . " --\n");
-            $base = intval(substr($move,0,1));
+            //print("-- " . $move . " --\n");
+            $base = substr($move,0,1);
             if (preg_match("/-H$/",$move)) {
                 // print("RUN: -- " . $move . " --\n");
                 // Figure out runner, add to his runs scored, and clear the base
@@ -528,7 +530,7 @@ class Game
                 } else {
                     $cb->rbi ++;
                     $bn = intval($base) - 1;
-                    if ($runners[$bn] == null ) {
+                    if ($bn < 0 or $runners[$bn] == null ) {
                         print("handle_runners - scoring from an unoccupied base - " . $move . "\n");
                     } else {
                         $runners[$bn]->runner->run++;
@@ -549,7 +551,7 @@ class Game
                         $runners[$newBase] = $br;
                     } else {
                         $bn = intval($base) - 1;
-                        if ($runners[$bn] == null ) {
+                        if ($bn < 0 or $runners[$bn] == null ) {
                             print("handle_runners - moving from an occupied base - " . $move . "\n");
                         } else {
                             $runners[$newBase] = $runners[$bn];
@@ -582,6 +584,7 @@ class Game
 
     public function gameStats() {
         // print($this->toString() . "\n"); 
+        print($this->_scoreSheetName() . "\n"); 
         $bs = array();
         $bs[0] = array();
         $bs[1] = array();
@@ -811,6 +814,16 @@ class Game
                             $field = new FielderStats($guilty);
                             $field->e = 1;
                             array_push($es[$oside], $field);
+                            if ($guilty == "PITCHERS") {
+                                $pFound = false;
+                                foreach ($bs[$oside] as $batter) {
+                                    if ($batter->name == "PITCHERS") $pFound = true;
+                                }
+                                if (! $pfound) {
+                                   $place = new BatterStats($guilty);
+                                   array_push($bs[$oside], $place);
+                                }
+                            }
                         }
                     } else {
                             print("unassigned error " . $r->during . "\n");

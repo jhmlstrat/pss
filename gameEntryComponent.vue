@@ -181,7 +181,7 @@ var GameEntryComponent = {
           <b-button variant="link" href="#" v-on:click="doPlay('S#')">S-hash</b-button> 
           <b-button variant="link" href="#" v-on:click="doPlay('S!')" v-show="occupied(1) || occupied(2) || occupied(3)">S!</b-button> 
           <b-button variant="link" href="#" v-on:click="doPlay('BPS+')">BPS+</b-button> 
-          <b-button variant="link" href="#" v-on:click="fielder='6';showInfield('BPS-')">BPS-</b-button>
+          <b-button variant="link" href="#" v-on:click="doPlay('BPS-')">BPS-</b-button>
           <b-button variant="link" href="#" v-on:click="doPlay('D**')">D**</b-button> 
           <b-button variant="link" href="#" v-on:click="doPlay('D***')" v-show="occupied(1) || occupied(2) || occupied(3)">D***</b-button> 
           <b-button variant="link" href="#" v-on:click="doPlay('D!')" v-show="occupied(1) || occupied(2) || occupied(3)">D!</b-button> 
@@ -373,16 +373,16 @@ var GameEntryComponent = {
           <b-row>
             <b-col cols="6">
               <b-form-group id="infield-positions" label="Fielder?">
-                <b-form-radio v-model="fielder" name="infield-fielder-radios" class="pl-5" value="1" v-show="tmpPlay != 'fo' && tmpPlay != 'BPS-'">Pitcher</b-form-radio>
-                <b-form-radio v-model="fielder" name="infield-fielder-radios" class="pl-5" value="2" v-show="! (tmpPlay.startsWith('lo') || tmpPlay == 'BPS-')">Catcher</b-form-radio>
-                <b-form-radio v-model="fielder" name="infield-fielder-radios" class="pl-5" value="3" v-show="tmpPlay != 'BPS-'">First</b-form-radio>
+                <b-form-radio v-model="fielder" name="infield-fielder-radios" class="pl-5" value="1" v-show="tmpPlay != 'fo'">Pitcher</b-form-radio>
+                <b-form-radio v-model="fielder" name="infield-fielder-radios" class="pl-5" value="2" v-show="! tmpPlay.startsWith('lo')">Catcher</b-form-radio>
+                <b-form-radio v-model="fielder" name="infield-fielder-radios" class="pl-5" value="3">First</b-form-radio>
                 <b-form-radio v-model="fielder" name="infield-fielder-radios" class="pl-5" value="4" v-show="! (tmpPlay == 'fo' || tmpPlay == 'SAC')">Second</b-form-radio>
-                <b-form-radio v-model="fielder" name="infield-fielder-radios" class="pl-5" value="5" v-show="tmpPlay != 'BPS-'">Third</b-form-radio>
+                <b-form-radio v-model="fielder" name="infield-fielder-radios" class="pl-5" value="5">Third</b-form-radio>
                 <b-form-radio v-model="fielder" name="infield-fielder-radios" class="pl-5" value="6" v-show="! (tmpPlay == 'fo' || tmpPlay == 'SAC')">Shortstop</b-form-radio>
               </b-form-group>
             </b-col>
             <b-col cols="6">
-              <b-form-group id="in-back" label="Infield?" v-show="occupied(3) && gameInfo.situation.situation.outs != 2"> 
+              <b-form-group id="in-back" label="Infield?" v-show="occupied(3) && gameInfo.situation.situation.outs != 2 && tmpPlay != 'lo'"> 
                 <b-form-radio v-model="infield" name="infield-position-radios" class="pl-5" value="back">Back</b-form-radio>
                 <b-form-radio v-model="infield" name="infield-position-radios" class="pl-5" value="in">In</b-form-radio>
               </b-form-group>
@@ -603,6 +603,20 @@ TBD {{ isIron() }} {{ injuryPitcher }} {{ isDH() }}
           play = "BPHR-";
         } else {
           needModal = true;     // ?? RF (2-3?) ??
+        }
+      } else if (play == 'BPS-') {
+        batter = vue.getPlayerInfo(this.gameInfo.situation.situation.batter);
+        if (batter.strat.hand == "R") {
+          this.fielder = '6';
+        } else if (batter.strat.hand == "L") {
+          this.fielder = '4';
+        } else {
+          pitcher = vue.getPlayerInfo(this.gameInfo.situation.situation.pitcher);
+          if (pitcher.strat.hand == "R" ) {
+            this.fielder = '4';
+          } else {
+            this.fielder = '6';
+          }
         }
       }
       if (needModal) {

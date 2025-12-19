@@ -178,7 +178,7 @@
           axios.get('/pss/api/getConfig.php',headers)
           .then(function (response) {
             self.config = response.data;
-            ////console.log(JSON.stringify(self.config));
+            //console.log(JSON.stringify(self.config));
             if (self.year == undefined) {
               self.year = self.config.current_year;
               //self.emitData();
@@ -216,6 +216,7 @@
           )
           .then(function (response) {
             self.gameInfo = response.data;
+            // console.log(self.gameInfo);
             self.loadingGameInfo = false;
             self.emitData();
             //console.log(self.gameInfo); 
@@ -294,7 +295,7 @@
           });
         },
         rosterValid() {
-          if (JSON.stringify(this.roster) == '{}') return false;
+          if (JSON.stringify(this.roster.roster) == '{}') return false;
           if (JSON.stringify(this.schedule) == '{}') return false;
           if (this.schedule.results.length > 83 && 
               this.majors.length <= 40
@@ -349,6 +350,9 @@
         },
         setGame() {
           //console.log(this.schedule);
+          if (JSON.stringify(this.team) == '{}') { return;}
+          if (JSON.stringify(this.schedule) == '{}') return;
+          if (JSON.stringify(this.roster.roster) == '{}') return;
           this.game = 1;
           this.games = 0;
           for (s of this.schedule.away) {
@@ -360,8 +364,6 @@
           this.betweenSeries = true;
           this.gameInProgress = false;
           this.injury = false;
-          if (JSON.stringify(this.schedule) == '{}') return;
-          if (JSON.stringify(this.roster) == '{}') return;
           let testing = false;
           if (testing) {
             let r=[];
@@ -377,6 +379,7 @@
           this.day = this.schedule.results.length;
           if (this.day == 0) {this.day ++; return;}
           if (this.schedule.results[this.day-1].home.gameNumber != 'DO') {
+console.log('team: ' + JSON.stringify(this.team));
             if (this.team.team.toUpperCase() === 
                 this.schedule.results[this.day-1].home.team.toUpperCase()
             ) {
@@ -384,6 +387,7 @@
             } else {
               this.game=parseInt(this.schedule.results[this.day-1].away.gameNumber);
             }
+console.log(this.day + ":" + this.game);
             if (this.schedule.results[this.day-1].final == false) {
               this.gameInProgress = true;
               this.betweenSeries = false;
@@ -399,6 +403,13 @@
             } else {
               this.game=parseInt(this.schedule.results[this.day-2].away.gameNumber);
             }
+            if (this.schedule.results[this.day-2].final == false) {
+              this.gameInProgress = true;
+              this.betweenSeries = false;
+            } else {
+              this.game = this.game + 1;
+              this.betweenSeries = this.schedule.results[this.day-2].seriesComplete;
+            }
           }
           this.day ++;
           if (! this.gameInProgress) {
@@ -413,7 +424,7 @@
               if (mt == "Traded") continue;
               if (mt == "Traded for") continue;
               if (mt == "On DL") {
-                if (this.day < mg) continue;
+                if (this.day < mg || this.game == mg) continue;
                 let dg = 0;
                 let dig = 0;
                 for (let j=mg-1; dg == 0 && j < this.day; j++) {
@@ -610,9 +621,25 @@
                   'missingPosition': missingPos,
                   'playerOutOfPosition': playerOop}
         },
+        getPlayerInfo(name) {
+          for (b of vue.roster.roster.batters) {
+            if (b.rosterItem.player.name == name) return b.rosterItem.player;
+          }
+          for (b of vue.oRoster.roster.batters) {
+            if (b.rosterItem.player.name == name) return b.rosterItem.player;
+          }
+          for (p of vue.roster.roster.pitchers) {
+            if (p.rosterItem.player.name == name) return p.rosterItem.player;
+          }
+          for (p of vue.oRoster.roster.pitchers) {
+            if (p.rosterItem.player.name == name) return p.rosterItem.player;
+          }
+          return null;
+        },
         getAvailable(lineup, rotation, gRoster, roster) {
           // TBD: Injured
           // TBD: Tired
+          // TBD: Batters pitching/Pitchers batting
           availableBatters = [];
           for (b of roster.roster.batters) {
             found = false;
@@ -654,6 +681,15 @@
           else availablePitchers = relievers.concat(sr.concat(starters));
           return {'availableBatters':availableBatters,
                   'availablePitchers':availablePitchers}
+        },
+        batterTooltip(name) {
+          batter = vue.getPlayerInfo(name);
+          //console.log(batter);
+          //console.log(vue.gameInfo);
+          sit = vue.gameInfo.situation.situation;
+          //console.log(sit);
+          if (sit.outs == 2) {};
+          return 'LHP: ' + 'tbd' + ' : ' + ' RHP: ' + 'tbd';
         },
       },
     });

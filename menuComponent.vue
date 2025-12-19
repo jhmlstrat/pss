@@ -13,13 +13,14 @@ var MenuComponent = {
         </b-col>
       </b-row>
       <div v-show="! loading()">
-        <h1><center>{{ year() }} {{ team.team_name }} {{ gameInProgress() ? 'during' : 'before' }} game {{ game }}</center></h1>
+        <h1><center>{{ year() }} {{ team.team_name }} {{ gameInProgress() ? 'during' : 'before' }} game {{ game }} (day {{day }})</center></h1>
         <div class='alert alert-danger text-center' role='alert' v-show='! rosterValid()'>Your roster is invalid - You may not start a series</div>
         <b-row class='main-menu'>
           <b-col cols='12' class='text-center'>
             <b-button v-show='team.team_name != "guest"'
                       variant='primary' 
-                      size='lg' 
+                      size='lg'
+                      v-bind:title='rosterTooltip()'
                       v-on:click='switchToRoster();' 
                       v-bind:disabled='!rosterEnabled()'>
               Roster Management
@@ -88,6 +89,7 @@ var MenuComponent = {
   data: function() {
     return {
       game: 1,
+      day: 1,
       team: {"team_name":""},
     }
   },
@@ -95,7 +97,7 @@ var MenuComponent = {
     eBus.$on('teamUpdated',(t) => { this.team = t;});
     eBus.$on('rosterUpdated',(r) => { });
     eBus.$on('scheduleUpdated',(s) => { });
-    eBus.$on('gameUpdated',(g) => { this.game = g;});
+    eBus.$on('gameUpdated',(g) => { this.game = g; this.day = vue.day;});
   },
   methods: {
     currentComponent() { if (vue == undefined) return ''; return vue.currentComponent; },
@@ -115,11 +117,24 @@ var MenuComponent = {
       vue.currentComponent='scheduleComponent';
       //vue.emitData();
     },
+    rosterTooltip() {
+      if (vue === undefined) return '';
+      rtn = 'vue.gameInProgress=' + (vue.gameInProgress ? 'true' : 'false') + '\n';
+      rtn += 'vue.betweenSeries=' + (vue.betweenSeries ? 'true' : 'false') + '\n';
+      rtn += 'vue.injury=' + (vue.injury ? 'true' : 'false') + '\n';
+      return rtn;
+    },
     rosterEnabled() {
+console.log("r1");
       if (vue === undefined) return false;
+console.log("r2");
+console.log(vue.roster);
       if (JSON.stringify(vue.roster) == '{}') return false;
+console.log("r3");
       if (vue.gameInProgress === true) return false;
+console.log("r4");
       if (vue.betweenSeries === false && vue.injury === false) return false;
+console.log("r5");
       return true;
     },
     scheduleEnabled() {
@@ -127,30 +142,50 @@ var MenuComponent = {
       return JSON.stringify(vue.schedule) != '{}';
     },
     nextSeries() {
+console.log("ns1");
       if (vue === undefined) return false;
+console.log("ns2");
       if (JSON.stringify(vue.schedule) == '{}') return false;
+console.log("ns3");
       if (! this.scheduleEnabled()) return false;
+console.log("ns4");
       if (! vue.rosterValid()) return false;
+console.log("ns5");
       if (vue.gameInProgress === true) return false;
+console.log("ns6");
       if (vue.betweenSeries === false) return false;
+console.log("ns7");
       //console.log(vue.schedule);
       return true;
     },
     nextGame() {
+console.log("ng1");
       if (vue === undefined) return false;
+console.log("ng2");
       if (JSON.stringify(vue.schedule) == '{}') return false;
+console.log("ng3");
       if (! this.scheduleEnabled()) return false;
+console.log("ng4");
       if (! vue.rosterValid()) return false;
+console.log("ng5");
       if (vue.gameInProgress === true) return false;
+console.log("ng6");
       if (vue.betweenSeries === true) return false;
+console.log("ng7");
       return true;
     },
     resumeGame() {
+console.log("rg1");
       if (vue === undefined) return false;
+console.log("rg2");
       if (JSON.stringify(vue.schedule) == '{}') return false;
+console.log("rg3");
       if (! this.scheduleEnabled()) return false;
+console.log("rg4");
       if (! vue.rosterValid()) return false;
+console.log("rg5");
       if (vue.gameInProgress === false) return false;
+console.log("rg6");
       return true;
     },
   },
