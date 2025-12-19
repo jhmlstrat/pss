@@ -1,6 +1,6 @@
 <?php
 
-  namespace ProjectScoresheet;
+namespace ProjectScoresheet;
 
 /*
  * Project Scoresheet was developed in the 1980s to better document
@@ -22,9 +22,9 @@
  * that they entered the game at a position and the position
  */
 
-  require_once 'Lineup.php';
-  require_once 'Result.php';
-  require_once 'Situation.php';
+require_once 'Lineup.php';
+require_once 'Result.php';
+require_once 'Situation.php';
 class ProjectScoresheet
 {
     public $teamName_;
@@ -79,12 +79,12 @@ class ProjectScoresheet
         $inst->gameNumber_[1] = $h->gameNumber;
         // Lineup
         $inst->lineup_[0] = Lineup::fromString(
-            '"lineup":' . json_encode($v->lineup) . ',"rotation":' . 
-            json_encode($v->rotation)
+            '"lineup":' . json_encode($v->lineup) . ',"rotation":' .
+                json_encode($v->rotation)
         );
         $inst->lineup_[1] = Lineup::fromString(
-            '"lineup":' . json_encode($h->lineup) . ',"rotation":' . 
-            json_encode($h->rotation)
+            '"lineup":' . json_encode($h->lineup) . ',"rotation":' .
+                json_encode($h->rotation)
         );
         if ($v->roster != null) {
             foreach ($v->roster as $r) {
@@ -100,10 +100,10 @@ class ProjectScoresheet
             foreach ($v->results as $rslt) {
                 $r = Result::fromString(json_encode($rslt));
                 if ($r->during == "") {
-                  $inst->situation_->side = 0;
-                  $inst->_result = $r;
+                    $inst->situation_->side = 0;
+                    $inst->_result = $r;
                 } else {
-                  array_push($inst->results_[0], $r);
+                    array_push($inst->results_[0], $r);
                 }
             }
         }
@@ -112,10 +112,10 @@ class ProjectScoresheet
             foreach ($h->results as $rslt) {
                 $r = Result::fromString(json_encode($rslt));
                 if ($r->during == "") {
-                  $inst->situation_->side = 1;
-                  $inst->_result = $r;
+                    $inst->situation_->side = 1;
+                    $inst->_result = $r;
                 } else {
-                  array_push($inst->results_[1], $r);
+                    array_push($inst->results_[1], $r);
                 }
             }
         }
@@ -135,15 +135,15 @@ class ProjectScoresheet
         //$inst->debugOn();
         //error_log(print_r($json->situation_,true));
         //error_log(print_r($json->situation_,true));
-	$inst->_updateSituation();
-	$inst->situation_->seriesComplete = $json->situation->situation->seriesComplete;
+        $inst->_updateSituation();
+        $inst->situation_->seriesComplete = $json->situation->situation->seriesComplete;
         //error_log(print_r($inst->situation_,true));
         return $inst;
     }
     public function toString()
     {
         $sit = $this->situation_;
-        $doneResult = ($this->_result->before == "") 
+        $doneResult = ($this->_result->before == "")
             && ($this->_result->during == "") && ($this->_result->after == "");
         $rtn = '{';
         foreach (Side::sides() as $key => $side) {
@@ -233,7 +233,7 @@ class ProjectScoresheet
         $pos = new Position();
         $pos->position = $posit;
         $pos->when(
-            count($this->results_[Side::VISITOR]), 
+            count($this->results_[Side::VISITOR]),
             count($this->results_[Side::HOME])
         );
         $play->newPosition($pos);
@@ -250,7 +250,7 @@ class ProjectScoresheet
         $pos->p(Position::position('PH'));
         $pos->when(count($this->results_[0]), count($this->results_[1]));
         $play->newPosition($pos);
-        $this->lineup_[$side]->insertIntoBat(count($this->results_[$side])%9, $play);
+        $this->lineup_[$side]->insertIntoBat(count($this->results_[$side]) % 9, $play);
         $this->_updateSituation();
     }
     public function curRunner($slot, $play)
@@ -289,7 +289,7 @@ class ProjectScoresheet
         $pos = new Position();
         $pos->position = Position::position("P");
         $pos->when(
-            count($this->results_[Side::VISITOR]), 
+            count($this->results_[Side::VISITOR]),
             count($this->results_[Side::HOME])
         );
         $play->newPosition($pos);
@@ -306,7 +306,7 @@ class ProjectScoresheet
         $side = $this->situation_->side;
         $this->situation_->runs[$side] += substr_count($s, "-H");
         //error_log("mR: " . $s . ":" . $side . '-' . $this->situation_->inning . PHP_EOL,3,'error_log');
-        $this->situation_->runsPerInning[$side][$this->situation_->inning] 
+        $this->situation_->runsPerInning[$side][$this->situation_->inning]
             += substr_count($s, "-H");
         $ses = explode(",", $s);
         foreach ($ses as $se) {
@@ -366,16 +366,16 @@ class ProjectScoresheet
             print "0: " . count($this->results_[0]) . " - " . count($this->results_[1]) . "\n";
         }
         $sit = $this->situation_;
-        $doneResult = ($this->_result->before == "") 
+        $doneResult = ($this->_result->before == "")
             && ($this->_result->during == "") && ($this->_result->after == "");
         if ($this->debug_) {
             print $this->_result->toString() . "\n";
         }
 
         $this->situation_ = new Situation();
-        $outs=array(0,0);
-        $inn=array(1,1);
-        $r=array(null,null,null,null);
+        $outs = array(0, 0);
+        $inn = array(1, 1);
+        $r = array(null, null, null, null);
         for ($side = 0; $side < 2; $side++) {
             $split = false;
             if (! $doneResult && $side == $sit->side) {
@@ -385,69 +385,75 @@ class ProjectScoresheet
                 }
             }
             $this->situation_->inning = $inn[$side];
-            for ($i=0; $i < count($this->results_[$side]); $i++) {
+            for ($i = 0; $i < count($this->results_[$side]); $i++) {
                 $rslt = $this->results_[$side][$i];
                 $this->situation_->side = $side;
                 $os = $this->situation_->otherSide();
-                $this->situation_->batter 
-                    = $this->lineup_[$side]->getHitter($i%9);
+                $this->situation_->batter
+                    = $this->lineup_[$side]->getHitter($i % 9);
                 if (! $split) {
                     $outs[$side] += substr_count($rslt->before, "x");
-                    $this->situation_->errors[$os] 
+                    $this->situation_->errors[$os]
                         += substr_count($rslt->before, "E");
-                    foreach (explode(";",$rslt->before) as $b4) {
+                    foreach (explode(";", $rslt->before) as $b4) {
                         $this->_moveRunners($b4);
                     }
                     if ($side == 0) {
-                        $r[3]=$this->situation_->runner[3];
-                        $r[2]=$this->situation_->runner[2];
-                        $r[1]=$this->situation_->runner[1];
+                        $r[3] = $this->situation_->runner[3];
+                        $r[2] = $this->situation_->runner[2];
+                        $r[1] = $this->situation_->runner[1];
                     }
                 }
                 if ($outs[$side] < 3) {
                     $split = false;
                     $outs[$side] += substr_count($rslt->during, "x");
                     if (strlen($rslt->during) != 0) {
-                        if (substr_compare($rslt->during, "S", 0) == 0 ||
+                        if (
+                            substr_compare($rslt->during, "S", 0) == 0 ||
                             substr_compare($rslt->during, "S(", 0, 2) == 0 ||
-                            substr_compare($rslt->during, "S;", 0, 2) == 0) {
-                            $this->situation_->hits[$side] ++;
+                            substr_compare($rslt->during, "S;", 0, 2) == 0
+                        ) {
+                            $this->situation_->hits[$side]++;
                         }
-			if (substr_compare($rslt->during, "D", 0) == 0 ||
-			    substr_compare($rslt->during, "D;", 0, 2) == 0) {
-                            $this->situation_->hits[$side] ++;
+                        if (
+                            substr_compare($rslt->during, "D", 0) == 0 ||
+                            substr_compare($rslt->during, "D;", 0, 2) == 0
+                        ) {
+                            $this->situation_->hits[$side]++;
                         }
-			if (substr_compare($rslt->during, "T", 0) == 0 ||
-			    substr_compare($rslt->during, "T;", 0, 2) == 0) {
-                            $this->situation_->hits[$side] ++;
+                        if (
+                            substr_compare($rslt->during, "T", 0) == 0 ||
+                            substr_compare($rslt->during, "T;", 0, 2) == 0
+                        ) {
+                            $this->situation_->hits[$side]++;
                         }
                         if (substr_compare($rslt->during, "HR", 0, 2) == 0) {
-                            $this->situation_->hits[$side] ++;
+                            $this->situation_->hits[$side]++;
                         }
-                        if (preg_match('/.*E\d.*/',$rslt->during) === 1) {
-                            $this->situation_->errors[$os] ++;
+                        if (preg_match('/.*E\d.*/', $rslt->during) === 1) {
+                            $this->situation_->errors[$os]++;
                         }
                     }
                     $outs[$side] += substr_count($rslt->after, "x");
                     $this->_moveRunners($rslt->after);
                     if ($side == 0) {
-                        $r[3]=$this->situation_->runner[3];
-                        $r[2]=$this->situation_->runner[2];
-                        $r[1]=$this->situation_->runner[1];
+                        $r[3] = $this->situation_->runner[3];
+                        $r[2] = $this->situation_->runner[2];
+                        $r[1] = $this->situation_->runner[1];
                     }
                 } else {
                     $split = true;
-                    $i --;
+                    $i--;
                 }
                 if ($outs[$side] >= 3) {
                     $outs[$side] = 0;
-                    $inn[$side] ++;
+                    $inn[$side]++;
                     $this->situation_->switchSides();
                     $this->situation_->inning = $inn[$side];
                     if ($side == 0) {
-                        $r[3]=null;
-                        $r[2]=null;
-                        $r[1]=null;
+                        $r[3] = null;
+                        $r[2] = null;
+                        $r[1] = null;
                     }
                 }
             }
@@ -465,55 +471,55 @@ class ProjectScoresheet
             $this->situation_->side = 1;
         }
         if ($this->situation_->side == 0) {
-            $this->situation_->runner[3]=$r[3];
-            $this->situation_->runner[2]=$r[2];
-            $this->situation_->runner[1]=$r[1];
+            $this->situation_->runner[3] = $r[3];
+            $this->situation_->runner[2] = $r[2];
+            $this->situation_->runner[1] = $r[1];
         }
         $this->situation_->outs = $outs[$this->situation_->side];
         $this->situation_->inning = $inn[$this->situation_->side];
-        $this->situation_->betweenInnings = ($outs[0] == 0) && ($outs[1] == 0) 
-            && ($this->situation_->runner[3] == null) 
-            && ($this->situation_->runner[2] == null) 
-            && ($this->situation_->runner[1] == null) 
-            && $this->situation_->runsPerInning
-                [$this->situation_->side][$this->situation_->inning] == 0;
+        $this->situation_->betweenInnings = ($outs[0] == 0) && ($outs[1] == 0)
+            && ($this->situation_->runner[3] == null)
+            && ($this->situation_->runner[2] == null)
+            && ($this->situation_->runner[1] == null)
+            && $this->situation_->runsPerInning[$this->situation_->side][$this->situation_->inning] == 0;
 
         if ($this->debug_) {
-            print $this->situation_->side . ', ' . $outs[0] . ' - ' . 
+            print $this->situation_->side . ', ' . $outs[0] . ' - ' .
                 $outs[1] . ', ' . $inn[0] . ' - ' . $inn[1] . "\n";
         }
         if ($this->debug_) {
-            print "3: " . ($this->situation_->runner[3] == null ? "empty" : 
-                $this->situation_->runner[3]->name) . ", 2: " .  
-                ($this->situation_->runner[2] == null ? "empty" : 
-                $this->situation_->runner[2]->name) . ", 1: ".  
-                ($this->situation_->runner[1] == null ? "empty" : 
-                $this->situation_->runner[1]->name) . "\n";
+            print "3: " . ($this->situation_->runner[3] == null ? "empty" :
+                $this->situation_->runner[3]->name) . ", 2: " .
+                ($this->situation_->runner[2] == null ? "empty" :
+                    $this->situation_->runner[2]->name) . ", 1: " .
+                ($this->situation_->runner[1] == null ? "empty" :
+                    $this->situation_->runner[1]->name) . "\n";
         }
         if (! $this->situation_->gameOver()) {
             $tss = $this->situation_->side;
-//            if ($this->debug_) {
-//                print "4: " . count($this->results_[$tss]);
-//                if (count($this->results_[$tss] > 0)) {
-//                    print " - '" . $this->results_[$tss][count($this->results_[$tss])-1]->during . "'";
-//                }
-//                print "\n";
-//            }
-            if (count($this->results_[$tss]) > 0
-                && $this->results_[$tss][count($this->results_[$tss])-1]->during==""
+            //            if ($this->debug_) {
+            //                print "4: " . count($this->results_[$tss]);
+            //                if (count($this->results_[$tss] > 0)) {
+            //                    print " - '" . $this->results_[$tss][count($this->results_[$tss])-1]->during . "'";
+            //                }
+            //                print "\n";
+            //            }
+            if (
+                count($this->results_[$tss]) > 0
+                && $this->results_[$tss][count($this->results_[$tss]) - 1]->during == ""
             ) {
-                $this->situation_->batter 
+                $this->situation_->batter
                     = $this->lineup_[$tss]->getHitter(
-                        (count($this->results_[$tss])-1)%9
+                        (count($this->results_[$tss]) - 1) % 9
                     );
             } else {
-                $this->situation_->batter 
+                $this->situation_->batter
                     = $this->lineup_[$tss]->getHitter(
-                        count($this->results_[$tss])%9
+                        count($this->results_[$tss]) % 9
                     );
             }
-            $this->situation_->pitcher 
-                = $this->lineup_[($tss+1)%2]->getCurrentPitcher();
+            $this->situation_->pitcher
+                = $this->lineup_[($tss + 1) % 2]->getCurrentPitcher();
         } else {
             $this->situation_->batter = "";
             $this->situation_->pitcher = "";
@@ -525,8 +531,7 @@ class ProjectScoresheet
         if ($this->_plus) {
             $this->_updateSituation();
         } else {
-            $this->results_[$this->situation_->side]
-                [count($this->results_[$this->situation_->side])] = $this->_result;
+            $this->results_[$this->situation_->side][count($this->results_[$this->situation_->side])] = $this->_result;
             $this->_result = new Result();
             $this->_updateSituation();
             if ($this->situation_->betweenInnings) {
@@ -534,15 +539,15 @@ class ProjectScoresheet
                     return;
                 };
                 $c = count($this->results_[$this->situation_->side]);
-                if (($c > 0) 
-                    && ($this->results_[$this->situation_->side][$c-1]->during == "")
+                if (($c > 0)
+                    && ($this->results_[$this->situation_->side][$c - 1]->during == "")
                 ) {
-                    $this->_result = $this->results_[$this->situation_->side][$c-1];
-                    unset($this->results_[$this->situation_->side][$c-1]);
+                    $this->_result = $this->results_[$this->situation_->side][$c - 1];
+                    unset($this->results_[$this->situation_->side][$c - 1]);
                 }
             }
         }
-        $this->_plus=false;
+        $this->_plus = false;
     }
     private function _batter($base)
     {
@@ -574,9 +579,9 @@ class ProjectScoresheet
     {
         $bases = array($first, $second, $third);
         $first = true;
-        for ($i=3; $i>0; $i--) {
+        for ($i = 3; $i > 0; $i--) {
             if ($this->situation_->base($i)) {
-                if ($bases[$i-1] != 0) {
+                if ($bases[$i - 1] != 0) {
                     if ($before) {
                         if ($this->_result->before != "") {
                             if ($first) {
@@ -589,8 +594,8 @@ class ProjectScoresheet
                             $this->_result->after .= ",";
                         }
                     }
-                    if ($bases[$i-1] < 0) {
-                        if ($i-$bases[$i-1] > 3) {
+                    if ($bases[$i - 1] < 0) {
+                        if ($i - $bases[$i - 1] > 3) {
                             if ($before) {
                                 $this->_result->before .= $i . "xH";
                             } else {
@@ -598,15 +603,15 @@ class ProjectScoresheet
                             }
                         } else {
                             if ($before) {
-                                $this->_result->before 
-                                    .= $i . "x" . ($i-$bases[$i-1]);
+                                $this->_result->before
+                                    .= $i . "x" . ($i - $bases[$i - 1]);
                             } else {
-                                $this->_result->after 
-                                    .= $i . "x" . ($i-$bases[$i-1]);
+                                $this->_result->after
+                                    .= $i . "x" . ($i - $bases[$i - 1]);
                             }
                         }
                     } else {
-                        if ($i+$bases[$i-1] > 3) {
+                        if ($i + $bases[$i - 1] > 3) {
                             if ($before) {
                                 $this->_result->before .= $i . "-H";
                             } else {
@@ -614,11 +619,11 @@ class ProjectScoresheet
                             }
                         } else {
                             if ($before) {
-                                $this->_result->before 
-                                    .= $i . "-" . ($i+$bases[$i-1]);
+                                $this->_result->before
+                                    .= $i . "-" . ($i + $bases[$i - 1]);
                             } else {
-                                $this->_result->after 
-                                    .= $i . "-" . ($i+$bases[$i-1]);
+                                $this->_result->after
+                                    .= $i . "-" . ($i + $bases[$i - 1]);
                             }
                         }
                     }
@@ -733,14 +738,14 @@ class ProjectScoresheet
     public function s1rp()
     {
         $this->_result->during = "S";
-        $this->_advance(1, 1, -1,false);
+        $this->_advance(1, 1, -1, false);
         $this->_batter(1);
         $this->_saveResult();
     }
     public function s1rp3()
     {
         $this->_result->during = "S";
-        $this->_advance(0, 0, -1,false);
+        $this->_advance(0, 0, -1, false);
         $this->_batter(1);
         $this->_saveResult();
     }
@@ -839,8 +844,10 @@ class ProjectScoresheet
             $this->_advance($third, $second, $first, false);
         } else {
             $this->_advance(
-                $third>0 ? 0 : $third, $second>0 ? 0 : $second, 
-                $first>0 ? 0 : $first, false
+                $third > 0 ? 0 : $third,
+                $second > 0 ? 0 : $second,
+                $first > 0 ? 0 : $first,
+                false
             );
         }
         $this->_batter($bat);
@@ -883,7 +890,7 @@ class ProjectScoresheet
         if ($outs == 2) {
             $this->_result->during .= "/DP";
         }
-        if (($outs + $this->situation_->outs) < 3 && $third > 0 
+        if (($outs + $this->situation_->outs) < 3 && $third > 0
             && $this->situation_->base(3)
         ) {
             $this->_result->during .= "/SF";
@@ -892,8 +899,11 @@ class ProjectScoresheet
             $this->_advance($third, $second, $first, false);
         } else {
             $this->_advance(
-                $third>0 ? 0 : $third, $second>0 ? 0 : 
-                $second, $first>0 ? 0 : $first, false
+                $third > 0 ? 0 : $third,
+                $second > 0 ? 0 :
+                    $second,
+                $first > 0 ? 0 : $first,
+                false
             );
         }
         if ($this->_result->after != "") {
@@ -1029,7 +1039,8 @@ class ProjectScoresheet
         if ($this->debug_) {
             print "undo\n";
         }
-        if ($this->_result->before == "" && $this->_result->during == "" 
+        if (
+            $this->_result->before == "" && $this->_result->during == ""
             && $this->_result->after == ""
         ) {
             if ($this->debug_) {
@@ -1041,28 +1052,28 @@ class ProjectScoresheet
                 $s = $this->situation_->side;
             }
             $c = count($this->results_[$s]);
-            $this->_result = $this->results_[$s][$c-1];
-            unset($this->results_[$s][$c-1]);
+            $this->_result = $this->results_[$s][$c - 1];
+            unset($this->results_[$s][$c - 1]);
             //$this->_updateSituation();
             $this->undo();
         } else {
             if ($this->_result->during != "" || $this->_result->after != "") {
-                $outs = substr_count($this->_result->during, "x") + 
+                $outs = substr_count($this->_result->during, "x") +
                     substr_count($this->_result->after, "x");
-                $this->_result->during="";
-                $this->_result->after="";
+                $this->_result->during = "";
+                $this->_result->after = "";
                 //Handle split inning evil
-                if ($outs >= $this->situation_->outs 
+                if (
+                    $outs >= $this->situation_->outs
                     && $this->_result->before != ""
                 ) {
-                    $this->results_[$this->situation_->side]
-                        [count($this->results_[$this->situation_->side])]
-                            =$this->_result;
+                    $this->results_[$this->situation_->side][count($this->results_[$this->situation_->side])]
+                        = $this->_result;
                     $this->_result = new Result();
                 }
                 $this->_updateSituation();
             } else {
-                $this->_result->before="";
+                $this->_result->before = "";
             }
         }
         $this->_updateSituation();
@@ -1074,4 +1085,3 @@ class ProjectScoresheet
         $this->situation_->pitcher = $this->lineup_[1]->getCurrentPitcher();
     }
 }
-?>
