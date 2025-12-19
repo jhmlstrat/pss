@@ -133,9 +133,10 @@ class ProjectScoresheet
             $inst->weather_ = $json->weather;
         }
         //$inst->debugOn();
-        //error_log(print_r($inst->situation_,true));
+        //error_log(print_r($json->situation_,true));
+        //error_log(print_r($json->situation_,true));
 	$inst->_updateSituation();
-	$inst->situation_->seriesComplete = $json->situation->seriesComplete;
+	$inst->situation_->seriesComplete = $json->situation->situation->seriesComplete;
         //error_log(print_r($inst->situation_,true));
         return $inst;
     }
