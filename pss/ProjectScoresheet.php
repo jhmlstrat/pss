@@ -223,7 +223,7 @@ class ProjectScoresheet
     }
     public function curBattingOrder($spot, $play, $pos)
     {
-        $this->battingOrder($this->situation_.side, $spot, $play, $pos);
+        $this->battingOrder($this->situation_->side, $spot, $play, $pos);
     }
     public function battingOrder($side, $spot, $play, $posit)
     {
@@ -255,7 +255,7 @@ class ProjectScoresheet
     }
     public function curRunner($slot, $play)
     {
-        runner($this->situation_->side, $slot, $play);
+        $this->runner($this->situation_->side, $slot, $play);
     }
     public function runner($side, $slot, $play)
     {
@@ -268,7 +268,7 @@ class ProjectScoresheet
     }
     public function curMove($spot, $pos)
     {
-        move($this->situation_->side, $spot, $pos);
+        $this->move($this->situation_->side, $spot, $pos);
     }
     public function move($side, $spot, $posi)
     {
@@ -282,7 +282,7 @@ class ProjectScoresheet
     }
     public function curPitcher($play)
     {
-        $this->pitcher($this->situation_.otherSide(), $play);
+        $this->pitcher($this->situation_->otherSide(), $play);
     }
     public function pitcher($side, $play)
     {
@@ -492,13 +492,13 @@ class ProjectScoresheet
         }
         if (! $this->situation_->gameOver()) {
             $tss = $this->situation_->side;
-            if ($this->debug_) {
-                print "4: " . count($this->results_[$tss]);
-                if (count($this->results_[$tss] > 0)) {
-                    print " - '" . $this->results_[$tss][count($this->results_[$tss])-1]->during . "'";
-                }
-                print "\n";
-            }
+//            if ($this->debug_) {
+//                print "4: " . count($this->results_[$tss]);
+//                if (count($this->results_[$tss] > 0)) {
+//                    print " - '" . $this->results_[$tss][count($this->results_[$tss])-1]->during . "'";
+//                }
+//                print "\n";
+//            }
             if (count($this->results_[$tss]) > 0
                 && $this->results_[$tss][count($this->results_[$tss])-1]->during==""
             ) {
@@ -733,14 +733,14 @@ class ProjectScoresheet
     public function s1rp()
     {
         $this->_result->during = "S";
-        $this->_advance(1, 1, -1);
+        $this->_advance(1, 1, -1,false);
         $this->_batter(1);
         $this->_saveResult();
     }
     public function s1rp3()
     {
         $this->_result->during = "S";
-        $this->_advance(0, 0, -1);
+        $this->_advance(0, 0, -1,false);
         $this->_batter(1);
         $this->_saveResult();
     }
@@ -917,7 +917,7 @@ class ProjectScoresheet
             $this->_result->during = $result;
         }
         $this->_advance($third, $second, $first, $before);
-        $this->_batter(bat);
+        $this->_batter($bat);
         $this->_saveResult();
     }
     public function po1($result)
@@ -961,7 +961,7 @@ class ProjectScoresheet
     public function pb3()
     {
         if (! $this->situation_->base(3)) {
-            $this->pb();
+            $this->pb1();
         } else {
             if (! $this->situation_->base(2) && $this->situation_->base(1)) {
                 $this->pb(0, 0, 1);
