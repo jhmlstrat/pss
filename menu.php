@@ -1,5 +1,4 @@
 <html lang="en">
-
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -14,13 +13,15 @@
   <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
   <link href="/css/ie10-viewport-bug-workaround.css" rel="stylesheet">
   <link href="/css/site.css" rel="stylesheet">
-  <link type="text/css" rel="stylesheet"
-    href="//unpkg.com/bootstrap/dist/css/bootstrap.min.css" />
-  <link type="text/css" rel="stylesheet"
-    href="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css" />
-  <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/fontawesome.min.css" />
+  <link type="text/css" rel="stylesheet" 
+    href="//unpkg.com/bootstrap/dist/css/bootstrap.min.css"/>
+  <link type="text/css" rel="stylesheet" 
+    href="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css"/>
+  <link type="text/css" rel="stylesheet" href=
+    "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/fontawesome.min.css"
+  />
   <link href="pss.css" rel="stylesheet">
-  <script src="https://unpkg.com/vue@3/dist/vue.global.js" type="text/javascript"></script>
+  <script src="https://unpkg.com/vue@2.6.14/dist/vue.js" type="text/javascript"></script>
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   <script src="https://unpkg.com/babel-polyfill/dist/polyfill.min.js"></script>
   <script src="https://unpkg.com/bootstrap-vue/dist/bootstrap-vue.js"></script>
@@ -29,7 +30,17 @@
   <script
     src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.9.0/Sortable.min.js">
   </script>
-
+<!--
+  <script src=
+   "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/js/fontawesome.min.js"
+  </script>
+  <script src=
+    "https://cdnjs.cloudflare.com/ajax/libs/Vue.Draggable/15.0.0/vuedraggable.min.js"
+    crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/sortablejs/Sortable.min.js"></script>
+  <script src="https://unpkg.com/vue-draggable/lib/vue-draggable.min.js"></script>
+  <script src="https://unpkg.com/vue-draggable/polyfills/index.js"></script>
+-->
   <script src="https://unpkg.com/lodash/lodash.min.js"></script>
   <script src="gameEntryComponent.vue" type="text/javascript"></script>
   <script src="lineScoreComponent.vue" type="text/javascript"></script>
@@ -47,8 +58,7 @@
 
 <body background="../gif/paper1.jpg">
   <div id="myPss">
-    <component :is="currentComponent">
-      <component>
+    <component :is="currentComponent"><component>  
   </div>
 
   <script type="module">
@@ -89,14 +99,12 @@
         loadingRotation: false,
         loadingSchedule: false,
         gameInfo: {
-          'visitor': {
-            'name': '',
-            'gameNumber': ''
-          },
-          'home': {
-            'name': '',
-            'gameNumber': ''
-          },
+          'visitor':{
+            'name':'',
+            'gameNumber':''},
+          'home':{
+            'name':'',
+            'gameNumber':''},
         },
       },
       components: {
@@ -108,21 +116,21 @@
         scheduleComponent: ScheduleComponent,
       },
       mounted: function() {
-        if ("<?php echo $_GET['teamname'] ?>" != undefined) {
-          this.setTeamName("<?php echo $_GET['teamname'] ?>");
+        if ("<?php echo $_GET['teamname']?>" !=  undefined) {
+          this.setTeamName("<?php echo $_GET['teamname']?>");
         } else {
           this.setTeamName("guest");
         }
         if (
-          "<?php echo $_GET['year'] ?>" != undefined &&
-          "<?php echo $_GET['year'] ?>" != ''
+          "<?php echo $_GET['year']?>" !=  undefined 
+          && "<?php echo $_GET['year']?>" != ''
         ) {
-          this.year = "<?php echo $_GET['year'] ?>";
+          this.year = "<?php echo $_GET['year']?>";
         }
         this.loadConfig();
       },
       watch: {
-        year: function() {
+        year: function() { 
           this.yearChange();
         },
       },
@@ -141,7 +149,7 @@
           this.emitData();
         },
         yearChange() {
-          if (this.teamname == 'guest') return;
+          if (this.teamname == 'guest') return; 
           if (this.year == undefined) return;
           if (this.config == {} || this.config.years == undefined) return;
           if (this.cyConfig == {} || this.cyConfig.year != this.year) {
@@ -159,149 +167,138 @@
               }
             }
           }
-          this.loadRoster(this.team.team);
-          this.loadSchedule();
+          this.loadRoster(this.team.team); 
+          this.loadSchedule(); 
           this.loadRotation(this.team.team);
         },
         loadConfig() {
           var self = this;
-          let headers = {
-            headers: {
-              'X-Authorization': 'TooManyMLs'
-            }
-          };
+          let headers = {headers:{'X-Authorization':'TooManyMLs'}};
           this.loadingConfig = true;
-          axios.get('/pss/api/getConfig.php', headers)
-            .then(function(response) {
-              self.config = response.data;
-              //console.log(JSON.stringify(self.config));
-              if (self.year == undefined) {
-                self.year = self.config.current_year;
-                //self.emitData();
-              } else {}
-              //console.log(self.year);
-              self.yearChange();
-              //self.loadRoster();
-              //self.loadSchedule();
-              for (y of self.config.years) {
-                if (y.year == self.config.current_year) {
-                  self.il_length = y.il_length;
-                  self.mlb_games = y.mlb_games;
-                  self.roster_size = y.roster_size;
-                  for (t of y.teams) {
-                    if (t.team == self.teamname) {
-                      self.team = t;
-                    }
+          axios.get('/pss/api/getConfig.php',headers)
+          .then(function (response) {
+            self.config = response.data;
+            //console.log(JSON.stringify(self.config));
+            if (self.year == undefined) {
+              self.year = self.config.current_year;
+              //self.emitData();
+            } else {
+            }
+            //console.log(self.year);
+            self.yearChange();
+            //self.loadRoster();
+            //self.loadSchedule();
+            for (y of self.config.years) {
+              if (y.year == self.config.current_year) {
+                self.il_length = y.il_length;
+                self.mlb_games = y.mlb_games;
+                self.roster_size = y.roster_size;
+                for (t of y.teams) {
+                  if (t.team == self.teamname) {
+                    self.team = t;
                   }
                 }
               }
-              self.loadingConfig = false;
-            })
-            .catch(function(error) {
-              console.error(error);
-            });
+            }
+            self.loadingConfig = false;
+          })
+          .catch(function (error) {
+            console.error(error);
+          });
         },
         loadGameInfo() {
           var self = this;
-          let headers = {
-            headers: {
-              'X-Authorization': 'TooManyMLs'
-            }
-          };
+          let headers = {headers:{'X-Authorization':'TooManyMLs'}};
           this.loadingGameInfo = true;
           axios.get(
-              '/pss/api/getGameInfo.php?team=' + this.teamname + '&year=' +
-              this.year + '&game=' + this.game, headers
-            )
-            .then(function(response) {
-              self.gameInfo = response.data;
-              // console.log(self.gameInfo);
-              self.loadingGameInfo = false;
-              self.emitData();
-              //console.log(self.gameInfo); 
-              if (self.gameInfo.situation.situation.betweenInnings && !self.gameInfo.situation.situation.gameOver) {
-                v = self.lineupValid(self.gameInfo.visitor.lineup);
-                h = self.lineupValid(self.gameInfo.home.lineup);
-                if ((v.valid && self.gameInfo.situation.situation.side == 1 && !h.missingPlayer) ||
+            '/pss/api/getGameInfo.php?team='+this.teamname+'&year='+
+            this.year+'&game='+this.game,headers
+          )
+          .then(function (response) {
+            self.gameInfo = response.data;
+            // console.log(self.gameInfo);
+            self.loadingGameInfo = false;
+            self.emitData();
+            //console.log(self.gameInfo); 
+            if (self.gameInfo.situation.situation.betweenInnings && ! self.gameInfo.situation.situation.gameOver) {
+              v = self.lineupValid(self.gameInfo.visitor.lineup);
+              h = self.lineupValid(self.gameInfo.home.lineup);
+              if ((v.valid && self.gameInfo.situation.situation.side == 1 && !h.missingPlayer) ||
                   (h.valid && self.gameInfo.situation.situation.side == 0 && !v.missingPlayer)) {
-                  self.currentComponent = "gameComponent";
-                } else {
-                  self.currentComponent = "lineupsComponent";
-                }
-              } else {
                 self.currentComponent = "gameComponent";
+              } else {
+                self.currentComponent = "lineupsComponent";
               }
-            })
-            .catch(function(error) {
-              console.error(error);
-            });
+            } else {
+              self.currentComponent = "gameComponent";
+            }
+          })
+          .catch(function (error) {
+            console.error(error);
+          });
         },
         loadRoster(team) {
           var self = this;
-          let headers = {
-            headers: {
-              'X-Authorization': 'TooManyMLs'
-            }
-          };
+          let headers = {headers:{'X-Authorization':'TooManyMLs'}};
           this.loadingRoster = true;
-          axios.get('/pss/api/getRoster.php?team=' + team + '&year=' + this.year, headers)
-            .then(function(response) {
-              if (team == self.teamname) {
-                self.roster = response.data;
-                //console.log(JSON.stringify(self.roster));
-                self.setGame();
-                self.majors = [];
-                self.minors = [];
-                self.il = [];
-                if (self.roster.roster.batters) {
-                  for (b of self.roster.roster.batters) {
-                    //console.log(b)
-                    let lm = self.lastMove(b.rosterItem);
-                    let mt = lm.lastMove;
-                    let mg = lm.gameNumber;
-                    //console.log(lm);
-                    // Ignore 'Traded'
-                    if (mt == 'Fm minors' || mt == 'Off DL') {
-                      self.majors.push(b.rosterItem);
-                    } else if (mt == 'To minors' || mt == 'Traded for') {
-                      self.minors.push(b.rosterItem);
-                    } else if (mt == 'On DL') {
-                      self.il.push(b.rosterItem);
-                    }
+          axios.get('/pss/api/getRoster.php?team='+team+'&year='+this.year,headers)
+          .then(function (response) {
+            if (team == self.teamname) {
+              self.roster = response.data;
+              //console.log(JSON.stringify(self.roster));
+              self.setGame();
+              self.majors = [];
+              self.minors = [];
+              self.il = [];
+              if (self.roster.roster.batters) {
+                for (b of self.roster.roster.batters) {
+                  //console.log(b)
+                  let lm=self.lastMove(b.rosterItem);
+                  let mt=lm.lastMove;
+                  let mg=lm.gameNumber;
+                  //console.log(lm);
+                  // Ignore 'Traded'
+                  if (mt == 'Fm minors' || mt == 'Off DL') {
+                    self.majors.push(b.rosterItem);
+                  } else if (mt == 'To minors' || mt == 'Traded for') {
+                    self.minors.push(b.rosterItem);
+                  } else if (mt == 'On DL') {
+                    self.il.push(b.rosterItem);
                   }
                 }
-                if (self.roster.roster.pitchers) {
-                  for (b of self.roster.roster.pitchers) {
-                    //console.log(b)
-                    let lm = self.lastMove(b.rosterItem);
-                    let mt = lm.lastMove;
-                    let mg = lm.gameNumber;
-                    //console.log(lm);
-                    // Ignore 'Traded'
-                    if (mt == 'Fm minors' || mt == 'Off DL') {
-                      self.majors.push(b.rosterItem);
-                    } else if (mt == 'To minors' || mt == 'Traded for') {
-                      self.minors.push(b.rosterItem);
-                    } else if (mt == 'On DL') {
-                      self.il.push(b.rosterItem);
-                    }
-                  }
-                }
-              } else {
-                self.oRoster = response.data;
               }
-              self.loadingRoster = false;
-              self.emitData();
-            })
-            .catch(function(error) {
-              console.error(error);
-            });
+              if (self.roster.roster.pitchers) {
+                for (b of self.roster.roster.pitchers) {
+                  //console.log(b)
+                  let lm=self.lastMove(b.rosterItem);
+                  let mt=lm.lastMove;
+                  let mg=lm.gameNumber;
+                  //console.log(lm);
+                  // Ignore 'Traded'
+                  if (mt == 'Fm minors' || mt == 'Off DL') {
+                    self.majors.push(b.rosterItem);
+                  } else if (mt == 'To minors' || mt == 'Traded for') {
+                    self.minors.push(b.rosterItem);
+                  } else if (mt == 'On DL') {
+                    self.il.push(b.rosterItem);
+                  }
+                }
+              }
+            } else {
+              self.oRoster = response.data;
+            }
+            self.loadingRoster = false;
+            self.emitData();
+          })
+          .catch(function (error) {
+            console.error(error);
+          });
         },
         rosterValid() {
           if (JSON.stringify(this.roster.roster) == '{}') return false;
           if (JSON.stringify(this.schedule) == '{}') return false;
-          if (this.schedule.results.length > 83 &&
-            this.majors.length <= 40
+          if (this.schedule.results.length > 83 && 
+              this.majors.length <= 40
           ) return true;
           if (this.majors.length <= this.roster_size) return true;
           return false;
@@ -309,61 +306,51 @@
         loadRotation(team) {
           var self = this;
           this.loadingRotation = true;
-          let headers = {
-            headers: {
-              'X-Authorization': 'TooManyMLs'
+          let headers = {headers:{'X-Authorization':'TooManyMLs'}};
+          axios.get('/pss/api/getRotation.php?team='+team+'&year='+this.year,headers)
+          .then(function (response) {
+            if (team == self.teamname) {
+              self.rotation = response.data;
+            } else {
+              self.oRotation = response.data;
             }
-          };
-          axios.get('/pss/api/getRotation.php?team=' + team + '&year=' + this.year, headers)
-            .then(function(response) {
-              if (team == self.teamname) {
-                self.rotation = response.data;
-              } else {
-                self.oRotation = response.data;
-              }
-              //console.log(self.rotation);
-              self.loadingRotation = false;
-              self.emitData();
-            })
-            .catch(function(error) {
-              console.error(error);
-            });
+            //console.log(self.rotation);
+            self.loadingRotation = false;
+            self.emitData();
+          })
+          .catch(function (error) {
+            console.error(error);
+          });
         },
         loadSchedule() {
           var self = this;
           this.loadingSchedule = true;
-          let headers = {
-            headers: {
-              'X-Authorization': 'TooManyMLs'
-            }
-          };
+          let headers = {headers:{'X-Authorization':'TooManyMLs'}};
           axios.get(
-              '/pss/api/getSchedule.php?team=' + this.teamname +
-              '&year=' + this.year, headers
-            )
-            .then(function(response) {
-              self.schedule = response.data;
-              //console.log(JSON.stringify(self.schedule));
-              self.setGame();
-              self.loadingSchedule = false;
-              self.emitData();
-            })
-            .catch(function(error) {
-              console.error(error);
-            });
+            '/pss/api/getSchedule.php?team='+this.teamname+
+            '&year='+this.year,headers
+          )
+          .then(function (response) {
+            self.schedule = response.data;
+            //console.log(JSON.stringify(self.schedule));
+            self.setGame();
+            self.loadingSchedule = false;
+            self.emitData();
+          })
+          .catch(function (error) {
+            console.error(error);
+          });
         },
         emitData() {
-          eBus.$emit('configUpdated', this.config);
-          eBus.$emit('teamUpdated', this.team);
-          eBus.$emit('rosterUpdated', this.roster);
-          eBus.$emit('rotationUpdated', this.rotation);
-          eBus.$emit('scheduleUpdated', this.schedule);
+          eBus.$emit('configUpdated',this.config);
+          eBus.$emit('teamUpdated',this.team);
+          eBus.$emit('rosterUpdated',this.roster);
+          eBus.$emit('rotationUpdated',this.rotation);
+          eBus.$emit('scheduleUpdated',this.schedule);
         },
         setGame() {
           //console.log(this.schedule);
-          if (JSON.stringify(this.team) == '{}') {
-            return;
-          }
+          if (JSON.stringify(this.team) == '{}') { return;}
           if (JSON.stringify(this.schedule) == '{}') return;
           if (JSON.stringify(this.roster.roster) == '{}') return;
           this.game = 1;
@@ -379,62 +366,59 @@
           this.injury = false;
           let testing = false;
           if (testing) {
-            let r = [];
+            let r=[];
             let gm = {};
-            gm.home = {};
-            gm.home.team = 'PIT';
-            gm.home.gameNumber = '001';
-            gm.final = true;
-            gm.seriesComplete = false;
+            gm.home={};
+            gm.home.team='PIT';
+            gm.home.gameNumber='001';
+            gm.final=true;
+            gm.seriesComplete=false;
             r.push(gm);
             this.schedule.results = r;
           }
           this.day = this.schedule.results.length;
-          if (this.day == 0) {
-            this.day++;
-            return;
-          }
-          if (this.schedule.results[this.day - 1].home.gameNumber != 'DO') {
-            console.log('team: ' + JSON.stringify(this.team));
-            if (this.team.team.toUpperCase() ===
-              this.schedule.results[this.day - 1].home.team.toUpperCase()
+          if (this.day == 0) {this.day ++; return;}
+          if (this.schedule.results[this.day-1].home.gameNumber != 'DO') {
+console.log('team: ' + JSON.stringify(this.team));
+            if (this.team.team.toUpperCase() === 
+                this.schedule.results[this.day-1].home.team.toUpperCase()
             ) {
-              this.game = parseInt(this.schedule.results[this.day - 1].home.gameNumber);
+              this.game=parseInt(this.schedule.results[this.day-1].home.gameNumber);
             } else {
-              this.game = parseInt(this.schedule.results[this.day - 1].away.gameNumber);
+              this.game=parseInt(this.schedule.results[this.day-1].away.gameNumber);
             }
-            console.log(this.day + ":" + this.game);
-            if (this.schedule.results[this.day - 1].final == false) {
+console.log(this.day + ":" + this.game);
+            if (this.schedule.results[this.day-1].final == false) {
               this.gameInProgress = true;
               this.betweenSeries = false;
             } else {
               this.game = this.game + 1;
-              this.betweenSeries = this.schedule.results[this.day - 1].seriesComplete;
+              this.betweenSeries = this.schedule.results[this.day-1].seriesComplete;
             }
           } else {
             if (this.team.team.toUpperCase() ===
-              this.schedule.results[this.day - 2].home.team.toUpperCase()
+                this.schedule.results[this.day-2].home.team.toUpperCase()
             ) {
-              this.game = parseInt(this.schedule.results[this.day - 2].home.gameNumber);
+              this.game=parseInt(this.schedule.results[this.day-2].home.gameNumber);
             } else {
-              this.game = parseInt(this.schedule.results[this.day - 2].away.gameNumber);
+              this.game=parseInt(this.schedule.results[this.day-2].away.gameNumber);
             }
-            if (this.schedule.results[this.day - 2].final == false) {
+            if (this.schedule.results[this.day-2].final == false) {
               this.gameInProgress = true;
               this.betweenSeries = false;
             } else {
               this.game = this.game + 1;
-              this.betweenSeries = this.schedule.results[this.day - 2].seriesComplete;
+              this.betweenSeries = this.schedule.results[this.day-2].seriesComplete;
             }
           }
-          this.day++;
-          if (!this.gameInProgress) {
-            for (let i = 0; i < this.roster.roster.batters.length &&
-              this.injury == false; i++
+          this.day ++;
+          if (! this.gameInProgress) {
+            for (let i=0; i< this.roster.roster.batters.length 
+                && this.injury == false; i++
             ) {
-              lm = this.lastMove(this.roster.roster.batters[i].rosterItem);
-              mt = lm.lastMove;
-              mg = lm.gameNumber;
+              lm=this.lastMove(this.roster.roster.batters[i].rosterItem);
+              mt=lm.lastMove;
+              mg=lm.gameNumber;
               //console.log(mg);
               if (mt == "To minors") continue;
               if (mt == "Traded") continue;
@@ -443,28 +427,28 @@
                 if (this.day < mg || this.game == mg) continue;
                 let dg = 0;
                 let dig = 0;
-                for (let j = mg - 1; dg == 0 && j < this.day; j++) {
-                  if (this.team.team.toUpperCase() ===
-                    this.schedule.results[j].home.team.toUpperCase()
+                for (let j=mg-1; dg == 0 && j < this.day; j++) {
+                  if (this.team.team.toUpperCase() === 
+                      this.schedule.results[j].home.team.toUpperCase()
                   ) {
                     dig = parseInt(this.schedule.results[j].home.gameNumber);
                   } else {
                     dig = parseInt(this.schedule.results[j].away.gameNumber);
                   }
-                  if (dig == mg) dg = j;
+                  if (dig == mg) dg=j;
                 }
                 if (dg == 0) continue;
                 if ((this.day - dg) > this.il_length) this.injury = true;
               } else {
-                li = this.lastInjury(this.roster.roster.batters[i].rosterItem);
-                lastI = li.lastInjury;
-                dur = li.duration;
+                li=this.lastInjury(this.roster.roster.batters[i].rosterItem);
+                lastI=li.lastInjury;
+                dur=li.duration;
                 if (lastI == 0) continue;
                 if ((this.day - lastI) <= dur) this.injury = true;
               }
             }
           } else {
-            s = this.schedule.results[this.day - 2];
+            s = this.schedule.results[this.day-2];
             if (s.away.team.toLowerCase() == this.teamname) {
               this.loadRoster(s.home.team.toLowerCase());
               this.loadRotation(s.home.team.toLowerCase());
@@ -478,52 +462,46 @@
           //console.log(this.gameInProgress);
           //console.log(this.injury);
           //if (testing) this.injury = true;
-          eBus.$emit('gameUpdated', this.game);
+          eBus.$emit('gameUpdated',this.game);
         },
         lastMove(ri) {
           mt = 'Fm minors';
           mg = 0;
-          for (let j = 0; j < ri.moves.length; j++) {
+          for (let j=0; j < ri.moves.length; j++) {
             if (parseInt(ri.moves[j].move.gameNumber) <= this.game) {
               mt = ri.moves[j].move.moveType;
               mg = parseInt(ri.moves[j].move.gameNumber);
             }
           }
-          return {
-            "lastMove": mt,
-            "gameNumber": mg
-          };
+          return {"lastMove":mt,"gameNumber":mg};
         },
         lastInjury(ri) {
           let lastI = 0;
           let dur = 0;
-          for (let j = 0; j < ri.injuries.length; j++) {
+          for (let j=0; j < ri.injuries.length; j++) {
             if (parseInt(ri.injuries[j].injury.gameNumber) <= this.game) {
               lastI = parseInt(ri.injuries[j].injury.gameNumber);
               dur = parseInt(ri.injuries[j].injury.duration);
             }
           }
-          return {
-            "lastInjury": this.dayGame(lastI),
-            "duration": dur
-          };
+          return {"lastInjury":this.dayGame(lastI),"duration":dur};
         },
         dayGame(gameNumber) {
-          let gd = 0;
+          let gd=0;
           if (gameNumber > 0 && this.day >= gameNumber) {
-            for (let i = gameNumber; gd == 0 &&
-              i < this.schedule.results.length; i++
+            for (let i=gameNumber; gd == 0 
+                 && i < this.schedule.results.length; i++
             ) {
               if (this.schedule.results[i].home.gameNumber == 'DO') continue;
               let g = 0;
-              if (this.team.team.toUpperCase() ===
-                this.schedule.results[i].home.team.toUpperCase()
+              if (this.team.team.toUpperCase() === 
+                  this.schedule.results[i].home.team.toUpperCase()
               ) {
                 g = parseInt(this.schedule.results[i].home.gameNumber);
               } else {
                 g = parseInt(this.schedule.results[i].away.gameNumber);
               }
-              if (g == gameNumber) gd = i + 1;
+              if (g == gameNumber) gd=i+1;
             }
           }
           return gd;
@@ -535,13 +513,13 @@
           let found = false;
           let lastOpp = '';
           let lastHA = '';
-          for (let i = 0; !found && i < this.schedule.results.length; i++) {
+          for (let i=0; !found && i < this.schedule.results.length; i++) {
             if (this.schedule.results[i].home.gameNumber == 'DO') continue;
             let g = 0;
             let currOpp = '';
             let currHA = '';
-            if (this.team.team.toUpperCase() ===
-              this.schedule.results[i].home.team.toUpperCase()
+            if (this.team.team.toUpperCase() === 
+                this.schedule.results[i].home.team.toUpperCase()
             ) {
               g = parseInt(this.schedule.results[i].home.gameNumber);
               currOpp = this.schedule.results[i].away.team.toUpperCase();
@@ -555,28 +533,25 @@
               found = true;
             } else {
               if (lastOpp != currOpp || lastHA != currHA || gameInSeries == 4) {
-                series++;
+                series ++;
                 gameInSeries = 1;
               } else {
-                gameInSeries++;
+                gameInSeries ++;
               }
             }
           }
-          if (!found && (lastGame + 1) == gameNumber) {
+          if (! found && (lastGame + 1) == gameNumber) {
             if (this.betweenSeries) {
-              series++;
+              series ++;
               gameInSeries = 1;
             } else {
-              gameInSeries++;
+              gameInSeries ++;
             }
           }
-          return {
-            "series": series,
-            "gameInSeries": gameInSeries
-          };
+          return {"series":series,"gameInSeries":gameInSeries};
         },
         lineupValid(lineup) {
-          let pos = [false, false, false, false, false, false, false, false, false];
+          let pos=[false,false,false,false,false,false,false,false,false];
           injuredPlayer = false;
           dupePlayer = false;
           dupePos = false;
@@ -586,28 +561,25 @@
           assigned = [];
           for (let i = 0; i < lineup.length; i++) {
             if (lineup[i].length == 0) {
-              missingPlayer = true;
+              missingPlayer=true;
               continue;
             }
-            pl = lineup[i][lineup[i].length - 1].player;
+            pl = lineup[i][lineup[i].length-1].player;
             if ('injured' in pl) {
               if (pl.injured) injuredPlayer = true;
             }
             b = pl.name;
             if (pl.positions.length == 0) p = '';
             else p = pl.positions[pl.positions.length - 1].position.pos;
-            if (p == 'B1') p = '1B';
-            if (p == 'B2') p = '2B';
-            if (p == 'B3') p = '3B';
+            if (p == 'B1') p='1B';
+            if (p == 'B2') p='2B';
+            if (p == 'B3') p='3B';
             if (b == '') {
               missingPlayer = true;
               continue;
             }
-            if (assigned.includes(b)) {
-              dupePlayer = true;
-            } else {
-              assigned.push(b);
-            }
+            if (assigned.includes(b)) { dupePlayer = true; }
+            else { assigned.push(b); }
             if (p == '') continue;
             for (a of this.roster.roster.batters) {
               if (a.rosterItem.player.name == b) {
@@ -627,51 +599,27 @@
               }
             }
             pc = -1;
-            if (p == 'P' || p == 'DH') {
-              pc = 0;
-            }
-            if (p == 'C') {
-              pc = 1;
-            }
-            if (p == '1B') {
-              pc = 2;
-            }
-            if (p == '2B') {
-              pc = 3;
-            }
-            if (p == '3B') {
-              pc = 4;
-            }
-            if (p == 'SS') {
-              pc = 5;
-            }
-            if (p == 'LF') {
-              pc = 6;
-            }
-            if (p == 'CF') {
-              pc = 7;
-            }
-            if (p == 'RF') {
-              pc = 8;
-            }
+            if (p == 'P' || p == 'DH') { pc = 0; }
+            if (p == 'C') { pc = 1; }
+            if (p == '1B') { pc = 2; }
+            if (p == '2B') { pc = 3; }
+            if (p == '3B') { pc = 4; }
+            if (p == 'SS') { pc = 5; }
+            if (p == 'LF') { pc = 6; }
+            if (p == 'CF') { pc = 7; }
+            if (p == 'RF') { pc = 8; }
             if (pc < 0) pc = -1;
-            else if (pos[pc]) {
-              dupePos = true;
-            } else {
-              pos[pc] = true;
-            }
+            else if (pos[pc]) { dupePos = true; }
+            else { pos[pc] = true; }
           }
-          for (p of pos)
-            if (!p) missingPos = true;
-          return {
-            'valid': !(dupePlayer || dupePos || missingPlayer || missingPos),
-            'injuredPlayer': injuredPlayer,
-            'duplicatePlayer': dupePlayer,
-            'duplicatePosition': dupePos,
-            'missingPlayer': missingPlayer,
-            'missingPosition': missingPos,
-            'playerOutOfPosition': playerOop
-          }
+          for (p of pos) if (! p) missingPos = true;
+          return {'valid': ! (dupePlayer || dupePos || missingPlayer || missingPos),
+                  'injuredPlayer': injuredPlayer,
+                  'duplicatePlayer': dupePlayer,
+                  'duplicatePosition': dupePos,
+                  'missingPlayer': missingPlayer,
+                  'missingPosition': missingPos,
+                  'playerOutOfPosition': playerOop}
         },
         getPlayerInfo(name) {
           for (b of vue.roster.roster.batters) {
@@ -695,14 +643,14 @@
           availableBatters = [];
           for (b of roster.roster.batters) {
             found = false;
-            for (i = 0; i < gRoster.length; i++) {
+            for (i=0; i<gRoster.length; i++) {
               if (gRoster[i] == b.rosterItem.player.name) found = true;
             }
             if (!found) continue;
             let inLineup = false;
             for (l of lineup) {
               for (lu of l) {
-                if (lu.player.name == b.rosterItem.player.name) inLineup = true;
+                if (lu.player.name == b.rosterItem.player.name) inLineup=true;
               }
             }
             if (inLineup) continue;
@@ -714,7 +662,7 @@
           relievers = [];
           for (p of roster.roster.pitchers) {
             found = false;
-            for (i = 0; i < gRoster.length; i++) {
+            for (i=0; i<gRoster.length; i++) {
               if (gRoster[i] == p.rosterItem.player.name) found = true;
             }
             if (!found) continue;
@@ -731,10 +679,8 @@
           }
           if (rotation.length == 0) availablePitchers = starters.concat(sr.concat(relievers));
           else availablePitchers = relievers.concat(sr.concat(starters));
-          return {
-            'availableBatters': availableBatters,
-            'availablePitchers': availablePitchers
-          }
+          return {'availableBatters':availableBatters,
+                  'availablePitchers':availablePitchers}
         },
         batterTooltip(name) {
           batter = vue.getPlayerInfo(name);
@@ -747,7 +693,7 @@
         },
       },
     });
+
   </script>
 </body>
-
 </html>
