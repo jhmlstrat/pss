@@ -149,9 +149,11 @@
           this.emitData();
         },
         yearChange() {
+//console.log("yearChange");
           if (this.teamname == 'guest') return; 
           if (this.year == undefined) return;
           if (this.config == {} || this.config.years == undefined) return;
+//console.log("yearChange doing something");
           if (this.cyConfig == {} || this.cyConfig.year != this.year) {
             for (y of this.config.years) {
               if (y.year == this.year) {
@@ -172,6 +174,7 @@
           this.loadRotation(this.team.team);
         },
         loadConfig() {
+//console.log("loadConfig");
           var self = this;
           let headers = {headers:{'X-Authorization':'TooManyMLs'}};
           this.loadingConfig = true;
@@ -186,8 +189,8 @@
             }
             //console.log(self.year);
             self.yearChange();
-            //self.loadRoster();
-            //self.loadSchedule();
+            self.loadRoster();
+            self.loadSchedule();
             for (y of self.config.years) {
               if (y.year == self.config.current_year) {
                 self.il_length = y.il_length;
@@ -207,6 +210,7 @@
           });
         },
         loadGameInfo() {
+//console.log("loadGameInfo");
           var self = this;
           let headers = {headers:{'X-Authorization':'TooManyMLs'}};
           this.loadingGameInfo = true;
@@ -238,6 +242,7 @@
           });
         },
         loadRoster(team) {
+//console.log("loadRoster");
           var self = this;
           let headers = {headers:{'X-Authorization':'TooManyMLs'}};
           this.loadingRoster = true;
@@ -245,7 +250,6 @@
           .then(function (response) {
             if (team == self.teamname) {
               self.roster = response.data;
-              //console.log(JSON.stringify(self.roster));
               self.setGame();
               self.majors = [];
               self.minors = [];
@@ -295,6 +299,8 @@
           });
         },
         rosterValid() {
+//console.log("rosterValid");
+//console.log(this.schedule);
           if (JSON.stringify(this.roster.roster) == '{}') return false;
           if (JSON.stringify(this.schedule) == '{}') return false;
           if (this.schedule.results.length > 83 && 
@@ -304,6 +310,7 @@
           return false;
         },
         loadRotation(team) {
+//console.log("loadRotation");
           var self = this;
           this.loadingRotation = true;
           let headers = {headers:{'X-Authorization':'TooManyMLs'}};
@@ -349,7 +356,6 @@
           eBus.$emit('scheduleUpdated',this.schedule);
         },
         setGame() {
-          //console.log(this.schedule);
           if (JSON.stringify(this.team) == '{}') { return;}
           if (JSON.stringify(this.schedule) == '{}') return;
           if (JSON.stringify(this.roster.roster) == '{}') return;
@@ -379,7 +385,6 @@
           this.day = this.schedule.results.length;
           if (this.day == 0) {this.day ++; return;}
           if (this.schedule.results[this.day-1].home.gameNumber != 'DO') {
-console.log('team: ' + JSON.stringify(this.team));
             if (this.team.team.toUpperCase() === 
                 this.schedule.results[this.day-1].home.team.toUpperCase()
             ) {
@@ -387,7 +392,6 @@ console.log('team: ' + JSON.stringify(this.team));
             } else {
               this.game=parseInt(this.schedule.results[this.day-1].away.gameNumber);
             }
-console.log(this.day + ":" + this.game);
             if (this.schedule.results[this.day-1].final == false) {
               this.gameInProgress = true;
               this.betweenSeries = false;
@@ -581,20 +585,22 @@ console.log(this.day + ":" + this.game);
             if (assigned.includes(b)) { dupePlayer = true; }
             else { assigned.push(b); }
             if (p == '') continue;
-            for (a of this.roster.roster.batters) {
-              if (a.rosterItem.player.name == b) {
-                if (p == 'PR') continue;
-                if (p == 'PH') continue;
-                oop = true;
-                if (p == 'DH') oop = false;
-                for (ps of a.rosterItem.player.strat.positionsPlayed) {
-                  if (ps.position.pos == p) oop = false;
-                  if (ps.position.pos == 'B1' && p == '1B') oop = false;
-                  if (ps.position.pos == 'B2' && p == '2B') oop = false;
-                  if (ps.position.pos == 'B3' && p == '3B') oop = false;
-                }
-                if (oop) {
-                  playerOop = true;
+            if (this.roster.roster !== undefined) {
+              for (a of this.roster.roster.batters) {
+                if (a.rosterItem.player.name == b) {
+                  if (p == 'PR') continue;
+                  if (p == 'PH') continue;
+                  oop = true;
+                  if (p == 'DH') oop = false;
+                  for (ps of a.rosterItem.player.strat.positionsPlayed) {
+                    if (ps.position.pos == p) oop = false;
+                    if (ps.position.pos == 'B1' && p == '1B') oop = false;
+                    if (ps.position.pos == 'B2' && p == '2B') oop = false;
+                    if (ps.position.pos == 'B3' && p == '3B') oop = false;
+                  }
+                  if (oop) {
+                    playerOop = true;
+                  }
                 }
               }
             }
@@ -640,6 +646,10 @@ console.log(this.day + ":" + this.game);
           // TBD: Injured
           // TBD: Tired
           // TBD: Batters pitching/Pitchers batting
+//console.log(JSON.stringify(lineup));
+//console.log(JSON.stringify(rotation));
+//console.log(JSON.stringify(gRoster));
+//console.log(JSON.stringify(roster));
           availableBatters = [];
           for (b of roster.roster.batters) {
             found = false;

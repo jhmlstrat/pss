@@ -109,13 +109,26 @@ Bat: {{ gameInfo.situation.situation.batter.substring(0,15) }}
       <b-modal id="pinch-runner-modal" ref="modal" size="md" title="Change Runners" hide-header-close hide-footer>
         <template #default="{ ok }">
           <b-row>
-            <b-col cols="12">
-              <b-form-group label="Select pinch Runner">
-                <b-form-radio v-for="(p, index) in available_hitters" v-model="selected_runner" name="runner-radios" v-bind:value="p" v-bind:key="index">
-                  {{ p }}
-                </b-form-radio>
-              </b-form-group>
-            </b-col>
+            <b-tabs>
+              <b-tab title="Batters">
+                <b-col cols="12">
+                  <b-form-group label="Select pinch Runner">
+                    <b-form-radio v-for="(p, index) in available_hitters" v-model="selected_runner" name="runner-radios" v-bind:value="p" v-bind:key="index">
+                      {{ p }}
+                    </b-form-radio>
+                  </b-form-group>
+                </b-col>
+              </b-tab>
+              <b-tab title="Pitchers">
+                <b-col cols="12">
+                  <b-form-group label="Select pinch Runner">
+                    <b-form-radio v-for="(p, index) in available_pitchers" v-model="selected_runner" name="runner-radios-p" v-bind:value="p" v-bind:key="index">
+                      {{ p }}
+                    </b-form-radio>
+                  </b-form-group>
+                </b-col>
+              </b-tab>
+            </b-tabs>
           </b-row>
           <hr class="pl-0 pr-0 w-100">
           <b-button size="sm" class="float-right" variant="secondary" @click="cancelPinchRunner()">
@@ -194,6 +207,11 @@ Bat: {{ gameInfo.situation.situation.batter.substring(0,15) }}
       for (let i=0; i < available.availableBatters.length; i++) {
         this.available_hitters.push(available.availableBatters[i].name);
       }
+      this.available_pitchers = [];
+      this.selected_reliever = '';
+      for (let i=0; i < available.availablePitchers.length; i++) {
+        this.available_pitchers.push(available.availablePitchers[i].name);
+      }
       this.$bvModal.show('pinch-hitter-modal');
     },
     doPinchRunner(base) {
@@ -211,6 +229,11 @@ Bat: {{ gameInfo.situation.situation.batter.substring(0,15) }}
       for (let i=0; i < available.availableBatters.length; i++) {
         this.available_hitters.push(available.availableBatters[i].name);
       }
+      this.available_pitchers = [];
+      this.selected_reliever = '';
+      for (let i=0; i < available.availablePitchers.length; i++) {
+        this.available_pitchers.push(available.availablePitchers[i].name);
+      }
       this.$bvModal.show('pinch-runner-modal');
     },
     doReliever() {
@@ -221,6 +244,11 @@ Bat: {{ gameInfo.situation.situation.batter.substring(0,15) }}
         available = vue.getAvailable(this.gameInfo.visitor.lineup, this.gameInfo.visitor.rotation, this.gameInfo.visitor.roster, this.vRoster)
       }
       //console.log(available);
+      this.available_hitters = [];
+      this.selected_hitter = '';
+      for (let i=0; i < available.availableBatters.length; i++) {
+        this.available_hitters.push(available.availableBatters[i].name);
+      }
       this.available_pitchers = [];
       this.selected_reliever = '';
       for (let i=0; i < available.availablePitchers.length; i++) {

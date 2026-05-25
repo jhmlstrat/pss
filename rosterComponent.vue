@@ -4,7 +4,6 @@ var RosterComponent = {
   template: `
     <div class='container'>
 {{ currentComponent() }}
-{{ roster }}
       <b-row>
         <b-col cols='2' class='text-center'>
           <b-button variant='link' size='lg' href='#' v-on:click='switchToMenu();'>

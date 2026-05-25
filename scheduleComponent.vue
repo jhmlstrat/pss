@@ -153,7 +153,6 @@ var ScheduleComponent = {
           </b-col>
         </b-row>
       </b-modal>
-{{ gameInfo() }}
 <hr>
 {{ schedule }}
     </div>

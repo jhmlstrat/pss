@@ -94,10 +94,10 @@ var MenuComponent = {
     }
   },
   mounted() {
-    eBus.$on('teamUpdated',(t) => { this.team = t;});
-    eBus.$on('rosterUpdated',(r) => { });
-    eBus.$on('scheduleUpdated',(s) => { });
-    eBus.$on('gameUpdated',(g) => { this.game = g; this.day = vue.day;});
+    eBus.$on('teamUpdated',(t) => { this.debug('team'); this.team = t;});
+    eBus.$on('rosterUpdated',(r) => {this.debug('roster');  });
+    eBus.$on('scheduleUpdated',(s) => {this.debug('schedule'); });
+    eBus.$on('gameUpdated',(g) => { this.debug('game'); this.game = g; this.day = vue.day;});
   },
   methods: {
     currentComponent() { if (vue == undefined) return ''; return vue.currentComponent; },
@@ -125,16 +125,16 @@ var MenuComponent = {
       return rtn;
     },
     rosterEnabled() {
-console.log("r1");
+this.debug("r1");
       if (vue === undefined) return false;
-console.log("r2");
-console.log(vue.roster);
+this.debug("r2");
+this.debug(JSON.stringify(vue.roster));
       if (JSON.stringify(vue.roster) == '{}') return false;
-console.log("r3");
+this.debug("r3");
       if (vue.gameInProgress === true) return false;
-console.log("r4");
+this.debug("r4");
       if (vue.betweenSeries === false && vue.injury === false) return false;
-console.log("r5");
+this.debug("r5");
       return true;
     },
     scheduleEnabled() {
@@ -142,51 +142,56 @@ console.log("r5");
       return JSON.stringify(vue.schedule) != '{}';
     },
     nextSeries() {
-console.log("ns1");
+this.debug("ns1");
       if (vue === undefined) return false;
-console.log("ns2");
+this.debug("ns2");
+this.debug(JSON.stringify(vue.schedule));
       if (JSON.stringify(vue.schedule) == '{}') return false;
-console.log("ns3");
+this.debug("ns3");
       if (! this.scheduleEnabled()) return false;
-console.log("ns4");
+this.debug("ns4");
       if (! vue.rosterValid()) return false;
-console.log("ns5");
+this.debug("ns5");
       if (vue.gameInProgress === true) return false;
-console.log("ns6");
+this.debug("ns6");
       if (vue.betweenSeries === false) return false;
-console.log("ns7");
-      //console.log(vue.schedule);
+this.debug("ns7");
+      //this.debug(vue.schedule);
       return true;
     },
     nextGame() {
-console.log("ng1");
+this.debug("ng1");
       if (vue === undefined) return false;
-console.log("ng2");
+this.debug("ng2");
       if (JSON.stringify(vue.schedule) == '{}') return false;
-console.log("ng3");
+this.debug("ng3");
       if (! this.scheduleEnabled()) return false;
-console.log("ng4");
+this.debug("ng4");
       if (! vue.rosterValid()) return false;
-console.log("ng5");
+this.debug("ng5");
       if (vue.gameInProgress === true) return false;
-console.log("ng6");
+this.debug("ng6");
       if (vue.betweenSeries === true) return false;
-console.log("ng7");
+this.debug("ng7");
       return true;
     },
     resumeGame() {
-console.log("rg1");
+this.debug("rg1");
       if (vue === undefined) return false;
-console.log("rg2");
+this.debug("rg2");
       if (JSON.stringify(vue.schedule) == '{}') return false;
-console.log("rg3");
+this.debug("rg3");
       if (! this.scheduleEnabled()) return false;
-console.log("rg4");
+this.debug("rg4");
       if (! vue.rosterValid()) return false;
-console.log("rg5");
+this.debug("rg5");
       if (vue.gameInProgress === false) return false;
-console.log("rg6");
+this.debug("rg6");
       return true;
+    },
+    debug: function(arg) {
+return;
+        console.log(arg);
     },
   },
 };
