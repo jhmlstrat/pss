@@ -28,8 +28,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'PUT') {
     //error_log($team.PHP_EOL,3,'error_log');
     $gn = $game->home->gameNumber;
     //error_log($gn.PHP_EOL,3,'error_log');
-    $lock = fopen('.updating','r');
-    flock($lock, LOCK_EX);
+//    $lock = fopen('.updating','r');
+//    flock($lock, LOCK_EX);
     $g = \Scoring\Game::findGameforTeam($year, $team, $gn);
     //error_log($g->toString());
 
@@ -96,8 +96,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'PUT') {
     \Scoring\Game::save($year, json_decode($g->toString()));
     //error_log($g->toString());
     http_response_code(201);
-    flock($lock, LOCK_UN);
-    fclose($lock);
+//    flock($lock, LOCK_UN);
+//    fclose($lock);
 }
 ?>
 
